@@ -1,0 +1,117 @@
+{
+  "status": "success",
+  "story": {
+    "audience": "investors",
+    "augmented_analytics": true,
+    "category": "emissions",
+    "content": "This sustainability story focuses on carbon emissions and climate action with emphasis on long-term value creation and competitive advantages. carbon reduction targets",
+    "custom_prompt_generated": true,
+    "date": "2025-03-14",
+    "date_generated": "2025-03-14",
+    "gartner_inspired": true,
+    "id": "investors-emissions-da723ca6-726d-4c70-8d1b-96aa8b6261de",
+    "impact": "positive",
+    "insights": [
+      "Analysis of carbon emissions and climate action reveals opportunities for improvement.",
+      "Stakeholder analysis shows long-term value creation and competitive advantages is a key consideration.",
+      "Custom insights based on prompt: carbon reduction targets..."
+    ],
+    "prompt": "carbon reduction targets",
+    "recommendations": [
+      "Develop targeted carbon emissions and climate action strategies.",
+      "Communicate results effectively to long-term value creation and competitive advantages.",
+      "Implement a measurement system to track progress."
+    ],
+    "stakeholder_versions": {
+      "board": {
+        "key_points": [
+          "Strategic Impact: Emissions performance directly affects our market position",
+          "Financial Implications: None change in emissions metrics",
+          "Risk Profile: Positive impact on overall sustainability risk exposure"
+        ],
+        "metrics_focus": "Financial implications",
+        "recommendations": [
+          "Highlight this success in next investor communications",
+          "Consider expanding emissions initiatives to other areas",
+          "Review resource allocation to maintain momentum"
+        ],
+        "summary": "Strategic overview of emissions performance with financial and risk implications highlighted.",
+        "title": "Executive Brief: Custom Story: carbon reduction targets."
+      },
+      "investors": {
+        "key_points": [
+          "Competitive Position: Our emissions performance versus industry peers",
+          "ROI Metrics: Financial return on emissions initiatives",
+          "Compliance Status: Regulatory alignment and future-proofing"
+        ],
+        "metrics_focus": "ROI and risk mitigation",
+        "recommendations": [
+          "Feature this success in next ESG disclosure",
+          "Quantify financial benefits for investor presentations",
+          "Benchmark against competition to highlight leadership"
+        ],
+        "summary": "Investment perspective on emissions performance with competitive benchmarking and compliance status.",
+        "title": "Investor Insight: Custom Story: carbon reduction targets."
+      },
+      "sustainability_team": {
+        "key_points": [
+          "Technical Detail: This sustainability story focuses on carbon emissions and climate action with emphasis on long-term value creation and competitive advantages. carbon reduction targets",
+          "Implementation Focus: Key areas for operational adjustment",
+          "Measurement: Detailed KPIs for tracking emissions performance"
+        ],
+        "metrics_focus": "Technical sustainability KPIs",
+        "recommendations": [
+          "Document successful approaches for knowledge sharing",
+          "Identify opportunities to further optimize performance",
+          "Develop case study for internal learning"
+        ],
+        "summary": "Detailed analysis of emissions metrics with root causes and technical implementation guidance.",
+        "title": "Technical Analysis: Custom Story: carbon reduction targets."
+      }
+    },
+    "story_type": "interactive",
+    "storytelling_elements": {
+      "context": {
+        "content": "With carbon pricing mechanisms being implemented in your market",
+        "headline": "Why This Matters Now",
+        "significance": "high"
+      },
+      "narrative": {
+        "content": "This sustainability story focuses on carbon emissions and climate action with emphasis on long-term value creation and competitive advantages. carbon reduction targets",
+        "data_point": {
+          "comparison": "year-over-year",
+          "trend": "positive",
+          "value": "15%"
+        },
+        "headline": "The Emissions Achievement"
+      },
+      "visual": {
+        "annotations": [
+          {
+            "label": "Target",
+            "type": "threshold",
+            "value": "15%"
+          }
+        ],
+        "chart_type": "bar chart",
+        "data_series": [
+          {
+            "color": "#4CAF50",
+            "name": "Current Period"
+          },
+          {
+            "color": "#9E9E9E",
+            "name": "Previous Period"
+          },
+          {
+            "color": "#2196F3",
+            "name": "Industry Benchmark"
+          }
+        ],
+        "title": "Emissions Positive Visualization"
+      }
+    },
+    "timestamp": "2025-03-14 17:29:21",
+    "title": "Custom Story: carbon reduction targets."
+  }
+}

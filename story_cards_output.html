@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Storytelling - SustainaTrend™</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/sustainatrend-framework.css">
+    <link rel="stylesheet" href="/static/css/finchat-inspired.css">
+    
+    <!-- Plotly.js for charts -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <!-- jQuery for AJAX requests -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    
+</head>
+<body class="">
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Include Sidebar Navigation Component -->
+        <!-- Sidebar Navigation -->
+<div class="sidebar">
+    <!-- Logo and Brand -->
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand">
+            <span class="brand-icon"><i class="fas fa-leaf"></i></span>
+            <span class="brand-text">SustainaTrend™</span>
+        </a>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Sections -->
+    <div class="sidebar-content">
+        <!-- Debug Info -->
+        <div class="debug-info" style="margin: 10px; padding: 8px; border: 1px solid #ccc; background: #f8f8f8; font-size: 12px; color: #333;">
+            <p>Nav Sections Available: False</p>
+            <p>Active Nav: None</p>
+        </div>
+
+        <!-- Core Navigation - Manual Fallback -->
+        <div class="nav-section">
+            <h5 class="nav-section-title">Core</h5>
+            <ul class="nav-items">
+                <li class="nav-item ">
+                    <a href="/" class="nav-link">
+                        <i class="nav-icon fas fa-home"></i>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/risk-tracker" class="nav-link">
+                        <i class="nav-icon fas fa-exclamation-triangle"></i>
+                        <span class="nav-text">Risk Tracker</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/analytics-dashboard" class="nav-link">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <span class="nav-text">Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Insights Navigation - Manual Fallback -->
+        <div class="nav-section">
+            <h5 class="nav-section-title">Insights</h5>
+            <ul class="nav-items">
+                <li class="nav-item ">
+                    <a href="/story-cards" class="nav-link">
+                        <i class="nav-icon fas fa-newspaper"></i>
+                        <span class="nav-text">AI Story Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/monetization-opportunities" class="nav-link">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <span class="nav-text">Monetization</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Tools Navigation - Manual Fallback -->
+        <div class="nav-section">
+            <h5 class="nav-section-title">Tools</h5>
+            <ul class="nav-items">
+                <li class="nav-item ">
+                    <a href="/pdf-analyzer" class="nav-link">
+                        <i class="nav-icon fas fa-file-upload"></i>
+                        <span class="nav-text">Upload Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/data-terminal" class="nav-link">
+                        <i class="nav-icon fas fa-terminal"></i>
+                        <span class="nav-text">Data Terminal</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/co-pilot" class="nav-link">
+                        <i class="nav-icon fas fa-robot"></i>
+                        <span class="nav-text">AI Co-Pilot</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Dynamic sections (original code) -->
+        
+    </div>
+
+    <!-- User Menu (Bottom) -->
+    <div class="sidebar-footer">
+        <div class="user-menu">
+            <!-- Manual Fallback -->
+            <a href="#" class="user-menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="user-menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
+            <a href="/debug" class="user-menu-item">
+                <i class="fas fa-bug"></i>
+                <span>Debug</span>
+            </a>
+            
+            <!-- Dynamic user menu (original code) -->
+            
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar Overlay (for mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar Toggle JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            
+            if (window.innerWidth < 992) {
+                overlay.classList.toggle('active');
+            }
+        }
+        
+        // Toggle sidebar when button is clicked
+        toggle.addEventListener('click', toggleSidebar);
+        
+        // Close sidebar when overlay is clicked (mobile)
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('collapsed');
+            document.body.classList.remove('sidebar-collapsed');
+            overlay.classList.remove('active');
+        });
+        
+        // Adjust sidebar state on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 992) {
+                sidebar.classList.remove('collapsed');
+                document.body.classList.remove('sidebar-collapsed');
+                overlay.classList.remove('active');
+            }
+        });
+    });
+</script>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+        </div>
+    </div>
+    
+    <!-- Theme Switcher Script -->
+    <script>
+        // Check for saved theme preference or respect OS preference
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = localStorage.getItem('theme');
+        
+        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Function to toggle theme
+        function toggleTheme() {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Add theme toggle to window object for global access
+        window.toggleTheme = toggleTheme;
+    </script>
+    
+    <!-- Custom Scripts -->
+    
+</body>
+</html>

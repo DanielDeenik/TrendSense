@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "enhanced_query": "solar",
+    "execution_time": 0.13708710670471191,
+    "query": "solar",
+    "result_count": 15,
+    "source": "google"
+  },
+  "query_analysis": "Unable to analyze query due to an error.",
+  "results": [
+    {
+      "category": "Sustainability",
+      "date": "2025-02-21",
+      "link": "https://www.microsoft.com/sustainability/carbon-emissions-reduction",
+      "relevance_score": 94,
+      "snippet": "New research on Microsoft's carbon emissions reduction program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "The Future of Carbon Emissions Reduction: Insights from Microsoft"
+    },
+    {
+      "category": "Sustainability",
+      "date": "2025-02-24",
+      "link": "https://www.unilever.com/sustainability/sustainable-supply-chain",
+      "relevance_score": 93,
+      "snippet": "Exploring Unilever's journey toward sustainable supply chain excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "Unilever's Innovative Approach to Sustainable Supply Chain"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-02-17",
+      "link": "https://www.patagonia.com/sustainability/esg-reporting",
+      "relevance_score": 86,
+      "snippet": "Exploring Patagonia's journey toward ESG reporting excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How Patagonia is Leading in Esg Reporting"
+    },
+    {
+      "category": "Governance",
+      "date": "2025-02-19",
+      "link": "https://www.tesla.com/sustainability/sustainability-energy-implementation",
+      "relevance_score": 88,
+      "snippet": "New research on Tesla's sustainability energy implementation program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "How Tesla is Leading in Sustainability Energy Implementation"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-02-12",
+      "link": "https://www.ikea.com/sustainability/sustainability-economy-practices",
+      "relevance_score": 85,
+      "snippet": "IKEA has implemented a comprehensive approach to sustainability economy practices, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "The Future of Sustainability Economy Practices: Insights from IKEA"
+    },
+    {
+      "category": "Social",
+      "date": "2025-02-10",
+      "link": "https://www.schneiderelectric.com/sustainability/water-conservation",
+      "relevance_score": 82,
+      "snippet": "Schneider Electric has implemented a comprehensive approach to water conservation, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "Water Conservation Breakthrough by Schneider Electric"
+    },
+    {
+      "category": "Governance",
+      "date": "2025-02-09",
+      "link": "https://www.\u00f8rsted.com/sustainability/social-responsibility-initiatives",
+      "relevance_score": 83,
+      "snippet": "New research on \u00d8rsted's social responsibility initiatives program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "Social Responsibility Initiatives Breakthrough by \u00d8rsted"
+    },
+    {
+      "category": "Technology",
+      "date": "2025-02-06",
+      "link": "https://www.neste.com/sustainability/sustainability-kpis",
+      "relevance_score": 81,
+      "snippet": "A detailed analysis of Neste's sustainability KPIs initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "Sustainability Kpis Breakthrough by Neste"
+    },
+    {
+      "category": "Social",
+      "date": "2025-02-06",
+      "link": "https://www.seventhgeneration.com/sustainability/climate-risk-assessment",
+      "relevance_score": 76,
+      "snippet": "Exploring Seventh Generation's journey toward climate risk assessment excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "Climate Risk Assessment Breakthrough by Seventh Generation"
+    },
+    {
+      "category": "Social",
+      "date": "2025-02-02",
+      "link": "https://www.interface.com/sustainability/sustainability-finance",
+      "relevance_score": 76,
+      "snippet": "New research on Interface's sustainability finance program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "Case Study: Interface's Sustainability Finance Strategy"
+    },
+    {
+      "category": "Sustainability",
+      "date": "2025-01-22",
+      "link": "https://www.danone.com/sustainability/solar-conservation",
+      "relevance_score": 72,
+      "snippet": "A detailed analysis of Danone's solar conservation initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "Solar Conservation Breakthrough by Danone"
+    },
+    {
+      "category": "Governance",
+      "date": "2025-01-18",
+      "link": "https://www.google.com/sustainability/sustainable-agriculture",
+      "relevance_score": 73,
+      "snippet": "New research on Google's sustainable agriculture program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "Case Study: Google's Sustainable Agriculture Strategy"
+    },
+    {
+      "category": "Social",
+      "date": "2025-01-16",
+      "link": "https://www.microsoft.com/sustainability/solar-emissions-reduction",
+      "relevance_score": 69,
+      "snippet": "This report examines how Microsoft transformed their business through solar emissions reduction. The company's leadership demonstrates that sustainability and profitability can work hand-in-hand.",
+      "source": "mock",
+      "title": "Case Study: Microsoft's Solar Emissions Reduction Strategy"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-01-17",
+      "link": "https://www.unilever.com/sustainability/sustainable-supply-chain",
+      "relevance_score": 69,
+      "snippet": "Exploring Unilever's journey toward sustainable supply chain excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How Unilever is Leading in Sustainable Supply Chain"
+    },
+    {
+      "category": "Technology",
+      "date": "2025-01-10",
+      "link": "https://www.patagonia.com/sustainability/sustainability-reporting",
+      "relevance_score": 65,
+      "snippet": "Patagonia has implemented a comprehensive approach to sustainability reporting, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "Case Study: Patagonia's Sustainability Reporting Strategy"
+    }
+  ]
+}

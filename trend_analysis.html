@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SustainaTrend™</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- Finchat Dark Theme Base Styles -->
+    <style>
+        :root {
+            /* Color Variables */
+            --fc-bg-primary: #121212;
+            --fc-bg-secondary: #1a1a1a;
+            --fc-bg-tertiary: #222222;
+            --fc-bg-hover: #2a2a2a;
+            --fc-bg-card: #1d1d1d;
+            --primary-rgb: 61, 213, 152;  /* #3dd598 - Green */
+            --fc-primary: rgb(var(--primary-rgb));
+            --fc-primary-hover: rgba(var(--primary-rgb), 0.9);
+            --fc-primary-light: rgba(var(--primary-rgb), 0.15);
+            --fc-positive: #3dd598;
+            --fc-negative: #ff6b81;
+            --fc-warning: #ffad63;
+            --fc-info: #34c3ff;
+            --fc-text-primary: #e4e6eb;
+            --fc-text-secondary: #a0a0a0;
+            --fc-text-muted: #666666;
+            --fc-border: #333333;
+            --fc-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --fc-radius: 4px;
+            --fc-radius-lg: 8px;
+            
+            /* Spacing Variables */
+            --fc-spacing-xs: 4px;
+            --fc-spacing-sm: 8px;
+            --fc-spacing-md: 16px;
+            --fc-spacing-lg: 24px;
+            --fc-spacing-xl: 32px;
+            
+            /* Sidebar Width */
+            --fc-sidebar-width: 240px;
+            --fc-sidebar-collapsed-width: 60px;
+            --fc-insights-width: 320px;
+        }
+        
+        /* Reset & Base Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--fc-bg-primary);
+            color: var(--fc-text-primary);
+            line-height: 1.5;
+            font-size: 14px;
+            overflow-x: hidden;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: var(--fc-sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar content";
+        }
+        
+        body.insights-open {
+            grid-template-columns: var(--fc-sidebar-width) 1fr var(--fc-insights-width);
+            grid-template-areas:
+                "sidebar header header"
+                "sidebar content insights";
+        }
+        
+        body.sidebar-collapsed {
+            grid-template-columns: var(--fc-sidebar-collapsed-width) 1fr;
+        }
+        
+        body.sidebar-collapsed.insights-open {
+            grid-template-columns: var(--fc-sidebar-collapsed-width) 1fr var(--fc-insights-width);
+        }
+        
+        a {
+            color: var(--fc-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--fc-primary-hover);
+            text-decoration: underline;
+        }
+        
+        button {
+            cursor: pointer;
+        }
+        
+        ul, ol {
+            list-style-position: inside;
+        }
+        
+        /* Header Styles */
+        .finchat-header {
+            grid-area: header;
+            background-color: var(--fc-bg-secondary);
+            border-bottom: 1px solid var(--fc-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--fc-spacing-lg);
+            height: 60px;
+        }
+        
+        .finchat-header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--fc-spacing-sm);
+        }
+        
+        .finchat-header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--fc-spacing-md);
+        }
+        
+        /* Sidebar Styles */
+        .finchat-sidebar {
+            grid-area: sidebar;
+            background-color: var(--fc-bg-secondary);
+            border-right: 1px solid var(--fc-border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            width: var(--fc-sidebar-width);
+            transition: width 0.3s;
+            z-index: 20;
+        }
+        
+        body.sidebar-collapsed .finchat-sidebar {
+            width: var(--fc-sidebar-collapsed-width);
+        }
+        
+        .finchat-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--fc-spacing-sm);
+            padding: var(--fc-spacing-md);
+            border-bottom: 1px solid var(--fc-border);
+            height: 60px;
+        }
+        
+        .finchat-logo-icon {
+            font-size: 1.4rem;
+            color: var(--fc-primary);
+        }
+        
+        .finchat-logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        body.sidebar-collapsed .finchat-logo-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        .finchat-nav {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--fc-spacing-md) 0;
+        }
+        
+        .finchat-nav-section {
+            margin-bottom: var(--fc-spacing-md);
+        }
+        
+        .finchat-nav-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--fc-text-muted);
+            letter-spacing: 0.5px;
+            padding: var(--fc-spacing-xs) var(--fc-spacing-md);
+            margin-bottom: var(--fc-spacing-xs);
+        }
+        
+        body.sidebar-collapsed .finchat-nav-header {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .finchat-nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--fc-spacing-xs) var(--fc-spacing-md);
+            color: var(--fc-text-secondary);
+            border-left: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .finchat-nav-item:hover {
+            background-color: var(--fc-bg-hover);
+            color: var(--fc-text-primary);
+            text-decoration: none;
+        }
+        
+        .finchat-nav-item.active {
+            color: var(--fc-primary);
+            border-left-color: var(--fc-primary);
+            background-color: var(--fc-bg-hover);
+        }
+        
+        .finchat-nav-icon {
+            width: 24px;
+            text-align: center;
+            margin-right: var(--fc-spacing-sm);
+        }
+        
+        body.sidebar-collapsed .finchat-nav-icon {
+            margin-right: 0;
+        }
+        
+        .finchat-nav-text {
+            opacity: 1;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        body.sidebar-collapsed .finchat-nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        .finchat-sidebar-toggle {
+            padding: var(--fc-spacing-md);
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
+            color: var(--fc-text-secondary);
+            cursor: pointer;
+            border-top: 1px solid var(--fc-border);
+        }
+        
+        .finchat-sidebar-toggle:hover {
+            color: var(--fc-text-primary);
+        }
+        
+        /* Main Content Area */
+        .finchat-content {
+            grid-area: content;
+            padding: var(--fc-spacing-lg);
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+        
+        .finchat-section {
+            margin-bottom: var(--fc-spacing-xl);
+        }
+        
+        .finchat-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--fc-spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--fc-spacing-sm);
+        }
+        
+        /* Card Component */
+        .finchat-card {
+            background-color: var(--fc-bg-card);
+            border: 1px solid var(--fc-border);
+            border-radius: var(--fc-radius);
+            overflow: hidden;
+            margin-bottom: var(--fc-spacing-lg);
+        }
+        
+        .finchat-card-header {
+            padding: var(--fc-spacing-md);
+            border-bottom: 1px solid var(--fc-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .finchat-card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: var(--fc-spacing-xs);
+        }
+        
+        .finchat-card-body {
+            padding: var(--fc-spacing-md);
+        }
+        
+        .finchat-card-footer {
+            padding: var(--fc-spacing-md);
+            border-top: 1px solid var(--fc-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--fc-spacing-sm);
+        }
+        
+        /* Table Styles */
+        .finchat-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .finchat-table th {
+            text-align: left;
+            padding: var(--fc-spacing-sm);
+            border-bottom: 1px solid var(--fc-border);
+            color: var(--fc-text-secondary);
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .finchat-table td {
+            padding: var(--fc-spacing-sm);
+            border-bottom: 1px solid var(--fc-border);
+        }
+        
+        .finchat-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .finchat-table tr:hover {
+            background-color: var(--fc-bg-hover);
+        }
+        
+        /* Button Styles */
+        .finchat-button {
+            background-color: var(--fc-bg-tertiary);
+            color: var(--fc-text-primary);
+            border: 1px solid var(--fc-border);
+            border-radius: var(--fc-radius);
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .finchat-button:hover {
+            background-color: var(--fc-bg-hover);
+            border-color: var(--fc-text-secondary);
+        }
+        
+        .finchat-button-primary {
+            background-color: var(--fc-primary);
+            color: #000;
+            border-color: var(--fc-primary);
+        }
+        
+        .finchat-button-primary:hover {
+            background-color: var(--fc-primary-hover);
+            border-color: var(--fc-primary-hover);
+        }
+        
+        .finchat-button-icon {
+            background-color: transparent;
+            color: var(--fc-text-secondary);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .finchat-button-icon:hover {
+            background-color: var(--fc-bg-hover);
+            color: var(--fc-text-primary);
+        }
+        
+        /* Badge Styles */
+        .finchat-badge {
+            background-color: var(--fc-bg-hover);
+            color: var(--fc-text-secondary);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .finchat-badge-primary {
+            background-color: var(--fc-primary-light);
+            color: var(--fc-primary);
+        }
+        
+        .finchat-badge-warning {
+            background-color: rgba(255, 173, 99, 0.15);
+            color: var(--fc-warning);
+        }
+        
+        /* Value Formatting */
+        .finchat-value-positive {
+            color: var(--fc-positive);
+        }
+        
+        .finchat-value-negative {
+            color: var(--fc-negative);
+        }
+        
+        /* Insights Panel */
+        .finchat-insights {
+            grid-area: insights;
+            background-color: var(--fc-bg-secondary);
+            border-left: 1px solid var(--fc-border);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--fc-insights-width);
+            z-index: 10;
+        }
+        
+        body.insights-open .finchat-insights {
+            transform: translateX(0);
+        }
+        
+        .finchat-insights-header {
+            padding: var(--fc-spacing-md);
+            height: 60px;
+            border-bottom: 1px solid var(--fc-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .finchat-insights-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .finchat-insights-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--fc-spacing-md);
+        }
+        
+        .finchat-insight-item {
+            padding: var(--fc-spacing-md);
+            margin-bottom: var(--fc-spacing-md);
+            background-color: var(--fc-bg-card);
+            border: 1px solid var(--fc-border);
+            border-radius: var(--fc-radius);
+            display: flex;
+            gap: var(--fc-spacing-md);
+        }
+        
+        .finchat-insight-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--fc-primary-light);
+            color: var(--fc-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        
+        .finchat-insight-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: var(--fc-spacing-xs);
+        }
+        
+        .finchat-insight-content p {
+            color: var(--fc-text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .finchat-chat {
+            margin-top: auto;
+            border-top: 1px solid var(--fc-border);
+            display: flex;
+            flex-direction: column;
+            height: 50%;
+        }
+        
+        .finchat-chat-header {
+            padding: var(--fc-spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+        
+        .finchat-chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--fc-spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--fc-spacing-md);
+        }
+        
+        .finchat-chat-message {
+            display: flex;
+            gap: var(--fc-spacing-md);
+        }
+        
+        .finchat-chat-message-user {
+            justify-content: flex-end;
+        }
+        
+        .finchat-chat-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--fc-primary-light);
+            color: var(--fc-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .finchat-chat-bubble {
+            background-color: var(--fc-bg-tertiary);
+            padding: var(--fc-spacing-sm) var(--fc-spacing-md);
+            border-radius: var(--fc-radius);
+            max-width: 80%;
+        }
+        
+        .finchat-chat-message-user .finchat-chat-bubble {
+            background-color: var(--fc-primary-light);
+            color: var(--fc-text-primary);
+        }
+        
+        .finchat-chat-input {
+            display: flex;
+            padding: var(--fc-spacing-md);
+            gap: var(--fc-spacing-sm);
+            border-top: 1px solid var(--fc-border);
+        }
+        
+        .finchat-input {
+            flex-grow: 1;
+            background-color: var(--fc-bg-tertiary);
+            border: 1px solid var(--fc-border);
+            border-radius: var(--fc-radius);
+            padding: 8px 12px;
+            color: var(--fc-text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .finchat-input:focus {
+            outline: none;
+            border-color: var(--fc-primary);
+        }
+        
+        .finchat-suggested-prompts {
+            padding: var(--fc-spacing-md);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--fc-spacing-xs);
+        }
+        
+        .finchat-suggested-prompt {
+            background-color: var(--fc-bg-tertiary);
+            border: 1px solid var(--fc-border);
+            border-radius: var(--fc-radius);
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .finchat-suggested-prompt:hover {
+            background-color: var(--fc-primary-light);
+            border-color: var(--fc-primary);
+        }
+        
+        /* Toggle Buttons */
+        .finchat-toggle {
+            background-color: transparent;
+            color: var(--fc-text-secondary);
+            border: none;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: color 0.2s;
+            border-radius: 4px;
+        }
+        
+        .finchat-toggle:hover {
+            color: var(--fc-text-primary);
+            background-color: var(--fc-bg-hover);
+        }
+        
+        .finchat-toggle.active {
+            color: var(--fc-primary);
+            background-color: var(--fc-primary-light);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "content";
+            }
+            
+            .finchat-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            body.sidebar-open .finchat-sidebar {
+                transform: translateX(0);
+            }
+            
+            .finchat-content {
+                padding: var(--fc-spacing-md);
+            }
+            
+            .finchat-header {
+                padding: 0 var(--fc-spacing-md);
+            }
+            
+            body.insights-open {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "content";
+            }
+            
+            .finchat-insights {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    
+<style>
+    /* Common Components */
+    .metric-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--fc-spacing-md);
+        margin-bottom: var(--fc-spacing-lg);
+    }
+    
+    .metric-card {
+        background-color: var(--fc-bg-card);
+        border: 1px solid var(--fc-border);
+        border-radius: var(--fc-radius);
+        padding: var(--fc-spacing-md);
+        transition: all 0.2s;
+    }
+    
+    .metric-card:hover {
+        border-color: var(--fc-primary);
+        box-shadow: var(--fc-shadow);
+    }
+    
+    .metric-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--fc-spacing-sm);
+    }
+    
+    .metric-title {
+        font-size: 0.85rem;
+        color: var(--fc-text-secondary);
+        font-weight: 500;
+    }
+    
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: var(--fc-spacing-xs);
+    }
+    
+    .metric-change {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8rem;
+    }
+    
+    .market-chart {
+        background-color: var(--fc-bg-card);
+        border: 1px solid var(--fc-border);
+        border-radius: var(--fc-radius);
+        padding: var(--fc-spacing-md);
+        margin-bottom: var(--fc-spacing-lg);
+    }
+    
+    .market-chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--fc-spacing-md);
+    }
+    
+    .market-chart-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .chart-controls {
+        display: flex;
+        gap: var(--fc-spacing-xs);
+    }
+    
+    .chart-period {
+        background-color: var(--fc-bg-hover);
+        border: 1px solid var(--fc-border);
+        border-radius: var(--fc-radius);
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .chart-period.active {
+        background-color: rgba(var(--primary-rgb), 0.15);
+        color: var(--fc-primary);
+        border-color: var(--fc-primary);
+    }
+    
+    .chart-container {
+        height: 280px;
+        position: relative;
+    }
+    
+    .positions-table {
+        margin-top: var(--fc-spacing-lg);
+    }
+    
+    .position-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+    }
+    
+    .position-indicator.positive {
+        background-color: var(--fc-positive);
+    }
+    
+    .position-indicator.negative {
+        background-color: var(--fc-negative);
+    }
+    
+    .position-sector {
+        font-size: 0.8rem;
+        color: var(--fc-text-secondary);
+    }
+    
+    .company-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .company-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--fc-bg-hover);
+        border-radius: 4px;
+        color: var(--fc-text-secondary);
+    }
+    
+    .two-col-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--fc-spacing-lg);
+    }
+    
+    @media (max-width: 1200px) {
+        .two-col-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .news-item {
+        display: flex;
+        gap: var(--fc-spacing-md);
+        padding: var(--fc-spacing-md);
+        border-bottom: 1px solid var(--fc-border);
+    }
+    
+    .news-item:last-child {
+        border-bottom: none;
+    }
+    
+    .news-source {
+        background-color: var(--fc-bg-hover);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        color: var(--fc-text-secondary);
+    }
+    
+    .news-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+    }
+    
+    .news-time {
+        font-size: 0.75rem;
+        color: var(--fc-text-secondary);
+    }
+    
+    .esg-score {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .esg-letter {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .esg-letter.a {
+        color: #26de81;
+    }
+    
+    .esg-letter.b {
+        color: #45aaf2;
+    }
+    
+    .esg-letter.c {
+        color: #fed330;
+    }
+    
+    .esg-letter.d {
+        color: #fc5c65;
+    }
+    
+    .progress-bar {
+        height: 4px;
+        background-color: var(--fc-bg-hover);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background-color: var(--fc-primary);
+    }
+    
+    /* Trend Analysis Styles */
+    .trend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--fc-spacing-md);
+    }
+    
+    .trend-card {
+        background-color: var(--fc-bg-card);
+        border: 1px solid var(--fc-border);
+        border-radius: var(--fc-radius);
+        overflow: hidden;
+        transition: all 0.2s;
+    }
+    
+    .trend-card:hover {
+        border-color: var(--fc-primary);
+        box-shadow: var(--fc-shadow);
+    }
+    
+    .trend-card-header {
+        background-color: var(--fc-bg-tertiary);
+        padding: var(--fc-spacing-sm) var(--fc-spacing-md);
+        border-bottom: 1px solid var(--fc-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .trend-category {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--fc-primary);
+    }
+    
+    .trend-virality {
+        background-color: var(--fc-primary-light);
+        color: var(--fc-primary);
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .trend-card-content {
+        padding: var(--fc-spacing-md);
+    }
+    
+    .trend-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: var(--fc-spacing-xs);
+    }
+    
+    .trend-description {
+        color: var(--fc-text-secondary);
+        font-size: 0.85rem;
+        margin-bottom: var(--fc-spacing-md);
+    }
+    
+    .trend-metrics {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--fc-spacing-md);
+        border-bottom: 1px solid var(--fc-border);
+        padding-bottom: var(--fc-spacing-md);
+    }
+    
+    .trend-metric {
+        text-align: center;
+    }
+    
+    .trend-metric-title {
+        font-size: 0.75rem;
+        color: var(--fc-text-secondary);
+        margin-bottom: 4px;
+    }
+    
+    .trend-metric-value {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .trend-impact {
+        background-color: var(--fc-bg-tertiary);
+        padding: var(--fc-spacing-sm);
+        border-radius: var(--fc-radius);
+        font-size: 0.85rem;
+        margin-bottom: var(--fc-spacing-md);
+    }
+    
+    .trend-sources-title {
+        font-size: 0.75rem;
+        color: var(--fc-text-secondary);
+        margin-bottom: 4px;
+    }
+    
+    .trend-sources-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .trend-source {
+        background-color: var(--fc-bg-hover);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+    }
+    
+    /* Real Estate Dashboard Components */
+    .certification-progress {
+        margin-top: var(--fc-spacing-xs);
+    }
+    
+    .certification-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+    
+    .recommendation-item {
+        display: flex;
+        gap: var(--fc-spacing-md);
+        padding: var(--fc-spacing-md);
+        border-bottom: 1px solid var(--fc-border);
+    }
+    
+    .recommendation-item:last-child {
+        border-bottom: none;
+    }
+    
+    .recommendation-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .recommendation-icon.green {
+        background-color: rgba(38, 222, 129, 0.15);
+        color: #26de81;
+    }
+    
+    .recommendation-icon.blue {
+        background-color: rgba(52, 195, 255, 0.15);
+        color: #34c3ff;
+    }
+    
+    .recommendation-icon.purple {
+        background-color: rgba(143, 113, 255, 0.15);
+        color: #8f71ff;
+    }
+    
+    .recommendation-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    
+    .recommendation-description {
+        font-size: 0.85rem;
+        color: var(--fc-text-secondary);
+        margin-bottom: 8px;
+    }
+    
+    .recommendation-metrics {
+        display: flex;
+        gap: var(--fc-spacing-md);
+    }
+    
+    .recommendation-metric {
+        font-size: 0.75rem;
+        color: var(--fc-text-muted);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    /* API Status Components */
+    .status-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .status-badge.online {
+        background-color: rgba(38, 222, 129, 0.15);
+        color: #26de81;
+    }
+    
+    .status-badge.degraded {
+        background-color: rgba(255, 173, 99, 0.15);
+        color: #ffad63;
+    }
+    
+    .status-badge.offline {
+        background-color: rgba(252, 92, 101, 0.15);
+        color: #fc5c65;
+    }
+    
+    /* Debug Information Components */
+    .debug-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--fc-spacing-md);
+    }
+    
+    .debug-info-item {
+        padding: var(--fc-spacing-sm);
+        background-color: var(--fc-bg-tertiary);
+        border-radius: var(--fc-radius);
+    }
+    
+    .debug-info-label {
+        font-size: 0.75rem;
+        color: var(--fc-text-secondary);
+        margin-bottom: 4px;
+    }
+    
+    .debug-info-value {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .route-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .route-item {
+        padding: var(--fc-spacing-sm);
+        background-color: var(--fc-bg-tertiary);
+        border-radius: var(--fc-radius);
+        font-family: monospace;
+        font-size: 0.85rem;
+    }
+    
+    /* Select and Form Elements */
+    .finchat-select {
+        background-color: var(--fc-bg-tertiary);
+        border: 1px solid var(--fc-border);
+        border-radius: var(--fc-radius);
+        color: var(--fc-text-primary);
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        min-width: 150px;
+    }
+    
+    .finchat-select:focus {
+        outline: none;
+        border-color: var(--fc-primary);
+    }
+</style>
+
+</head>
+
+<body class="insights-open finchat-dark-theme">
+    <!-- Sidebar -->
+    <div class="finchat-sidebar">
+        <div class="finchat-logo">
+            <div class="finchat-logo-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="finchat-logo-text">SustainaTrend™</div>
+        </div>
+        
+        <nav class="finchat-nav">
+            <div class="finchat-nav-section">
+                <div class="finchat-nav-header">Overview</div>
+                
+                <a href="/" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="finchat-nav-text">Dashboard</div>
+                </a>
+                
+                <a href="/trend-analysis" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div class="finchat-nav-text">Trend Analysis</div>
+                </a>
+                
+                <a href="/analytics-dashboard" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-chart-pie"></i></div>
+                    <div class="finchat-nav-text">Analytics</div>
+                </a>
+            </div>
+            
+            <div class="finchat-nav-section">
+                <div class="finchat-nav-header">Intelligence</div>
+                
+                <a href="/sustainability-stories" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="finchat-nav-text">Stories</div>
+                </a>
+                
+                <a href="/document-upload" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-file-upload"></i></div>
+                    <div class="finchat-nav-text">Documents</div>
+                </a>
+                
+                <a href="/search" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-search"></i></div>
+                    <div class="finchat-nav-text">Search</div>
+                </a>
+            </div>
+            
+            <div class="finchat-nav-section">
+                <div class="finchat-nav-header">Insights</div>
+                
+                <a href="/unified-strategy-hub" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="finchat-nav-text">Strategy Hub</div>
+                </a>
+                
+                <a href="/realestate-trends" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="finchat-nav-text">Real Estate</div>
+                </a>
+                
+                <a href="/regulatory-ai" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="finchat-nav-text">Regulatory AI Agent</div>
+                </a>
+            </div>
+            
+            <div class="finchat-nav-section">
+                <div class="finchat-nav-header">Settings</div>
+                
+                <a href="/debug" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="finchat-nav-text">Settings</div>
+                </a>
+                
+                <a href="/api-status" class="finchat-nav-item ">
+                    <div class="finchat-nav-icon"><i class="fas fa-server"></i></div>
+                    <div class="finchat-nav-text">API Status</div>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="finchat-sidebar-toggle" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="finchat-header">
+        <div class="finchat-header-title">
+            <i class="fas fa-chart-line"></i>
+            Sustainability Dashboard
+        </div>
+        
+        <div class="finchat-header-actions">
+            
+<span class="finchat-badge finchat-badge-primary">Real-time</span>
+
+            <button class="finchat-toggle" id="toggleInsights" title="Toggle Insights Panel">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="finchat-content">
+        
+
+<!-- Trend Analysis Dashboard -->
+<div class="finchat-section">
+    <div class="finchat-section-title">
+        <i class="fas fa-chart-line"></i> Sustainability Trend Analysis
+    </div>
+    
+    <!-- Filter Controls -->
+    <div class="finchat-card" style="margin-bottom: var(--fc-spacing-md);">
+        <div class="finchat-card-body" style="padding: var(--fc-spacing-md);">
+            <div style="display: flex; gap: var(--fc-spacing-md); flex-wrap: wrap; align-items: center;">
+                <div>
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--fc-text-secondary);">Category</label>
+                    <select class="finchat-select" id="categoryFilter">
+                        <option value="all" selected>All Categories</option>
+                        <option value="climate" >Climate Action</option>
+                        <option value="resource" >Resource Efficiency</option>
+                        <option value="governance" >ESG Governance</option>
+                        <option value="finance" >Sustainable Finance</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--fc-text-secondary);">Sort By</label>
+                    <select class="finchat-select" id="sortFilter">
+                        <option value="virality" selected>Virality Score</option>
+                        <option value="mentions" >Mentions</option>
+                        <option value="sentiment" >Sentiment</option>
+                        <option value="recent" >Most Recent</option>
+                    </select>
+                </div>
+                <div style="margin-top: 24px;">
+                    <button class="finchat-button" id="applyFilters">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Trend Grid -->
+    <div class="trend-grid">
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Climate Action</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 87
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Carbon Neutrality Pledges</div>
+                <div class="trend-description">Companies pledging to achieve carbon neutrality by 2030</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.78</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1458</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">rapidly growing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">High potential for emissions reduction</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Climate Action</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 75
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Carbon Neutrality Pledges - Regional Focus</div>
+                <div class="trend-description">Companies pledging to achieve carbon neutrality by 2030</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.68</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1020</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">rapidly growing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">High potential for emissions reduction</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Corporate Reports</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">ESG Governance</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 92
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">ESG Reporting Standards</div>
+                <div class="trend-description">Standardization of ESG reporting frameworks</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.65</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">2104</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">increasing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Improved comparability of sustainability metrics</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">ESG Governance</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 84
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">ESG Reporting Standards - Regional Focus</div>
+                <div class="trend-description">Standardization of ESG reporting frameworks</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.57</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1472</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">increasing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Improved comparability of sustainability metrics</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                        <span class="trend-source">Corporate Reports</span>
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Resource Efficiency</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 76
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Circular Economy Initiatives</div>
+                <div class="trend-description">Business models focused on reuse and recycling</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.81</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">873</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">increasing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Reduction in waste and resource consumption</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Resource Efficiency</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 66
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Circular Economy Initiatives - Regional Focus</div>
+                <div class="trend-description">Business models focused on reuse and recycling</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.70</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">611</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">stable</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Reduction in waste and resource consumption</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Corporate Reports</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Climate Action</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 83
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Science-Based Targets</div>
+                <div class="trend-description">Emissions targets aligned with climate science</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.72</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1267</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">rapidly growing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Credible pathway to emissions reduction</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Climate Action</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 75
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Science-Based Targets - Regional Focus</div>
+                <div class="trend-description">Emissions targets aligned with climate science</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.63</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">886</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">increasing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Credible pathway to emissions reduction</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Sustainable Finance</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 89
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Sustainable Finance</div>
+                <div class="trend-description">Financial products tied to sustainability outcomes</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.68</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1845</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">increasing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Mobilization of capital for sustainability</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <div class="trend-category">Sustainable Finance</div>
+                <div class="trend-virality">
+                    <i class="fas fa-bolt"></i> 74
+                </div>
+            </div>
+            <div class="trend-card-content">
+                <div class="trend-title">Sustainable Finance - Regional Focus</div>
+                <div class="trend-description">Financial products tied to sustainability outcomes</div>
+                <div class="trend-metrics">
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Sentiment</div>
+                        <div class="trend-metric-value">0.53</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Mentions</div>
+                        <div class="trend-metric-value">1291</div>
+                    </div>
+                    <div class="trend-metric">
+                        <div class="trend-metric-title">Momentum</div>
+                        <div class="trend-metric-value">rapidly growing</div>
+                    </div>
+                </div>
+                <div class="trend-impact">Mobilization of capital for sustainability</div>
+                <div class="trend-sources">
+                    <div class="trend-sources-title">Sources</div>
+                    <div class="trend-sources-list">
+                        
+                        <span class="trend-source">Social Media</span>
+                        
+                        <span class="trend-source">Regulatory Updates</span>
+                        
+                        <span class="trend-source">News Articles</span>
+                        
+                        <span class="trend-source">Academic Research</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Default Dashboard (Top Metrics Summary) -->
+<div class="finchat-section">
+    <div class="metric-summary">
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">Carbon Intensity</div>
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="metric-value">12.4</div>
+            <div class="metric-change finchat-value-positive">
+                <i class="fas fa-arrow-down"></i> -15.3%
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">ESG Score</div>
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="metric-value">73.8</div>
+            <div class="metric-change finchat-value-positive">
+                <i class="fas fa-arrow-up"></i> +2.5%
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">Renewable Energy</div>
+                <i class="fas fa-solar-panel"></i>
+            </div>
+            <div class="metric-value">38%</div>
+            <div class="metric-change finchat-value-positive">
+                <i class="fas fa-arrow-up"></i> +8%
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">Water Intensity</div>
+                <i class="fas fa-tint"></i>
+            </div>
+            <div class="metric-value">2.3</div>
+            <div class="metric-change finchat-value-positive">
+                <i class="fas fa-arrow-down"></i> -12.2%
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="two-col-grid">
+    <div>
+        <!-- Emissions Chart -->
+        <div class="market-chart">
+            <div class="market-chart-header">
+                <div class="market-chart-title">Carbon Emissions Trend</div>
+                <div class="chart-controls">
+                    <button class="chart-period">1M</button>
+                    <button class="chart-period active">3M</button>
+                    <button class="chart-period">6M</button>
+                    <button class="chart-period">1Y</button>
+                    <button class="chart-period">ALL</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="emissionsChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Positions Table -->
+        <div class="finchat-card positions-table">
+            <div class="finchat-card-header">
+                <h3 class="finchat-card-title">Sustainability Investments</h3>
+                <span class="finchat-badge">12</span>
+            </div>
+            <div class="finchat-card-body">
+                <table class="finchat-table">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>ESG Rating</th>
+                            <th>Value</th>
+                            <th>Change</th>
+                            <th>P/L</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="company-info">
+                                    <span class="position-indicator positive"></span>
+                                    <div>
+                                        <div>Renewable Energy ETF</div>
+                                        <div class="position-sector">Clean Energy</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="esg-score">
+                                    <span class="esg-letter a">A</span>
+                                    <div class="progress-bar" style="width: 50px;">
+                                        <div class="progress-fill" style="width: 90%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$12,375.98</td>
+                            <td class="finchat-value-positive">+0.65%</td>
+                            <td class="finchat-value-positive">+$787.50</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="company-info">
+                                    <span class="position-indicator positive"></span>
+                                    <div>
+                                        <div>Green Bond Fund</div>
+                                        <div class="position-sector">Fixed Income</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="esg-score">
+                                    <span class="esg-letter a">A</span>
+                                    <div class="progress-bar" style="width: 50px;">
+                                        <div class="progress-fill" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$28,542.30</td>
+                            <td class="finchat-value-positive">+0.25%</td>
+                            <td class="finchat-value-positive">+$532.18</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="company-info">
+                                    <span class="position-indicator negative"></span>
+                                    <div>
+                                        <div>Water Technology Fund</div>
+                                        <div class="position-sector">Utilities</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="esg-score">
+                                    <span class="esg-letter b">B</span>
+                                    <div class="progress-bar" style="width: 50px;">
+                                        <div class="progress-fill" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$15,987.45</td>
+                            <td class="finchat-value-negative">-0.42%</td>
+                            <td class="finchat-value-negative">-$68.23</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="company-info">
+                                    <span class="position-indicator positive"></span>
+                                    <div>
+                                        <div>EV Manufacturers Index</div>
+                                        <div class="position-sector">Automotive</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="esg-score">
+                                    <span class="esg-letter b">B</span>
+                                    <div class="progress-bar" style="width: 50px;">
+                                        <div class="progress-fill" style="width: 70%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$9,342.87</td>
+                            <td class="finchat-value-positive">+1.38%</td>
+                            <td class="finchat-value-positive">+$127.34</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <!-- Sustainability News -->
+        <div class="finchat-card">
+            <div class="finchat-card-header">
+                <h3 class="finchat-card-title">
+                    <i class="fas fa-newspaper"></i> Sustainability News
+                </h3>
+                <button class="finchat-button-icon" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="finchat-card-body" style="padding: 0;">
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div>
+                        <div>EU adopts more stringent Scope 3 emissions reporting requirements for CSRD</div>
+                        <div class="news-meta">
+                            <span class="news-source">Regulatory</span>
+                            <span class="news-time">2h ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div>
+                        <div>Water scarcity risks grow for semiconductor industry, investors warn</div>
+                        <div class="news-meta">
+                            <span class="news-source">Industry</span>
+                            <span class="news-time">4h ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <div>ESG-focused funds see record inflows as climate concerns mount</div>
+                        <div class="news-meta">
+                            <span class="news-source">Finance</span>
+                            <span class="news-time">6h ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-solar-panel"></i>
+                    </div>
+                    <div>
+                        <div>Renewable energy capacity additions outpace fossil fuels for third consecutive year</div>
+                        <div class="news-meta">
+                            <span class="news-source">Energy</span>
+                            <span class="news-time">12h ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div>
+                        <div>Green building certifications become standard in commercial real estate transactions</div>
+                        <div class="news-meta">
+                            <span class="news-source">Real Estate</span>
+                            <span class="news-time">1d ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Regulatory Calendar -->
+        <div class="finchat-card">
+            <div class="finchat-card-header">
+                <h3 class="finchat-card-title">
+                    <i class="fas fa-calendar-alt"></i> Regulatory Timeline
+                </h3>
+            </div>
+            <div class="finchat-card-body">
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <div>CSRD first reporting deadline</div>
+                        <div class="news-meta">
+                            <span class="news-source">EU</span>
+                            <span class="news-time">January 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <div>SEC Climate disclosure rules effective</div>
+                        <div class="news-meta">
+                            <span class="news-source">US</span>
+                            <span class="news-time">Q2 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="company-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <div>ISSB Standards implementation deadline</div>
+                        <div class="news-meta">
+                            <span class="news-source">Global</span>
+                            <span class="news-time">January 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+    
+    <!-- Insights Panel -->
+    <div class="finchat-insights">
+        
+<div class="finchat-insights-header">
+    <h3>Sustainability Insights</h3>
+</div>
+<div class="finchat-insights-content">
+    <div class="finchat-insight-item">
+        <div class="finchat-insight-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="finchat-insight-content">
+            <h4>Emissions Trend Analysis</h4>
+            <p>Your emissions reduction is outpacing industry benchmarks by 6.2%. Key contributors: Renewable energy adoption and facility upgrades.</p>
+        </div>
+    </div>
+    <div class="finchat-insight-item">
+        <div class="finchat-insight-icon">
+            <i class="fas fa-balance-scale"></i>
+        </div>
+        <div class="finchat-insight-content">
+            <h4>Regulatory Readiness</h4>
+            <p>CSRD preparation is at 75% completion, with data collection systems fully implemented. Focus areas: scope 3 emissions and biodiversity impacts.</p>
+        </div>
+    </div>
+    <div class="finchat-insight-item">
+        <div class="finchat-insight-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="finchat-insight-content">
+            <h4>Water Risk Alert</h4>
+            <p>Three manufacturing facilities are in high water stress regions. Consider implementing enhanced water recycling systems.</p>
+        </div>
+    </div>
+    <div class="finchat-insight-item">
+        <div class="finchat-insight-icon">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="finchat-insight-content">
+            <h4>Investment Opportunity</h4>
+            <p>Companies with strong biodiversity strategies are showing 12% better stock performance. Consider expanding portfolio in this area.</p>
+        </div>
+    </div>
+</div>
+
+        
+        <!-- Chat Interface -->
+        <div class="finchat-chat">
+            <div class="finchat-chat-header">
+                <div>Sustainability Co-Pilot</div>
+                <button class="finchat-button-icon" title="Close Chat">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="finchat-chat-messages" id="chatMessages"></div>
+            
+            <div class="finchat-suggested-prompts">
+                <div class="finchat-suggested-prompt">Analyze my ESG metrics</div>
+                <div class="finchat-suggested-prompt">CSRD requirements overview</div>
+                <div class="finchat-suggested-prompt">Generate climate narrative</div>
+            </div>
+            
+            <div class="finchat-chat-input">
+                <input type="text" class="finchat-input" id="chatInput" placeholder="Ask me anything about sustainability...">
+                <button class="finchat-button-primary" id="sendMessageBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar
+            const toggleSidebarBtn = document.getElementById('toggleSidebar');
+            toggleSidebarBtn.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-collapsed');
+                
+                // Update button icon
+                const icon = toggleSidebarBtn.querySelector('i');
+                if (document.body.classList.contains('sidebar-collapsed')) {
+                    icon.classList.remove('fa-chevron-left');
+                    icon.classList.add('fa-chevron-right');
+                } else {
+                    icon.classList.remove('fa-chevron-right');
+                    icon.classList.add('fa-chevron-left');
+                }
+            });
+            
+            // Toggle insights panel
+            const toggleInsightsBtn = document.getElementById('toggleInsights');
+            const closeInsightsBtn = document.getElementById('closeInsights');
+            
+            toggleInsightsBtn.addEventListener('click', function() {
+                document.body.classList.toggle('insights-open');
+                toggleInsightsBtn.classList.toggle('active');
+            });
+            
+            if (closeInsightsBtn) {
+                closeInsightsBtn.addEventListener('click', function() {
+                    document.body.classList.remove('insights-open');
+                    toggleInsightsBtn.classList.remove('active');
+                });
+            }
+            
+            // Mobile sidebar toggle
+            const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-open');
+                });
+            }
+        });
+    </script>
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configure emissions chart
+        const emissionsCtx = document.getElementById('emissionsChart').getContext('2d');
+        
+        // Chart.js configuration with dark theme
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.borderColor = '#333333';
+        
+        const emissionsChart = new Chart(emissionsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                datasets: [{
+                    label: 'Scope 1 & 2 Emissions (tCO2e)',
+                    data: [58, 55, 52, 49, 47, 45, 42, 38, 34],
+                    borderColor: '#3dd598',
+                    backgroundColor: 'rgba(61, 213, 152, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#3dd598',
+                    pointBorderColor: '#121212',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1d1d1d',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#333333',
+                        borderWidth: 1,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y} tCO2e`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(51, 51, 51, 0.5)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart period toggles
+        const chartPeriods = document.querySelectorAll('.chart-period');
+        chartPeriods.forEach(period => {
+            period.addEventListener('click', function() {
+                chartPeriods.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update chart data based on selected period
+                // This would fetch new data in a real implementation
+                const periodText = this.textContent;
+                let newData;
+                
+                switch(periodText) {
+                    case '1M':
+                        newData = [42, 40, 38, 34];
+                        break;
+                    case '3M':
+                        newData = [47, 45, 42, 38, 34];
+                        break;
+                    case '6M':
+                        newData = [52, 49, 47, 45, 42, 38, 34];
+                        break;
+                    case '1Y':
+                        newData = [62, 60, 58, 55, 52, 49, 47, 45, 42, 38, 34];
+                        break;
+                    case 'ALL':
+                        newData = [85, 78, 72, 68, 65, 62, 60, 58, 55, 52, 49, 47, 45, 42, 38, 34];
+                        break;
+                }
+                
+                // Update chart data
+                emissionsChart.data.datasets[0].data = newData;
+                emissionsChart.update();
+            });
+        });
+        
+        // AI Chat functionality
+        const chatInput = document.getElementById('chatInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const suggestedPrompts = document.querySelectorAll('.finchat-suggested-prompt');
+        
+        sendMessageBtn.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        suggestedPrompts.forEach(prompt => {
+            prompt.addEventListener('click', function() {
+                chatInput.value = this.textContent;
+                sendMessage();
+            });
+        });
+        
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message
+            addUserMessage(message);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Simulate AI response (in a real app, this would be an API call)
+            setTimeout(() => {
+                let aiResponse = '';
+                
+                if (message.toLowerCase().includes('esg metrics')) {
+                    aiResponse = 'Your ESG metrics are showing strong progress overall. Emissions have decreased 15.3% year-over-year, outpacing your industry benchmark of 9%. Water intensity has improved by 12.2%, and renewable energy usage is up 8%. The main area for improvement is in your supply chain, where Scope 3 emissions reporting is only at 65% coverage.';
+                } else if (message.toLowerCase().includes('csrd')) {
+                    aiResponse = 'CSRD (Corporate Sustainability Reporting Directive) requires detailed sustainability reporting starting January 2025. Key requirements include:<ul><li>Double materiality assessment</li><li>Detailed emissions reporting (Scope 1, 2, and 3)</li><li>Biodiversity impacts</li><li>Water and circular economy metrics</li><li>Social and governance indicators</li></ul>Your current readiness is at 75%, with data systems implemented but gaps in value chain reporting.';
+                } else if (message.toLowerCase().includes('climate')) {
+                    aiResponse = 'Based on your emissions data, I can generate a climate narrative focusing on your 15.3% reduction in carbon intensity. This narrative can highlight your renewable energy transition, facility efficiency improvements, and progress toward your 2030 net-zero commitment. Would you like me to prepare this for your sustainability report or investor communications?';
+                } else {
+                    aiResponse = 'I can help you analyze your sustainability metrics, prepare for reporting requirements, or generate narratives for stakeholders. What specific sustainability topic would you like insights on?';
+                }
+                
+                addAiMessage(aiResponse);
+            }, 1000);
+        }
+        
+        function addUserMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'finchat-chat-message finchat-chat-message-user';
+            messageElement.innerHTML = `
+                <div class="finchat-chat-bubble">
+                    ${message}
+                </div>
+            `;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function addAiMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'finchat-chat-message finchat-chat-message-ai';
+            messageElement.innerHTML = `
+                <div class="finchat-chat-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="finchat-chat-bubble">
+                    ${message}
+                </div>
+            `;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendSense™ | VC/PE Dashboard</title>
+    <!-- Theme Preference Debug Info -->
+    <meta name="backend-theme" content="light">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Recharts (for React-based charts) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    
+    <!-- ApexCharts (for non-React charts) -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <style>
+        :root {
+            --primary-color: #0ea5e9;
+            --secondary-color: #10b981;
+            --accent-color: #8b5cf6;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --success-color: #10b981;
+            
+            --background-light: #f9fafb;
+            --card-bg-light: #ffffff;
+            --text-light: #111827;
+            --text-secondary-light: #6b7280;
+            
+            --background-dark: #111827;
+            --card-bg-dark: #1f2937;
+            --text-dark: #f9fafb;
+            --text-secondary-dark: #9ca3af;
+            
+            --border-radius: 0.5rem;
+            --border-color-light: #e5e7eb;
+            --border-color-dark: #374151;
+            
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.3s ease;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            padding-top: 60px;
+            min-height: 100vh;
+        }
+        
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+        
+        .dark-mode .card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-dark);
+        }
+        
+        .dark-mode .card-header {
+            background-color: rgba(31, 41, 55, 0.5);
+            border-color: var(--border-color-dark);
+        }
+        
+        .dark-mode .text-muted {
+            color: var(--text-secondary-dark) !important;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: var(--card-bg-light);
+            border-right: 1px solid var(--border-color-light);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .dark-mode .sidebar {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        
+        .sidebar-brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        
+        .dark-mode .sidebar-brand {
+            border-color: var(--border-color-dark);
+        }
+        
+        .sidebar-brand i {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .sidebar-heading {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary-light);
+        }
+        
+        .dark-mode .sidebar-heading {
+            color: var(--text-secondary-dark);
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .dark-mode .sidebar-item {
+            color: var(--text-dark);
+        }
+        
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background-color: rgba(14, 165, 233, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        /* Toggle Sidebar */
+        .sidebar-collapsed .sidebar {
+            margin-left: -250px;
+        }
+        
+        .sidebar-collapsed .main-content {
+            margin-left: 0;
+        }
+        
+        /* Navbar */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px;
+            height: 60px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .top-navbar {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        
+        .sidebar-collapsed .top-navbar {
+            left: 0;
+        }
+        
+        .navbar-toggler {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-light);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-right: 1rem;
+        }
+        
+        .dark-mode .navbar-toggler {
+            color: var(--text-dark);
+        }
+        
+        .navbar-toggler:hover {
+            background-color: rgba(14, 165, 233, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 1.5rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border-color-light);
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: all 0.2s ease;
+        }
+        
+        .dark-mode .search-input {
+            background-color: var(--background-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-dark);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary-light);
+            pointer-events: none;
+        }
+        
+        .dark-mode .search-icon {
+            color: var(--text-secondary-dark);
+        }
+        
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        
+        .navbar-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-light);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-left: 0.5rem;
+            position: relative;
+        }
+        
+        .dark-mode .navbar-action {
+            color: var(--text-dark);
+        }
+        
+        .navbar-action:hover {
+            background-color: rgba(14, 165, 233, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 50%;
+            background-color: var(--danger-color);
+            border: 2px solid var(--card-bg-light);
+        }
+        
+        .dark-mode .notification-badge {
+            border-color: var(--card-bg-dark);
+        }
+        
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 0.5rem;
+        }
+        
+        /* Cards */
+        .card {
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color-light);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            background-color: var(--card-bg-light);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-header {
+            padding: 1rem 1.25rem;
+            background-color: rgba(249, 250, 251, 0.5);
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        
+        .card-body {
+            padding: 1.25rem;
+            position: relative;
+        }
+        
+        /* Metrics Cards */
+        .metrics-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.75rem;
+        }
+        
+        .metric-card {
+            background-color: var(--card-bg-light);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            margin: 0.75rem;
+            flex: 1 0 calc(25% - 1.5rem);
+            min-width: 240px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .metric-card {
+            background-color: var(--card-bg-dark);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .metric-card-icon {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            opacity: 0.2;
+        }
+        
+        .metric-card.revenue .metric-card-icon {
+            color: var(--success-color);
+        }
+        
+        .metric-card.growth .metric-card-icon {
+            color: var(--info-color);
+        }
+        
+        .metric-card.valuation .metric-card-icon {
+            color: var(--accent-color);
+        }
+        
+        .metric-card.runway .metric-card-icon {
+            color: var(--warning-color);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-title {
+            font-size: 1rem;
+            color: var(--text-secondary-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .dark-mode .metric-title {
+            color: var(--text-secondary-dark);
+        }
+        
+        /* Trend indicators */
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        
+        .trend-up {
+            color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .trend-down {
+            color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .trend-neutral {
+            color: var(--warning-color);
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        
+        .trend-indicator i {
+            margin-right: 0.25rem;
+        }
+        
+        /* Company Card */
+        .company-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color-light);
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .dark-mode .company-card {
+            border-color: var(--border-color-dark);
+        }
+        
+        .company-card:hover {
+            background-color: rgba(14, 165, 233, 0.05);
+            border-color: var(--primary-color);
+        }
+        
+        .company-logo {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin-right: 1rem;
+            background-color: rgba(14, 165, 233, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .company-info {
+            flex-grow: 1;
+        }
+        
+        .company-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .company-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary-light);
+        }
+        
+        .dark-mode .company-meta {
+            color: var(--text-secondary-dark);
+        }
+        
+        .company-meta-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+        
+        .company-meta-item i {
+            margin-right: 0.25rem;
+            font-size: 0.75rem;
+        }
+        
+        .company-metrics {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        
+        .company-metric {
+            text-align: center;
+            margin-left: 1.5rem;
+        }
+        
+        .company-metric-value {
+            font-weight: 600;
+        }
+        
+        .company-metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary-light);
+        }
+        
+        .dark-mode .company-metric-label {
+            color: var(--text-secondary-dark);
+        }
+        
+        /* Market Map */
+        .market-map-container {
+            height: 400px;
+            position: relative;
+        }
+        
+        /* Deal Flow */
+        .deal-flow-container {
+            height: 300px;
+        }
+        
+        /* Insights Card */
+        .insights-card {
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-bg-light);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow);
+        }
+        
+        .dark-mode .insights-card {
+            background-color: var(--card-bg-dark);
+        }
+        
+        .insights-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .dark-mode .insights-title {
+            color: var(--text-dark);
+        }
+        
+        .confidence-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: rgba(14, 165, 233, 0.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* KPI Metrics */
+        .kpi-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        
+        .kpi-metric {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(14, 165, 233, 0.05);
+            text-align: center;
+        }
+        
+        .kpi-metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .kpi-metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary-light);
+        }
+        
+        .dark-mode .kpi-metric-label {
+            color: var(--text-secondary-dark);
+        }
+        
+        /* Assessment Scores Styling */
+        .assessment-scores {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .score-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress {
+            height: 1.5rem;
+            background-color: rgba(14, 165, 233, 0.05);
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(14, 165, 233);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: width 0.6s ease;
+        }
+        
+        .dark-mode .progress {
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+        
+        .dark-mode .progress-bar {
+            background-color: rgb(34, 185, 253);
+        }
+        
+        /* VC Co-Pilot */
+        .co-pilot-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 400px;
+            max-height: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: var(--card-bg-light);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        
+        .dark-mode .co-pilot-container {
+            background-color: var(--card-bg-dark);
+        }
+        
+        .co-pilot-container.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .co-pilot-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        
+        .dark-mode .co-pilot-header {
+            border-color: var(--border-color-dark);
+        }
+        
+        .co-pilot-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .co-pilot-title i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .co-pilot-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .co-pilot-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-secondary-light);
+            padding: 0.25rem;
+            margin-left: 0.25rem;
+        }
+        
+        .dark-mode .co-pilot-action {
+            color: var(--text-secondary-dark);
+        }
+        
+        .co-pilot-action:hover {
+            color: var(--primary-color);
+        }
+        
+        .co-pilot-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .co-pilot-message {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .co-pilot-message-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .co-pilot-message-avatar.user {
+            background-color: var(--accent-color);
+        }
+        
+        .co-pilot-message-content {
+            background-color: rgba(14, 165, 233, 0.1);
+            border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
+            padding: 0.75rem 1rem;
+            max-width: 75%;
+        }
+        
+        .co-pilot-message.user .co-pilot-message-content {
+            background-color: rgba(139, 92, 246, 0.1);
+            border-radius: var(--border-radius) 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .co-pilot-input {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color-light);
+        }
+        
+        .dark-mode .co-pilot-input {
+            border-color: var(--border-color-dark);
+        }
+        
+        .co-pilot-input-field {
+            flex-grow: 1;
+            border: none;
+            background: none;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            resize: none;
+            color: var(--text-light);
+        }
+        
+        .dark-mode .co-pilot-input-field {
+            color: var(--text-dark);
+        }
+        
+        .co-pilot-input-field:focus {
+            outline: none;
+            background-color: rgba(14, 165, 233, 0.05);
+        }
+        
+        .co-pilot-submit {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 0.25rem;
+            color: white;
+            padding: 0.5rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .co-pilot-submit:hover {
+            background-color: rgba(14, 165, 233, 0.8);
+        }
+        
+        .co-pilot-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.5);
+            cursor: pointer;
+            z-index: 999;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .co-pilot-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .co-pilot-toggle i {
+            font-size: 1.5rem;
+        }
+        
+        /* VC Insights Panel */
+        .vc-insights-container {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 300px;
+            height: calc(100vh - 60px);
+            background-color: var(--card-bg-light);
+            border-left: 1px solid var(--border-color-light);
+            z-index: 900;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            transform: translateX(100%);
+        }
+        
+        .dark-mode .vc-insights-container {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        
+        .vc-insights-container.active {
+            transform: translateX(0);
+        }
+        
+        .vc-insights-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color-light);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dark-mode .vc-insights-header {
+            border-color: var(--border-color-dark);
+        }
+        
+        .vc-insights-content {
+            padding: 1rem;
+        }
+        
+        .vc-insight-card {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(14, 165, 233, 0.05);
+            margin-bottom: 1rem;
+        }
+        
+        .vc-insight-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vc-insight-title i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .vc-insight-content {
+            font-size: 0.875rem;
+        }
+        
+        .vc-insight-actions {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .vc-insight-action {
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .vc-insight-action:hover {
+            text-decoration: underline;
+        }
+        
+        /* Utility classes */
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-content-between {
+            justify-content: space-between;
+        }
+        
+        .align-items-center {
+            align-items: center;
+        }
+        
+        .responsive-table-container {
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            
+            .top-navbar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .metric-card {
+                flex: 1 0 calc(50% - 1.5rem);
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-chart-line"></i>
+            <span>TrendSense™</span>
+        </div>
+        
+        <div class="sidebar-nav">
+            <div class="sidebar-heading">Platform</div>
+            <a href="/trendsense" class="sidebar-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/trendsense/vc" class="sidebar-item active">
+                <i class="fas fa-chart-pie"></i>
+                <span>VC/PE Dashboard</span>
+            </a>
+            <a href="/trendsense/performance" class="sidebar-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Portfolio Performance</span>
+            </a>
+            <a href="/trendsense/market-map" class="sidebar-item">
+                <i class="fas fa-map"></i>
+                <span>Market Map</span>
+            </a>
+            
+            <div class="sidebar-heading">Intelligence</div>
+            <a href="/trendsense/federated-patterns" class="sidebar-item">
+                <i class="fas fa-project-diagram"></i>
+                <span>Federated Patterns</span>
+            </a>
+            <a href="/vc-lens" class="sidebar-item">
+                <i class="fas fa-search"></i>
+                <span>VC-Lens™</span>
+            </a>
+            <a href="/vc-lens/startup-assessment" class="sidebar-item">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Startup Assessment</span>
+            </a>
+            <a href="/vc-lens/portfolio-analysis" class="sidebar-item">
+                <i class="fas fa-briefcase"></i>
+                <span>Portfolio Analysis</span>
+            </a>
+            <a href="/trendsense/trends" class="sidebar-item">
+                <i class="fas fa-lightbulb"></i>
+                <span>Trend Detection</span>
+            </a>
+            
+            <div class="sidebar-heading">Settings</div>
+            <a href="/settings" class="sidebar-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Navbar -->
+    <div class="top-navbar">
+        <button class="navbar-toggler" id="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search for companies, sectors, or insights...">
+        </div>
+        
+        <div class="navbar-actions">
+            <button class="navbar-action" id="vc-insights-toggle">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button class="navbar-action">
+                <i class="fas fa-bell"></i>
+                <div class="notification-badge"></div>
+            </button>
+            <button class="navbar-action" id="theme-toggle" title="Toggle Light/Dark Mode">
+                
+                <i class="fas fa-moon"></i>
+                
+                <span class="visually-hidden">Toggle Light/Dark Mode</span>
+            </button>
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User Avatar" class="user-avatar">
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>VC/PE Dashboard</h1>
+            <div>
+                <a href="/vc-lens/startup-assessment" class="btn btn-outline-primary">
+                    <i class="fas fa-search me-2"></i>Startup Assessment
+                </a>
+            </div>
+        </div>
+        
+        <!-- Metrics Overview -->
+        <div class="metrics-row">
+            <div class="metric-card revenue">
+                <i class="fas fa-dollar-sign metric-card-icon"></i>
+                <div class="metric-title">Total Portfolio Value</div>
+                <div class="metric-value">$0.0M</div>
+                <div class="trend-indicator trend-neutral">
+                    
+                    <i class="fas fa-minus"></i>
+                    
+                    +0.0%
+                </div>
+            </div>
+            
+            <div class="metric-card growth">
+                <i class="fas fa-chart-line metric-card-icon"></i>
+                <div class="metric-title">Avg Revenue Growth</div>
+                <div class="metric-value">0.0%</div>
+                <div class="trend-indicator trend-neutral">
+                    
+                    <i class="fas fa-minus"></i>
+                    
+                    +0.0%
+                </div>
+            </div>
+            
+            <div class="metric-card valuation">
+                <i class="fas fa-chart-pie metric-card-icon"></i>
+                <div class="metric-title">Avg Multiple</div>
+                <div class="metric-value">0.0x</div>
+                <div class="trend-indicator trend-neutral">
+                    
+                    <i class="fas fa-minus"></i>
+                    
+                    +0.0%
+                </div>
+            </div>
+            
+            <div class="metric-card runway">
+                <i class="fas fa-hourglass-half metric-card-icon"></i>
+                <div class="metric-title">Avg Runway</div>
+                <div class="metric-value">0.0 mo</div>
+                <div class="trend-indicator trend-neutral">
+                    
+                    <i class="fas fa-minus"></i>
+                    
+                    +0.0 mo
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assessment Scores -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Portfolio Assessment Scores</h5>
+                <button class="btn btn-sm btn-outline-primary">Details</button>
+            </div>
+            <div class="card-body">
+                <div class="assessment-scores">
+                    <!-- Team Score -->
+                    <div class="score-item">
+                        <div class="score-label">Team Quality</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: 0%;" 
+                                 aria-valuenow="0" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                
+                                    0
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tech Score -->
+                    <div class="score-item">
+                        <div class="score-label">Technology</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: 0%;" 
+                                 aria-valuenow="0" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                
+                                    0
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product-Market Fit Score -->
+                    <div class="score-item">
+                        <div class="score-label">Product-Market Fit</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: 0%;" 
+                                 aria-valuenow="0" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                
+                                    0
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Execution Score -->
+                    <div class="score-item">
+                        <div class="score-label">Execution</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: 0%;" 
+                                 aria-valuenow="0" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                
+                                    0
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Innovation Score -->
+                    <div class="score-item">
+                        <div class="score-label">Innovation</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: 0%;" 
+                                 aria-valuenow="0" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                
+                                    0
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Market Map -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Portfolio Companies Market Map</h5>
+                        <button class="btn btn-sm btn-outline-primary">Full View</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="marketMap" class="market-map-container"></div>
+                    </div>
+                </div>
+                
+                <!-- Deal Flow -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Deal Flow & Pipeline</h5>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline-primary active">Last 12 Months</button>
+                            <button class="btn btn-sm btn-outline-primary">YTD</button>
+                            <button class="btn btn-sm btn-outline-primary">Quarterly</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="dealFlow" class="deal-flow-container"></div>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Companies -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Portfolio Companies</h5>
+                        <button class="btn btn-sm btn-primary">Add Company</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="responsive-table-container">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Sector</th>
+                                        <th>Stage</th>
+                                        <th>Invested</th>
+                                        <th>Valuation</th>
+                                        <th>Growth</th>
+                                        <th>Runway</th>
+                                        <th>Health</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Portfolio Insights -->
+                <div class="insights-card mb-4">
+                    <div class="insights-title">Portfolio Insights</div>
+                    <div class="mb-3">
+                        <span class="confidence-badge">
+                            
+                                0.0%
+                             
+                            Confidence
+                        </span>
+                    </div>
+                    <p class="mb-3">
+                        
+                            No portfolio data available for analysis.
+                        
+                    </p>
+                    <div class="kpi-metrics">
+                        
+                            
+                        
+                    </div>
+                </div>
+                
+                <!-- Investment Opportunities -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Investment Opportunities</h5>
+                        <a href="#" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+                
+                <!-- Sector Performance -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Sector Performance</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="sectorPerformance" style="height: 300px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Recent Activities</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- VC Insights Panel -->
+    <div class="vc-insights-container" id="vc-insights-panel">
+        <div class="vc-insights-header">
+            <div>VC Insights</div>
+            <button class="navbar-action" id="vc-insights-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="vc-insights-content">
+            <div class="vc-insight-card">
+                <div class="vc-insight-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Founder Archetype Analysis
+                </div>
+                <div class="vc-insight-content">
+                    Your portfolio shows strong performance with technical founders who have previous startup experience. Consider increasing allocation to this founder profile.
+                </div>
+                <div class="vc-insight-actions">
+                    <button class="vc-insight-action">View Details</button>
+                </div>
+            </div>
+            
+            <div class="vc-insight-card">
+                <div class="vc-insight-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Market Timing Alert
+                </div>
+                <div class="vc-insight-content">
+                    AI infrastructure valuations are showing signs of correction. Consider postponing new investments in this category for 1-2 quarters.
+                </div>
+                <div class="vc-insight-actions">
+                    <button class="vc-insight-action">View Analysis</button>
+                </div>
+            </div>
+            
+            <div class="vc-insight-card">
+                <div class="vc-insight-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Competitive Advantage
+                </div>
+                <div class="vc-insight-content">
+                    Companies with strong network effects are outperforming by 2.3x in your portfolio. This pattern is consistent across stages and sectors.
+                </div>
+                <div class="vc-insight-actions">
+                    <button class="vc-insight-action">Explore Data</button>
+                </div>
+            </div>
+            
+            <div class="vc-insight-card">
+                <div class="vc-insight-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Runway Risk Alert
+                </div>
+                <div class="vc-insight-content">
+                    3 companies in your portfolio have less than 6 months of runway. Schedule follow-on discussions with management teams.
+                </div>
+                <div class="vc-insight-actions">
+                    <button class="vc-insight-action">View Companies</button>
+                </div>
+            </div>
+            
+            <div class="vc-insight-card">
+                <div class="vc-insight-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Exit Opportunity
+                </div>
+                <div class="vc-insight-content">
+                    Strategic buyers are showing increased interest in fintech infrastructure. Consider positioning 2 of your portfolio companies for potential exits.
+                </div>
+                <div class="vc-insight-actions">
+                    <button class="vc-insight-action">Analyze Potential</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- VC Co-Pilot -->
+    <button class="co-pilot-toggle" id="co-pilot-toggle">
+        <i class="fas fa-robot"></i>
+    </button>
+    
+    <div class="co-pilot-container" id="co-pilot-container">
+        <div class="co-pilot-header">
+            <div class="co-pilot-title">
+                <i class="fas fa-robot"></i>
+                VC Co-Pilot
+            </div>
+            <div class="co-pilot-actions">
+                <button class="co-pilot-action" id="co-pilot-minimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="co-pilot-action" id="co-pilot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="co-pilot-messages" id="co-pilot-messages">
+            <div class="co-pilot-message">
+                <div class="co-pilot-message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="co-pilot-message-content">
+                    Hello! I'm your VC Co-Pilot. I can help analyze portfolio companies, identify investment trends, or answer questions about your fund's performance. What would you like to know?
+                </div>
+            </div>
+            
+            <!-- User messages will be added here dynamically -->
+        </div>
+        
+        <div class="co-pilot-input">
+            <textarea class="co-pilot-input-field" id="co-pilot-input-field" placeholder="Ask me anything about your portfolio..." rows="1"></textarea>
+            <button class="co-pilot-submit" id="co-pilot-submit">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- ApexCharts JS -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <script>
+        // Initialize with default values in case of error
+        let marketMapData = {"xAxis":"Growth Potential", "yAxis":"Market Share", "companies":[]};
+        let dealFlowData = {"categories":[], "series":[]};
+        let sectorPerformanceData = [];
+        
+        // Function to safely parse JSON data
+        function safeParseJson(jsonString, defaultValue) {
+            if (!jsonString) return defaultValue;
+            
+            try {
+                // First check if it's already an object (server-side rendering may provide objects)
+                if (typeof jsonString === 'object') return jsonString;
+                
+                // Otherwise parse the string
+                return JSON.parse(jsonString);
+            } catch (e) {
+                console.error("Error parsing JSON data:", e);
+                return defaultValue;
+            }
+        }
+        
+        // Safe initialization of data
+        try {
+            console.log("Initializing market map data");
+            // Use JSON.parse directly for safety
+            try {
+                const jsonString = '{"nodes": [], "links": []}';
+                marketMapData = JSON.parse(jsonString);
+                console.log("Market map data loaded successfully");
+            } catch (parseError) {
+                console.error("Error parsing market map JSON:", parseError);
+                // Keep the default value
+            }
+        } catch (e) {
+            console.error("Error initializing market map data:", e);
+        }
+        
+        try {
+            // Use JSON.parse directly for safety
+            try {
+                const jsonString = '{}';
+                dealFlowData = JSON.parse(jsonString);
+                console.log("Deal flow data loaded successfully");
+            } catch (parseError) {
+                console.error("Error parsing deal flow JSON:", parseError);
+                // Keep the default value
+            }
+        } catch (e) {
+            console.error("Error initializing deal flow data:", e);
+        }
+        
+        try {
+            // Use JSON.parse directly for safety
+            try {
+                const jsonString = '';
+                sectorPerformanceData = JSON.parse(jsonString);
+                console.log("Sector performance data loaded successfully");
+            } catch (parseError) {
+                console.error("Error parsing sector performance JSON:", parseError);
+                // Keep the default value
+            }
+        } catch (e) {
+            console.error("Error initializing sector performance data:", e);
+        }
+        
+        // Initialize market map
+        function initializeMarketMap() {
+            // Ensure marketMapData has the expected structure
+            const companies = Array.isArray(marketMapData.companies) ? marketMapData.companies : [];
+            
+            const options = {
+                series: [{
+                    name: 'Companies',
+                    data: companies.map(company => ({
+                        x: company.x,
+                        y: company.y,
+                        z: company.size,
+                        name: company.name,
+                        stage: company.stage,
+                        growth: company.growth
+                    }))
+                }],
+                chart: {
+                    height: 400,
+                    type: 'bubble',
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true,
+                            reset: true
+                        }
+                    }
+                },
+                xaxis: {
+                    title: {
+                        text: marketMapData.xAxis
+                    },
+                    tickAmount: 10
+                },
+                yaxis: {
+                    title: {
+                        text: marketMapData.yAxis
+                    },
+                    tickAmount: 7
+                },
+                colors: ['#0ea5e9'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'light',
+                        type: 'vertical',
+                        shadeIntensity: 0.5,
+                        gradientToColors: ['#8b5cf6'],
+                        inverseColors: true,
+                        opacityFrom: 0.8,
+                        opacityTo: 0.7,
+                        stops: [0, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                tooltip: {
+                    theme: 'dark',
+                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                        const company = companies[dataPointIndex];
+                        if (!company) return '<div class="p-2">No data available</div>';
+                        return `
+                            <div class="p-2">
+                                <div class="mb-1 fw-bold">${company.name}</div>
+                                <div class="mb-1"><span class="text-muted">Stage:</span> ${company.stage}</div>
+                                <div class="mb-1"><span class="text-muted">Growth:</span> ${(company.growth * 100).toFixed(1)}%</div>
+                                <div><span class="text-muted">Size:</span> $${(company.size / 1000000).toFixed(1)}M</div>
+                            </div>
+                        `;
+                    }
+                },
+                grid: {
+                    borderColor: '#e5e7eb',
+                    strokeDashArray: 4
+                },
+                markers: {
+                    size: [4, 20],
+                    hover: {
+                        size: 6
+                    }
+                }
+            };
+            
+            const marketMap = new ApexCharts(document.querySelector("#marketMap"), options);
+            marketMap.render();
+        }
+        
+        // Initialize deal flow chart
+        function initializeDealFlow() {
+            const options = {
+                series: dealFlowData.series,
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    stacked: true,
+                    toolbar: {
+                        show: true
+                    },
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        legend: {
+                            position: 'bottom',
+                            offsetX: -10,
+                            offsetY: 0
+                        }
+                    }
+                }],
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 6,
+                        columnWidth: '70%'
+                    }
+                },
+                xaxis: {
+                    type: 'category',
+                    categories: dealFlowData.categories
+                },
+                yaxis: {
+                    title: {
+                        text: '# of Deals'
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    offsetY: 0
+                },
+                fill: {
+                    opacity: 1
+                },
+                colors: ['#0ea5e9', '#10b981', '#8b5cf6', '#f59e0b', '#6b7280']
+            };
+            
+            const dealFlow = new ApexCharts(document.querySelector("#dealFlow"), options);
+            dealFlow.render();
+        }
+        
+        // Initialize sector performance chart
+        function initializeSectorPerformance() {
+            const options = {
+                series: [{
+                    name: 'Performance',
+                    data: sectorPerformanceData.map(item => item.performance)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 6,
+                        horizontal: true,
+                        distributed: true,
+                        barHeight: '70%'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: sectorPerformanceData.map(item => item.sector),
+                    labels: {
+                        formatter: function (val) {
+                            return val + '%';
+                        }
+                    }
+                },
+                colors: ['#0ea5e9', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#3b82f6', '#a855f7'],
+                tooltip: {
+                    theme: 'dark',
+                    y: {
+                        formatter: function (val) {
+                            return val + '%';
+                        }
+                    }
+                }
+            };
+            
+            const sectorPerformance = new ApexCharts(document.querySelector("#sectorPerformance"), options);
+            sectorPerformance.render();
+        }
+        
+        // DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Synchronize client-side theme preference with server-side state
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const savedTheme = localStorage.getItem('theme_preference');
+            
+            // If localStorage has a theme preference that differs from the server-rendered state
+            if (savedTheme === 'dark' && !isDarkMode) {
+                // Apply dark mode
+                document.body.classList.add('dark-mode');
+                document.documentElement.classList.add('dark-mode');
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    const icon = themeToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                    }
+                }
+                // Set cookie to match localStorage
+                document.cookie = `theme_preference=dark; path=/; max-age=31536000; SameSite=Lax`;
+            } else if (savedTheme === 'light' && isDarkMode) {
+                // Apply light mode
+                document.body.classList.remove('dark-mode');
+                document.documentElement.classList.remove('dark-mode');
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    const icon = themeToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                    }
+                }
+                // Set cookie to match localStorage
+                document.cookie = `theme_preference=light; path=/; max-age=31536000; SameSite=Lax`;
+            } else if (!savedTheme) {
+                // If no localStorage theme is set, store the server-rendered state
+                localStorage.setItem('theme_preference', isDarkMode ? 'dark' : 'light');
+            }
+            
+            // Initialize charts
+            initializeMarketMap();
+            initializeDealFlow();
+            initializeSectorPerformance();
+            
+            // Sidebar toggle
+            document.getElementById('sidebar-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-collapsed');
+            });
+            
+            // Theme toggle with localStorage persistence and cookie for server-side rendering
+            document.getElementById('theme-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('dark-mode');
+                
+                // Update icon
+                const icon = this.querySelector('i');
+                let newTheme = '';
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    newTheme = 'dark';
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    newTheme = 'light';
+                }
+                
+                // Store theme preference in localStorage for client-side persistence
+                localStorage.setItem('theme_preference', newTheme);
+                
+                // Set cookie for server-side theme detection
+                document.cookie = `theme_preference=${newTheme}; path=/; max-age=31536000; SameSite=Lax`;
+            });
+            
+            // VC Insights panel toggle
+            document.getElementById('vc-insights-toggle').addEventListener('click', function() {
+                document.getElementById('vc-insights-panel').classList.toggle('active');
+            });
+            
+            // VC Insights panel close
+            document.getElementById('vc-insights-close').addEventListener('click', function() {
+                document.getElementById('vc-insights-panel').classList.remove('active');
+            });
+            
+            // Co-Pilot toggle
+            document.getElementById('co-pilot-toggle').addEventListener('click', function() {
+                document.getElementById('co-pilot-container').classList.add('active');
+                this.style.display = 'none';
+            });
+            
+            // Co-Pilot close
+            document.getElementById('co-pilot-close').addEventListener('click', function() {
+                document.getElementById('co-pilot-container').classList.remove('active');
+                document.getElementById('co-pilot-toggle').style.display = 'flex';
+            });
+            
+            // Co-Pilot minimize
+            document.getElementById('co-pilot-minimize').addEventListener('click', function() {
+                document.getElementById('co-pilot-container').classList.remove('active');
+                document.getElementById('co-pilot-toggle').style.display = 'flex';
+            });
+            
+            // Co-Pilot submit message
+            document.getElementById('co-pilot-submit').addEventListener('click', function() {
+                sendUserMessage();
+            });
+            
+            // Co-Pilot input key press (enter to send)
+            document.getElementById('co-pilot-input-field').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendUserMessage();
+                }
+            });
+            
+            // Send user message to Co-Pilot
+            function sendUserMessage() {
+                const inputField = document.getElementById('co-pilot-input-field');
+                const userMessage = inputField.value.trim();
+                
+                if (userMessage) {
+                    // Add user message to chat
+                    const messagesContainer = document.getElementById('co-pilot-messages');
+                    messagesContainer.innerHTML += `
+                        <div class="co-pilot-message user">
+                            <div class="co-pilot-message-content">
+                                ${userMessage}
+                            </div>
+                            <div class="co-pilot-message-avatar user">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Clear input field
+                    inputField.value = '';
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    // Simulate Co-Pilot response (would be replaced with actual API call)
+                    setTimeout(function() {
+                        // Add thinking indicator
+                        messagesContainer.innerHTML += `
+                            <div class="co-pilot-message" id="thinking-message">
+                                <div class="co-pilot-message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="co-pilot-message-content">
+                                    <em>Thinking...</em>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Scroll to bottom
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        
+                        // Simulate API response time
+                        setTimeout(function() {
+                            // Remove thinking indicator
+                            document.getElementById('thinking-message').remove();
+                            
+                            // Add Co-Pilot response
+                            let response = '';
+                            
+                            // Simple pattern matching for demo
+                            if (userMessage.toLowerCase().includes('runway')) {
+                                // Use safe string concatenation instead of template literals with Jinja expressions
+                                response = "Based on current burn rates, your portfolio companies have an average runway of " + 0 + " months. 3 companies have less than 6 months remaining: Company A (4.2 mo), Company B (5.1 mo), and Company C (5.8 mo). Would you like me to prepare follow-on funding scenarios?";
+                            } else if (userMessage.toLowerCase().includes('portfolio')) {
+                                // Use safe string concatenation instead of template literals with Jinja expressions
+                                response = "Your portfolio currently consists of " + 0 + " companies across " + 0 + " sectors, with a total value of $" + "0.0" + "M. The average revenue growth is " + "0.0%" + ", which outperforms market benchmarks by 23%. Would you like more specific details about a particular company or sector?";
+                            } else if (userMessage.toLowerCase().includes('trend')) {
+                                // Use safe string concatenation instead of template literals with Jinja expressions
+                                response = "I've detected emerging trends in your portfolio data: 1) Companies with product-led growth strategies are showing 2.7x better CAC recovery, 2) B2B SaaS companies are experiencing valuation pressure with multiples contracting 18% YoY, 3) Infrastructure plays are seeing increased strategic interest. Would you like me to analyze any of these trends further?";
+                            } else {
+                                // Use escaped quotes for dynamic content
+                                response = "I understand you're asking about \"" + userMessage + "\". To give you the most helpful answer, could you specify if you're interested in portfolio performance, investment opportunities, market trends, or company-specific insights?";
+                            }
+                            
+                            messagesContainer.innerHTML += `
+                                <div class="co-pilot-message">
+                                    <div class="co-pilot-message-avatar">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="co-pilot-message-content">
+                                        ${response}
+                                    </div>
+                                </div>
+                            `;
+                            
+                            // Scroll to bottom
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        }, 1500);
+                    }, 500);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

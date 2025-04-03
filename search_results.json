@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "enhanced_query": "solar energy systems OR solar panel installation OR solar power benefits OR solar incentives OR sustainable energy solutions OR renewable energy sources OR residential solar OR commercial solar OR solar energy for homes OR solar farm development OR reducing carbon footprint with solar",
+    "execution_time": 3.5346505641937256,
+    "query": "solar",
+    "result_count": 15,
+    "source": "gemini"
+  },
+  "query_analysis": "The query \"solar\" indicates user interest in solar energy, a key component of sustainable energy systems.  It relates to concepts like renewable energy, carbon footprint reduction, energy independence, and climate change mitigation. Relevant entities include solar panel manufacturers, installers, government incentive programs, and research institutions. Frameworks like the UN Sustainable Development Goals (specifically SDG 7: Affordable and Clean Energy) and lifecycle assessments are pertinent. The user likely seeks information on solar energy technologies, applications, benefits, costs, or related services.",
+  "results": [
+    {
+      "category": "Environment",
+      "date": "2025-03-02",
+      "link": "https://www.microsoft.com/sustainability/energy-emissions-reduction",
+      "relevance_score": 92,
+      "snippet": "Exploring Microsoft's journey toward energy emissions reduction excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How Microsoft is Leading in Energy Emissions Reduction"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-02-24",
+      "link": "https://www.unilever.com/sustainability/sustainable-supply-chain",
+      "relevance_score": 90,
+      "snippet": "A detailed analysis of Unilever's sustainable supply chain initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "How Unilever is Leading in Sustainable Supply Chain"
+    },
+    {
+      "category": "Social",
+      "date": "2025-02-23",
+      "link": "https://www.patagonia.com/sustainability/footprint-reporting",
+      "relevance_score": 90,
+      "snippet": "A detailed analysis of Patagonia's footprint reporting initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "Patagonia's Innovative Approach to Footprint Reporting"
+    },
+    {
+      "category": "Governance",
+      "date": "2025-02-18",
+      "link": "https://www.tesla.com/sustainability/power-energy-implementation",
+      "relevance_score": 85,
+      "snippet": "Tesla has implemented a comprehensive approach to power energy implementation, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "How Tesla is Leading in Power Energy Implementation"
+    },
+    {
+      "category": "Social",
+      "date": "2025-02-14",
+      "link": "https://www.ikea.com/sustainability/footprint-economy-practices",
+      "relevance_score": 85,
+      "snippet": "Exploring IKEA's journey toward footprint economy practices excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How IKEA is Leading in Footprint Economy Practices"
+    },
+    {
+      "category": "Sustainability",
+      "date": "2025-02-07",
+      "link": "https://www.schneiderelectric.com/sustainability/solar-conservation",
+      "relevance_score": 83,
+      "snippet": "Exploring Schneider Electric's journey toward solar conservation excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How Schneider Electric is Leading in Solar Conservation"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-02-06",
+      "link": "https://www.\u00f8rsted.com/sustainability/with-responsibility-initiatives",
+      "relevance_score": 82,
+      "snippet": "New research on \u00d8rsted's with responsibility initiatives program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "\u00d8rsted's Innovative Approach to With Responsibility Initiatives"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-02-04",
+      "link": "https://www.neste.com/sustainability/solar-kpis",
+      "relevance_score": 81,
+      "snippet": "New research on Neste's solar KPIs program shows promising results for scaling sustainable solutions. Their data-driven approach provides valuable insights for companies at any stage of their sustainability journey.",
+      "source": "mock",
+      "title": "How Neste is Leading in Solar Kpis"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-01-30",
+      "link": "https://www.seventhgeneration.com/sustainability/climate-risk-assessment",
+      "relevance_score": 76,
+      "snippet": "Exploring Seventh Generation's journey toward climate risk assessment excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "Climate Risk Assessment Breakthrough by Seventh Generation"
+    },
+    {
+      "category": "Social",
+      "date": "2025-01-27",
+      "link": "https://www.interface.com/sustainability/solar-finance",
+      "relevance_score": 77,
+      "snippet": "Exploring Interface's journey toward solar finance excellence, this article highlights key learnings and best practices that can be applied across industries for enhanced sustainability performance.",
+      "source": "mock",
+      "title": "How Interface is Leading in Solar Finance"
+    },
+    {
+      "category": "Environment",
+      "date": "2025-01-27",
+      "link": "https://www.danone.com/sustainability/biodiversity-conservation",
+      "relevance_score": 70,
+      "snippet": "This report examines how Danone transformed their business through biodiversity conservation. The company's leadership demonstrates that sustainability and profitability can work hand-in-hand.",
+      "source": "mock",
+      "title": "The Future of Biodiversity Conservation: Insights from Danone"
+    },
+    {
+      "category": "Sustainability",
+      "date": "2025-01-26",
+      "link": "https://www.google.com/sustainability/with-agriculture",
+      "relevance_score": 70,
+      "snippet": "A detailed analysis of Google's with agriculture initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "With Agriculture Breakthrough by Google"
+    },
+    {
+      "category": "Technology",
+      "date": "2025-01-15",
+      "link": "https://www.microsoft.com/sustainability/solar-emissions-reduction",
+      "relevance_score": 69,
+      "snippet": "Microsoft has implemented a comprehensive approach to solar emissions reduction, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "The Future of Solar Emissions Reduction: Insights from Microsoft"
+    },
+    {
+      "category": "Social",
+      "date": "2025-01-17",
+      "link": "https://www.unilever.com/sustainability/sustainable-supply-chain",
+      "relevance_score": 66,
+      "snippet": "Unilever has implemented a comprehensive approach to sustainable supply chain, achieving a 35% improvement over the industry average. Their strategy combines technological innovation with stakeholder engagement to drive sustainable outcomes.",
+      "source": "mock",
+      "title": "How Unilever is Leading in Sustainable Supply Chain"
+    },
+    {
+      "category": "Technology",
+      "date": "2025-01-09",
+      "link": "https://www.patagonia.com/sustainability/esg-reporting",
+      "relevance_score": 65,
+      "snippet": "A detailed analysis of Patagonia's ESG reporting initiatives reveals significant environmental and financial benefits. Their integrated sustainability framework has become a model for the entire sector.",
+      "source": "mock",
+      "title": "Patagonia's Innovative Approach to Esg Reporting"
+    }
+  ]
+}

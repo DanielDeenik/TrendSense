@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Sustainability Intelligence | SustainaTrend™</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --bg-sidebar: #052e16;
+            --bg-sidebar-hover: rgba(255, 255, 255, 0.1);
+            --bg-body: #f8f9fa;
+            --text-color: #333;
+            --text-muted: #6c757d;
+            --card-bg: #fff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        .light-mode {
+            --bg-sidebar: #042f2e;
+            --bg-sidebar-hover: rgba(255, 255, 255, 0.1);
+            --bg-body: #f8fafc;
+            --text-color: #334155;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        
+        .dark-mode {
+            --bg-sidebar: #0f172a;
+            --bg-sidebar-hover: rgba(255, 255, 255, 0.05);
+            --bg-body: #1e293b;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --card-bg: #0f172a;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--bg-body);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* Left sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-sidebar);
+            width: 280px;
+            transition: all var(--transition-speed) ease;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding-bottom: 60px; /* Space for the theme toggle */
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: var(--primary-light);
+            padding: 0.75rem 1.25rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: var(--bg-sidebar-hover);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 15px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link span,
+        .sidebar.collapsed .sidebar-heading,
+        .sidebar.collapsed .sidebar-logo h4,
+        .sidebar.collapsed .sidebar-logo small {
+            display: none;
+        }
+
+        .sidebar.collapsed .sidebar-logo {
+            padding: 1rem 0;
+        }
+
+        .sidebar.collapsed .nav-link {
+            padding: 0.75rem;
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 0.75rem 1.25rem;
+            margin-top: 1rem;
+            color: var(--primary-light);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        /* Logo and branding area */
+        .sidebar-logo {
+            padding: 1.5rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--bg-sidebar-hover);
+        }
+
+        .sidebar-logo-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo h4 {
+            color: white;
+            margin-bottom: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .sidebar-logo small {
+            color: var(--primary-light);
+            opacity: 0.8;
+            font-size: 0.75rem;
+        }
+
+        /* Hamburger toggle button */
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            padding: 0;
+            height: 32px;
+            width: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: var(--bg-sidebar-hover);
+        }
+
+        /* Main content adjustment to account for sidebar */
+        .main-content {
+            margin-left: 280px;
+            padding-top: 1.5rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+
+        /* Theme toggle at bottom of sidebar */
+        .theme-toggle {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 280px;
+            padding: 1rem;
+            background-color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: width var(--transition-speed) ease;
+            border-top: 1px solid var(--bg-sidebar-hover);
+            color: var(--primary-light);
+        }
+
+        .sidebar.collapsed .theme-toggle {
+            width: 70px;
+            justify-content: center;
+        }
+
+        .theme-toggle span {
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+
+        .sidebar.collapsed .theme-toggle span {
+            display: none;
+        }
+
+        .theme-toggle-button {
+            background: transparent;
+            border: none;
+            color: var(--primary-light);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle-button:hover {
+            background-color: var(--bg-sidebar-hover);
+        }
+
+        /* Badge Styles */
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            margin-left: 10px;
+        }
+
+        /* Custom Section Icon */
+        .section-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            text-align: center;
+            line-height: 24px;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar .nav-link span,
+            .sidebar .sidebar-heading,
+            .sidebar .sidebar-logo h4,
+            .sidebar .sidebar-logo small {
+                display: none;
+            }
+
+            .sidebar .sidebar-logo {
+                padding: 1rem 0;
+            }
+
+            .sidebar .nav-link {
+                padding: 0.75rem;
+                justify-content: center;
+            }
+
+            .sidebar .nav-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .theme-toggle {
+                width: 70px;
+                justify-content: center;
+            }
+
+            .theme-toggle span {
+                display: none;
+            }
+
+            /* For mobile, make sidebar fully collapsible */
+            @media (max-width: 767.98px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                }
+
+                .sidebar.mobile-expanded {
+                    transform: translateX(0);
+                    width: 280px;
+                }
+
+                .sidebar.mobile-expanded .nav-link span,
+                .sidebar.mobile-expanded .sidebar-heading,
+                .sidebar.mobile-expanded .sidebar-logo h4,
+                .sidebar.mobile-expanded .sidebar-logo small {
+                    display: block;
+                }
+
+                .sidebar.mobile-expanded .nav-link {
+                    padding: 0.75rem 1.25rem;
+                    justify-content: flex-start;
+                }
+
+                .sidebar.mobile-expanded .nav-link i {
+                    margin-right: 15px;
+                }
+
+                .sidebar.mobile-expanded .theme-toggle {
+                    width: 280px;
+                    justify-content: space-between;
+                }
+
+                .sidebar.mobile-expanded .theme-toggle span {
+                    display: block;
+                }
+
+                .main-content {
+                    margin-left: 0;
+                }
+
+                /* Mobile toggle button */
+                .mobile-toggle {
+                    position: fixed;
+                    top: 15px;
+                    left: 15px;
+                    z-index: 1000;
+                    background-color: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                }
+            }
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+    </style>
+    <link rel="stylesheet" href="/static/css/common.css">
+    
+</head>
+<body>
+    <!-- Mobile Sidebar Toggle (visible on small screens) -->
+    <button class="mobile-toggle d-md-none">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Main Container -->
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Left Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="sidebar-sticky">
+                    <div class="sidebar-logo">
+                        <div class="sidebar-logo-content">
+                            <h4>SustainaTrend™</h4>
+                            <small>Intelligence Platform</small>
+                        </div>
+                        <button class="sidebar-toggle">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </div>
+
+                    <ul class="nav flex-column mt-3">
+                        <li class="nav-item">
+                            <a class="nav-link " href="/">
+                                <i class="bi bi-house-door-fill"></i> <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/dashboard">
+                                <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/analytics-dashboard">
+                                <i class="bi bi-graph-up-arrow"></i> <span>Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading mt-4">AI Tools</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="/search">
+                                <i class="bi bi-search"></i> <span>AI Search</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/gemini-search">
+                                <i class="bi bi-stars"></i> <span>Gemini Search</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/sustainability-stories">
+                                <i class="bi bi-book"></i> <span>AI Stories</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading mt-4">Sustainability</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="/trend-analysis">
+                                <i class="bi bi-arrow-up-right"></i> <span>Trend Analysis</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/sustainability">
+                                <i class="bi bi-bar-chart-fill"></i> <span>ESG Analysis</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/sentiment-analysis">
+                                <i class="bi bi-emoji-smile"></i> <span>Sentiment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/document-upload">
+                                <i class="bi bi-file-earmark-pdf"></i> <span>Document Analysis</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading mt-4">Business</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="/monetization">
+                                <i class="bi bi-currency-dollar"></i> <span>Monetization</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/ethical-ai">
+                                <i class="bi bi-shield-check"></i> <span>Ethical AI</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/ai-development-tools">
+                                <i class="bi bi-code-slash"></i> <span>Dev Tools</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading mt-4">System</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="/api-status">
+                                <i class="bi bi-hdd-network"></i> <span>API Status</span>
+                                
+                                    
+                                        <span class="status-badge bg-success">Online</span>
+                                    
+                                
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/debug">
+                                <i class="bi bi-bug"></i> <span>Debug Info</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Enhanced Theme Toggle -->
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle-input" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main id="mainContent" class="main-content">
+                <div class="container-fluid px-4 py-3">
+                    
+<!-- Toast notifications container -->
+<div class="toast-container" id="toast-container"></div>
+
+
+    <!-- Page Header Component -->
+<div class="page-header mb-4">
+    <h1>Real Estate Sustainability Intelligence</h1>
+    <p class="text-muted">Unified dashboard for sustainable real estate analytics</p>
+
+    
+    <div class="page-actions mt-3">
+        
+        <button class="btn btn-outline-primary me-2" id="toggle-view">
+            <i class="bi bi-grid"></i> Toggle View
+        </button>
+        
+        
+        
+        <button class="btn btn-outline-primary me-2" id="filter-btn">
+            <i class="bi bi-funnel"></i> Filter
+        </button>
+        
+        
+        
+        <div class="dropdown d-inline-block">
+            <button class="btn btn-outline-primary" id="export-btn">
+                <i class="bi bi-download"></i> Export
+            </button>
+            <div id="export-dropdown" class="export-dropdown">
+                <ul class="export-dropdown-menu">
+                    <li><a href="#" data-format="csv"><i class="bi bi-filetype-csv"></i> CSV</a></li>
+                    <li><a href="#" data-format="excel"><i class="bi bi-filetype-xlsx"></i> Excel</a></li>
+                    <li><a href="#" data-format="pdf"><i class="bi bi-filetype-pdf"></i> PDF Report</a></li>
+                    <li><a href="#" data-format="json"><i class="bi bi-filetype-json"></i> JSON</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+    </div>
+    
+</div>
+
+
+<!-- Breadcrumb navigation -->
+<div class="container">
+    <div class="breadcrumb-navigation">
+        <div class="breadcrumb-item">
+            <a href="/">Home</a>
+        </div>
+        <div class="breadcrumb-item">
+            <a href="/realestate-trends">Real Estate Analytics</a>
+        </div>
+        <div class="breadcrumb-item active">
+            Unified Dashboard
+        </div>
+    </div>
+</div>
+
+<!-- Integrated search -->
+<div class="container">
+    <div class="integrated-search-container position-relative">
+        <i class="bi bi-search integrated-search-icon"></i>
+        <input type="text" class="integrated-search-input" id="integrated-search" 
+               placeholder="Search by property, BREEAM metric, or sustainability trend...">
+    </div>
+</div>
+
+<!-- Real Estate Value Chain Selector -->
+<div class="container">
+    <div class="value-chain-selector">
+        <div class="value-chain-item active" data-chain="all">Entire Value Chain</div>
+        <div class="value-chain-item" data-chain="development">Development</div>
+        <div class="value-chain-item" data-chain="investment">Investment</div>
+        <div class="value-chain-item" data-chain="management">Property Management</div>
+        <div class="value-chain-item" data-chain="renovation">Renovation</div>
+        <div class="value-chain-item" data-chain="sales">Sales & Leasing</div>
+        <div class="value-chain-item" data-chain="financing">Financing</div>
+    </div>
+</div>
+
+<!-- Tab navigation for different views -->
+<div class="container">
+    <ul class="nav tab-navigation" id="dashboard-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" 
+                    type="button" role="tab" aria-controls="overview" aria-selected="true">
+                <i class="bi bi-grid-1x2"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="breeam-tab" data-bs-toggle="tab" data-bs-target="#breeam-metrics" 
+                    type="button" role="tab" aria-controls="breeam-metrics" aria-selected="false">
+                <i class="bi bi-award"></i> BREEAM Metrics
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="energy-tab" data-bs-toggle="tab" data-bs-target="#energy-metrics" 
+                    type="button" role="tab" aria-controls="energy-metrics" aria-selected="false">
+                <i class="bi bi-lightning"></i> Energy Efficiency
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="carbon-tab" data-bs-toggle="tab" data-bs-target="#carbon-metrics" 
+                    type="button" role="tab" aria-controls="carbon-metrics" aria-selected="false">
+                <i class="bi bi-cloud"></i> Carbon Footprint
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="financial-tab" data-bs-toggle="tab" data-bs-target="#financial-metrics" 
+                    type="button" role="tab" aria-controls="financial-metrics" aria-selected="false">
+                <i class="bi bi-cash-coin"></i> Financial Impact
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai-insights" 
+                    type="button" role="tab" aria-controls="ai-insights" aria-selected="false">
+                <i class="bi bi-robot"></i> AI Insights
+            </button>
+        </li>
+    </ul>
+</div>
+
+<!-- Tab content -->
+<div class="container">
+    <div class="tab-content" id="dashboard-tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <div class="row">
+                <!-- Property summary and top-level metrics -->
+                <div class="col-md-4">
+                    <div class="property-summary">
+                        <h5 class="mb-3"><i class="bi bi-building"></i> Portfolio Summary</h5>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="breeam-score-circle breeam-very-good">
+                                <div class="breeam-score-circle::before"></div>
+                                <div class="breeam-score-value">72</div>
+                                <div class="breeam-score-label">BREEAM Score</div>
+                            </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <span class="badge bg-success">Very Good</span>
+                            <div class="small text-muted mt-1">Top 25% in your market segment</div>
+                        </div>
+                        <div class="score-comparison text-center p-2 mb-3">
+                            <div class="small">
+                                <span class="text-success"><i class="bi bi-arrow-up"></i> +3.5%</span> vs. previous assessment
+                            </div>
+                        </div>
+                        <div class="row g-2 text-center">
+                            <div class="col-6">
+                                <div class="metric-breakdown-card">
+                                    <div class="small text-muted">Properties</div>
+                                    <div class="fs-4 fw-bold">247</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-breakdown-card">
+                                    <div class="small text-muted">Avg EPC</div>
+                                    <div class="fs-4 fw-bold"><span class="energy-label label-b">B</span></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-breakdown-card">
+                                    <div class="small text-muted">Certified</div>
+                                    <div class="fs-4 fw-bold">28%</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-breakdown-card">
+                                    <div class="small text-muted">Carbon</div>
+                                    <div class="fs-4 fw-bold">32<span class="small">kg/m²</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart area for overview metrics -->
+                <div class="col-md-8">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Sustainability Performance Trends</h5>
+                            <div class="chart-container" id="overview-trend-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Emerging trends and insights -->
+            <div class="row mt-4">
+                <div class="col-lg-6">
+                    <h5 class="mb-3"><i class="bi bi-activity"></i> Emerging Trends</h5>
+                    <div class="ai-insight-card high">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">Green Retrofit ROI Growing</div>
+                            <span class="badge bg-success">+18%</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            Return on investment for energy-efficient retrofits has increased significantly, 
+                            particularly for older commercial properties. This trend is accelerating due to 
+                            rising energy costs and new sustainability regulations.
+                        </div>
+                    </div>
+                    <div class="ai-insight-card medium">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">BREEAM-NL Certification Growth</div>
+                            <span class="badge bg-primary">+14%</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            The percentage of BREEAM-NL certified properties in your portfolio has grown steadily. 
+                            Properties with certification are achieving 7% higher rental rates compared to 
+                            non-certified comparable properties.
+                        </div>
+                    </div>
+                    <div class="ai-insight-card medium">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">Tenant Preference for Green Buildings</div>
+                            <span class="badge bg-info">New</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            Survey data shows 64% of commercial tenants now rank sustainability features as 
+                            "important" or "very important" in leasing decisions, up from 47% last year. 
+                            Vacancy rates are 15% lower in certified buildings.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <h5 class="mb-3"><i class="bi bi-stars"></i> AI-Powered Recommendations</h5>
+                    <div class="upgrade-recommendations">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="upgrade-item">
+                                    <i class="bi bi-lightbulb"></i>
+                                    <div>LED Lighting Retrofit</div>
+                                    <div class="upgrade-roi">ROI: 125% / 3yr</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="upgrade-item">
+                                    <i class="bi bi-sun"></i>
+                                    <div>Solar Panel Installation</div>
+                                    <div class="upgrade-roi">ROI: 85% / 5yr</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="upgrade-item">
+                                    <i class="bi bi-droplet"></i>
+                                    <div>Water Conservation System</div>
+                                    <div class="upgrade-roi">ROI: 70% / 4yr</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="upgrade-item">
+                                    <i class="bi bi-award"></i>
+                                    <div>BREEAM Certification</div>
+                                    <div class="upgrade-roi">ROI: 60% / 2yr</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key sustainability metrics -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5 class="mb-3"><i class="bi bi-graph-up"></i> Key Sustainability Metrics</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                    <th>Change</th>
+                                    <th>Category</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>BREEAM-NL Certified Properties</td>
+                                    <td>28%</td>
+                                    <td><span class="text-success">+2.3%</span></td>
+                                    <td><span class="metric-badge certification">Certification</span></td>
+                                    <td><div id="sparkline-1" class="sparkline"></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Average EPC Rating</td>
+                                    <td>2.1 (B)</td>
+                                    <td><span class="text-success">-0.2</span></td>
+                                    <td><span class="metric-badge energy">Energy</span></td>
+                                    <td><div id="sparkline-2" class="sparkline"></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Portfolio Carbon Intensity</td>
+                                    <td>32 kgCO2/m²</td>
+                                    <td><span class="text-success">-3.5%</span></td>
+                                    <td><span class="metric-badge carbon">Carbon</span></td>
+                                    <td><div id="sparkline-3" class="sparkline"></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Green Mortgage Share</td>
+                                    <td>18%</td>
+                                    <td><span class="text-success">+4.2%</span></td>
+                                    <td><span class="metric-badge financing">Financing</span></td>
+                                    <td><div id="sparkline-4" class="sparkline"></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Sustainability Premium</td>
+                                    <td>4.2%</td>
+                                    <td><span class="text-success">+0.3%</span></td>
+                                    <td><span class="metric-badge market">Market</span></td>
+                                    <td><div id="sparkline-5" class="sparkline"></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BREEAM Metrics Tab -->
+        <div class="tab-pane fade" id="breeam-metrics" role="tabpanel" aria-labelledby="breeam-tab">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="breeam-scorecard">
+                        <h5 class="mb-3"><i class="bi bi-award"></i> BREEAM Assessment</h5>
+                        <div class="text-center mb-3">
+                            <div class="breeam-score-circle breeam-very-good">
+                                <div class="breeam-score-circle::before"></div>
+                                <div class="breeam-score-value">72</div>
+                                <div class="breeam-score-label">Overall Score</div>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-success">Very Good</span>
+                            </div>
+                            <div class="small text-muted mt-1">Assessment date: Feb 15, 2025</div>
+                        </div>
+                        
+                        <h6 class="mt-4 mb-2">BREEAM Categories</h6>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Management</div>
+                                <div class="breeam-category-score">85%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-management" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Health & Wellbeing</div>
+                                <div class="breeam-category-score">79%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-health" style="width: 79%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Energy</div>
+                                <div class="breeam-category-score">68%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-energy" style="width: 68%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Transport</div>
+                                <div class="breeam-category-score">75%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-transport" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Water</div>
+                                <div class="breeam-category-score">62%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-water" style="width: 62%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Materials</div>
+                                <div class="breeam-category-score">70%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-materials" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Waste</div>
+                                <div class="breeam-category-score">65%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-waste" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Land Use & Ecology</div>
+                                <div class="breeam-category-score">72%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-landuse" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Pollution</div>
+                                <div class="breeam-category-score">67%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-pollution" style="width: 67%"></div>
+                            </div>
+                        </div>
+                        <div class="breeam-category">
+                            <div class="breeam-category-header">
+                                <div>Innovation</div>
+                                <div class="breeam-category-score">55%</div>
+                            </div>
+                            <div class="breeam-category-progress">
+                                <div class="breeam-category-bar breeam-innovation" style="width: 55%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">BREEAM Certification Distribution</h5>
+                            <div class="chart-container" id="breeam-distribution-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">BREEAM Performance Comparison</h5>
+                            <div class="chart-container" id="breeam-comparison-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BREEAM Analytics and Recommendations -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5 class="mb-3"><i class="bi bi-graph-up"></i> Certification Impact Analysis</h5>
+                    <div class="ai-insight-card high">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">Market Value Impact</div>
+                            <span class="badge bg-success">+7.2%</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            <p>Properties with BREEAM certification show an average market value premium of 7.2% compared to non-certified properties of similar age and location. The premium has increased from 5.8% in the previous year.</p>
+                            <p>Buildings with "Excellent" ratings demonstrate an additional premium of 2.3-3.5%, particularly in the commercial office and retail segments.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-insight-card medium">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">Operational Cost Benefits</div>
+                            <span class="badge bg-primary">-18%</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            <p>BREEAM certified properties in your portfolio show an average 18% reduction in operational costs compared to non-certified properties, primarily through energy savings (52% of total savings), water efficiency (27%), and reduced maintenance (21%).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-insight-card medium">
+                        <div class="ai-insight-header">
+                            <div class="ai-insight-title">Financing Advantages</div>
+                            <span class="badge bg-info">New</span>
+                        </div>
+                        <div class="ai-insight-body">
+                            <p>Green financing options available for BREEAM certified properties offer interest rate reductions averaging 0.38%, with additional benefits including extended loan terms and reduced fees. Estimated financial benefit over a 10-year period: €1.2M for your current certified portfolio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Energy Efficiency Tab -->
+        <div class="tab-pane fade" id="energy-metrics" role="tabpanel" aria-labelledby="energy-tab">
+            <!-- Energy efficiency metrics content -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="property-summary">
+                        <h5 class="mb-3"><i class="bi bi-lightning"></i> Energy Performance</h5>
+                        <div class="text-center mb-3">
+                            <div class="fs-1 fw-bold">
+                                <span class="energy-label label-b">B</span>
+                            </div>
+                            <div class="small text-muted mt-2">Average EPC Rating</div>
+                            <div class="mt-2">
+                                <span class="text-success"><i class="bi bi-arrow-up"></i> Improved from C (2.6) last year</span>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mt-4">EPC Distribution</h6>
+                        <div class="chart-container" id="epc-distribution-chart" style="height: 200px;"></div>
+                        
+                        <div class="mt-3">
+                            <h6>Energy Efficiency KPIs</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Annual Energy Use</div>
+                                        <div class="fs-5 fw-bold">128 kWh/m²</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Energy Cost</div>
+                                        <div class="fs-5 fw-bold">€17.40/m²</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Solar Adoption</div>
+                                        <div class="fs-5 fw-bold">22.5%</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Smart Building %</div>
+                                        <div class="fs-5 fw-bold">35%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Energy Performance Trends</h5>
+                            <div class="chart-container" id="energy-trend-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Energy Efficiency Opportunity Analysis</h5>
+                            <div class="mt-3">
+                                <div class="ai-insight-card high">
+                                    <div class="ai-insight-header">
+                                        <div class="ai-insight-title">High-Impact Efficiency Measures</div>
+                                        <span class="badge bg-success">ROI 125%</span>
+                                    </div>
+                                    <div class="ai-insight-body">
+                                        <p>Our AI analysis identified 57 properties where targeted energy efficiency upgrades could yield energy savings of 25-40% with an average ROI of 125% over 3 years.</p>
+                                        <p>Top measures include LED lighting retrofits, HVAC optimization, and building management system upgrades.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carbon Footprint Tab -->
+        <div class="tab-pane fade" id="carbon-metrics" role="tabpanel" aria-labelledby="carbon-tab">
+            <!-- Carbon footprint metrics content -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="property-summary">
+                        <h5 class="mb-3"><i class="bi bi-cloud"></i> Carbon Footprint</h5>
+                        <div class="text-center mb-3">
+                            <div class="fs-1 fw-bold text-success">
+                                32 <span class="fs-6">kgCO₂/m²</span>
+                            </div>
+                            <div class="small text-muted mt-2">Portfolio Carbon Intensity</div>
+                            <div class="mt-2">
+                                <span class="text-success"><i class="bi bi-arrow-down"></i> -3.5% vs last year</span>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mt-4">Carbon Sources</h6>
+                        <div class="chart-container" id="carbon-sources-chart" style="height: 200px;"></div>
+                        
+                        <div class="mt-3">
+                            <h6>Carbon KPIs</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Operational</div>
+                                        <div class="fs-5 fw-bold">27.3 kgCO₂/m²</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Embodied</div>
+                                        <div class="fs-5 fw-bold">4.7 kgCO₂/m²</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Reduction Target</div>
+                                        <div class="fs-5 fw-bold">45% by 2030</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Progress</div>
+                                        <div class="fs-5 fw-bold">27% complete</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Carbon Reduction Timeline</h5>
+                            <div class="chart-container" id="carbon-timeline-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Carbon Reduction Strategy</h5>
+                            <div class="mt-3">
+                                <div class="ai-insight-card high">
+                                    <div class="ai-insight-header">
+                                        <div class="ai-insight-title">Decarbonization Roadmap</div>
+                                        <span class="badge bg-success">AI-Generated</span>
+                                    </div>
+                                    <div class="ai-insight-body">
+                                        <p>Our AI analysis has developed a phased decarbonization roadmap to achieve your 2030 target:</p>
+                                        <ul>
+                                            <li><strong>Phase 1 (2025-2026):</strong> Energy efficiency upgrades (-15%)</li>
+                                            <li><strong>Phase 2 (2027-2028):</strong> Electrification of heating (-17%)</li>
+                                            <li><strong>Phase 3 (2029-2030):</strong> On-site renewables (-13%)</li>
+                                        </ul>
+                                        <p>This approach optimizes for both cost-effectiveness and carbon impact while maintaining building functionality.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Financial Impact Tab -->
+        <div class="tab-pane fade" id="financial-metrics" role="tabpanel" aria-labelledby="financial-tab">
+            <!-- Financial impact metrics content -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="property-summary">
+                        <h5 class="mb-3"><i class="bi bi-cash-coin"></i> Financial Impact</h5>
+                        <div class="text-center mb-3">
+                            <div class="fs-1 fw-bold text-success">
+                                €12.4M
+                            </div>
+                            <div class="small text-muted mt-2">Estimated Value Enhancement</div>
+                            <div class="mt-2">
+                                <span class="text-success"><i class="bi bi-arrow-up"></i> +8.3% vs baseline</span>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mt-4">Value Creation Sources</h6>
+                        <div class="chart-container" id="value-sources-chart" style="height: 200px;"></div>
+                        
+                        <div class="mt-3">
+                            <h6>Financial KPIs</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Green Premium</div>
+                                        <div class="fs-5 fw-bold">4.2%</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">OpEx Reduction</div>
+                                        <div class="fs-5 fw-bold">€1.8M/yr</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Green Financing</div>
+                                        <div class="fs-5 fw-bold">18% of loans</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-breakdown-card">
+                                        <div class="small text-muted">Tax Benefits</div>
+                                        <div class="fs-5 fw-bold">€1.25M/yr</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Investment & Returns Analysis</h5>
+                            <div class="chart-container" id="investment-returns-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Financial Opportunity Analysis</h5>
+                            <div class="mt-3">
+                                <div class="ai-insight-card high">
+                                    <div class="ai-insight-header">
+                                        <div class="ai-insight-title">Green Financing Opportunity</div>
+                                        <span class="badge bg-success">€3.2M Savings</span>
+                                    </div>
+                                    <div class="ai-insight-body">
+                                        <p>Our AI analysis identified refinancing opportunities for 35% of your portfolio with green loans, potentially saving €3.2M over the loan terms.</p>
+                                        <p>Current green financing represents only 18% of your portfolio, while 42% of properties already qualify based on their sustainability performance.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="ai-insight-card medium mt-3">
+                                    <div class="ai-insight-header">
+                                        <div class="ai-insight-title">Tax Incentive Utilization</div>
+                                        <span class="badge bg-primary">+35% Potential</span>
+                                    </div>
+                                    <div class="ai-insight-body">
+                                        <p>You're currently utilizing only 65% of available sustainability tax incentives. Optimizing tax strategy could yield an additional €437,500 annually in tax benefits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Insights Tab -->
+        <div class="tab-pane fade" id="ai-insights" role="tabpanel" aria-labelledby="ai-tab">
+            <!-- AI insights content -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-robot"></i> AI Assistant</h5>
+                            <p class="text-muted">Ask questions about your real estate sustainability data</p>
+                            
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="ai-query-input" 
+                                       placeholder="Ask about your sustainability metrics...">
+                                <button class="btn btn-primary" type="button" id="submit-ai-query">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="ai-suggestion-buttons">
+                                <button class="btn btn-sm btn-outline-secondary mb-1 me-1" onclick="fillAIQuery('What are the top 3 properties with highest BREEAM scores?')">
+                                    Top BREEAM properties
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary mb-1 me-1" onclick="fillAIQuery('How does our portfolio compare to market benchmarks?')">
+                                    Market comparison
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary mb-1 me-1" onclick="fillAIQuery('What are the most cost-effective upgrades?')">
+                                    Cost-effective upgrades
+                                </button>
+                            </div>
+                            
+                            <div class="ai-model-info mt-4">
+                                <h6 class="text-muted">Model Information</h6>
+                                <div class="model-info-table">
+                                    <div class="model-info-row">
+                                        <span>Model</span>
+                                        <span><span class="model-badge">Gemini Pro</span></span>
+                                    </div>
+                                    <div class="model-info-row">
+                                        <span>Data Freshness</span>
+                                        <span>Last updated 2 hours ago</span>
+                                    </div>
+                                    <div class="model-info-row">
+                                        <span>Accuracy</span>
+                                        <span><span class="model-accuracy">94.3%</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="confidence-indicator high">
+                        <div class="confidence-value">87%</div>
+                        <div class="confidence-label">Data Confidence Score</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">AI Analysis Results</h5>
+                            <div id="ai-response-container">
+                                <div class="ai-loading-indicator" id="ai-loading" style="display: none;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="ai-response-content">
+                                    <div class="ai-insight-card high">
+                                        <div class="ai-insight-header">
+                                            <div class="ai-insight-title">Portfolio Insights Summary</div>
+                                            <span class="badge bg-success">AI-Generated</span>
+                                        </div>
+                                        <div class="ai-insight-body">
+                                            <p>Your portfolio shows strong sustainability performance with key highlights:</p>
+                                            <ul>
+                                                <li><strong>BREEAM Performance:</strong> 28% of properties certified, scoring "Very Good" on average (72/100)</li>
+                                                <li><strong>Energy Efficiency:</strong> Average EPC rating of B (2.1), improved from C (2.6) last year</li>
+                                                <li><strong>Carbon Footprint:</strong> 32 kgCO₂/m², reduced by 3.5% year-over-year</li>
+                                                <li><strong>Financial Impact:</strong> Sustainability initiatives have enhanced portfolio value by an estimated €12.4M</li>
+                                            </ul>
+                                            <p>Top opportunity areas for further improvement:</p>
+                                            <ol>
+                                                <li>Expand BREEAM certification to 20+ properties already near qualifying thresholds</li>
+                                                <li>Implement portfolio-wide energy management systems (potential 12-15% energy savings)</li>
+                                                <li>Increase green financing utilization from 18% to 42% of eligible properties</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Predictive Analytics</h5>
+                            <div class="chart-container" id="predictive-chart" style="height: 300px;"></div>
+                            <div class="small text-muted text-center mt-2">
+                                AI-powered forecast of portfolio sustainability metrics through 2030
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                </div>
+
+                <footer class="footer py-4 mt-5">
+                    <div class="container text-center">
+                        <p>&copy; 2025 SustainaTrend™ Intelligence Platform. All rights reserved.</p>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    
+</body>
+</html>

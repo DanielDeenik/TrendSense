@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SustainaTrend Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body {
+            background-color: #1a202c;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            background-color: #4a5568;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        .btn:hover {
+            background-color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold mb-6">SustainaTrend™ Dashboard</h1>
+        
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-4">Static Dashboard Template</h2>
+            <p class="mb-4">Our interactive server cannot be started automatically in this environment due to configuration issues.</p>
+            <p class="mb-2">You can view the static dashboard template:</p>
+            <a href="frontend/templates/dashboard.html" class="btn">View Static Dashboard</a>
+        </div>
+        
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-4">Environment Status</h2>
+            <p class="mb-4">The current environment has limited functionality. Python and Node.js are not available.</p>
+            <p>The repository status is:</p>
+            <ul class="list-disc pl-5 mt-2">
+                <li>Frontend templates and static assets: ✅ Available</li>
+                <li>Dashboard design: ✅ Implemented</li>
+                <li>Server functions: ✅ Created but not runnable</li>
+                <li>Runtime environment: ❌ Configuration issues</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-4">Sustainability Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-gray-400 mb-2">Carbon Intensity</h3>
+                    <div class="text-2xl font-bold">12.4</div>
+                    <div class="text-red-400">▼ -15.3%</div>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 mb-2">ESG Score</h3>
+                    <div class="text-2xl font-bold">73.8</div>
+                    <div class="text-green-400">▲ +2.5%</div>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 mb-2">Renewable Energy</h3>
+                    <div class="text-2xl font-bold">38%</div>
+                    <div class="text-green-400">▲ +8%</div>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 mb-2">Water Intensity</h3>
+                    <div class="text-2xl font-bold">2.3</div>
+                    <div class="text-red-400">▼ -12.2%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+run = "sh start.sh"
+entrypoint = "api_server.py"
+onBoot = "chmod +x start.sh"
+modules = ["python-3.11", "nodejs-20", "python3"]
+
+[nix]
+channel = "stable-22_11"
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "sh start.sh"]
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5001
+externalPort = 5001
+
+[[ports]]
+localPort = 8000
+externalPort = 8000
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start API Server"
+
+[[workflows.workflow]]
+name = "Start API Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "sh start.sh"

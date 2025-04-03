@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atomic Navigation Demo - SustainaTrend™</title>
+    
+    <!-- Core CSS Framework -->
+    <link rel="stylesheet" href="/static/css/sustainatrend-framework.css">
+    <link rel="stylesheet" href="/static/css/navigation-components.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Additional CSS -->
+    
+</head>
+<body class="atomic-body">
+    <!-- Top Navigation Bar -->
+    <header class="atomic-header">
+    <div class="atomic-header-container">
+        <!-- Left Section: Menu Toggle & Brand -->
+        <div class="atomic-header-left">
+            <button class="atomic-menu-toggle" aria-label="Toggle menu">
+                <span class="atomic-menu-icon"></span>
+            </button>
+            <a href="/" class="atomic-brand">
+                <span class="atomic-brand-logo">🌿</span>
+                <span class="atomic-brand-name">SustainaTrend™</span>
+            </a>
+        </div>
+        
+        <!-- Center Section: Navigation -->
+        <nav class="atomic-nav">
+            <ul class="atomic-nav-menu">
+                <li class="atomic-nav-item"><a href="/" class="atomic-nav-link active">Home</a></li>
+                <li class="atomic-nav-item"><a href="/dashboard" class="atomic-nav-link">Dashboard</a></li>
+                <li class="atomic-nav-item"><a href="/analytics-dashboard" class="atomic-nav-link">Analytics</a></li>
+                <li class="atomic-nav-item dropdown">
+                    <a href="#" class="atomic-nav-link">AI Tools <span class="atomic-chevron-down">▼</span></a>
+                    <div class="atomic-dropdown-menu">
+                        <a href="/gemini-search" class="atomic-dropdown-item">Gemini Search</a>
+                        <a href="/document-upload" class="atomic-dropdown-item">Document Analysis</a>
+                        <a href="/sustainability-stories" class="atomic-dropdown-item">AI Storytelling</a>
+                        <a href="/ai-development-tools" class="atomic-dropdown-item">Development Tools</a>
+                    </div>
+                </li>
+                <li class="atomic-nav-item dropdown">
+                    <a href="#" class="atomic-nav-link">Sustainability <span class="atomic-chevron-down">▼</span></a>
+                    <div class="atomic-dropdown-menu">
+                        <a href="/esrs-framework" class="atomic-dropdown-item">ESRS Framework</a>
+                        <a href="/company-search" class="atomic-dropdown-item">Company Search</a>
+                        <a href="/ethical-ai" class="atomic-dropdown-item">Ethical AI</a>
+                        <a href="/sustainability-storytelling" class="atomic-dropdown-item">Storytelling</a>
+                    </div>
+                </li>
+                <li class="atomic-nav-item"><a href="/realestate-trends" class="atomic-nav-link">Real Estate</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Right Section: Search & User -->
+        <div class="atomic-header-right">
+            <div class="atomic-search">
+                <form action="/gemini-search" method="get" class="atomic-search-form">
+                    <input type="text" name="query" placeholder="Search..." class="atomic-search-input">
+                    <button type="submit" class="atomic-search-button">🔍</button>
+                </form>
+            </div>
+            <div class="atomic-user">
+                <a href="#" class="atomic-user-profile">
+                    <span class="atomic-user-avatar">👤</span>
+                    <span class="atomic-user-name">User</span>
+                </a>
+                <div class="atomic-dropdown-menu">
+                    <a href="#" class="atomic-dropdown-item">Profile</a>
+                    <a href="#" class="atomic-dropdown-item">Settings</a>
+                    <a href="#" class="atomic-dropdown-item">Help</a>
+                    <a href="#" class="atomic-dropdown-item">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- Main Content Area -->
+    <div class="atomic-main">
+        <!-- Side Navigation -->
+        <div class="atomic-sidebar">
+            <div class="atomic-sidebar-logo">
+                <span class="atomic-logo-text">SustainaTrend™</span>
+            </div>
+            <nav class="atomic-sidebar-nav">
+                <ul class="atomic-sidebar-menu">
+                    <li class="atomic-sidebar-item"><a href="/" class="atomic-sidebar-link active"><span class="atomic-icon">🏠</span> Home</a></li>
+                    <li class="atomic-sidebar-item"><a href="/dashboard" class="atomic-sidebar-link"><span class="atomic-icon">📊</span> Dashboard</a></li>
+                    <li class="atomic-sidebar-item"><a href="/analytics-dashboard" class="atomic-sidebar-link"><span class="atomic-icon">📈</span> Analytics</a></li>
+                    <li class="atomic-sidebar-item"><a href="/gemini-search" class="atomic-sidebar-link"><span class="atomic-icon">🔍</span> AI Search</a></li>
+                    <li class="atomic-sidebar-item"><a href="/sustainability-stories" class="atomic-sidebar-link"><span class="atomic-icon">📝</span> Storytelling</a></li>
+                    <li class="atomic-sidebar-item"><a href="/realestate-trends" class="atomic-sidebar-link"><span class="atomic-icon">🏢</span> Real Estate</a></li>
+                    <li class="atomic-sidebar-item"><a href="/esrs-framework" class="atomic-sidebar-link"><span class="atomic-icon">📋</span> ESRS Framework</a></li>
+                    <li class="atomic-sidebar-item"><a href="/company-search" class="atomic-sidebar-link"><span class="atomic-icon">🔎</span> Company Search</a></li>
+                </ul>
+            </nav>
+            <div class="atomic-sidebar-footer">
+                <div class="atomic-sidebar-item"><a href="#" class="atomic-sidebar-link"><span class="atomic-icon">⚙️</span> Settings</a></div>
+                <div class="atomic-sidebar-item"><a href="#" class="atomic-sidebar-link"><span class="atomic-icon">❓</span> Help</a></div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="atomic-content">
+            
+<div class="atomic-content-container">
+    <div class="atomic-section">
+        <h1 class="atomic-title">Atomic Navigation Demo</h1>
+        <p class="atomic-description">This page demonstrates the SimCorp One-inspired atomic navigation system for the SustainaTrend™ platform.</p>
+        
+        <div class="atomic-card">
+            <h2 class="atomic-card-title">Navigation Components</h2>
+            <p>The atomic navigation system consists of several key components:</p>
+            <ul class="atomic-list">
+                <li><strong>Top Navigation Bar</strong>: Application-wide navigation and controls</li>
+                <li><strong>Side Navigation</strong>: Context-specific navigation options</li>
+                <li><strong>Navigation Menu</strong>: Organized access to all platform features</li>
+                <li><strong>Navigation Cards</strong>: Visual shortcuts to key features</li>
+            </ul>
+        </div>
+        
+        <div class="atomic-grid">
+            <div class="atomic-card">
+                <h3>Design Principles</h3>
+                <p>Our atomic navigation is built on these core principles:</p>
+                <ul class="atomic-list">
+                    <li>Consistency across all platform sections</li>
+                    <li>Intuitive organization of features</li>
+                    <li>Clear visual hierarchies</li>
+                    <li>Responsive design for all devices</li>
+                    <li>Accessibility for all users</li>
+                </ul>
+            </div>
+            
+            <div class="atomic-card">
+                <h3>SimCorp One Inspiration</h3>
+                <p>Key elements inspired by SimCorp One:</p>
+                <ul class="atomic-list">
+                    <li>Clean, minimal visual design</li>
+                    <li>Task-oriented navigation structure</li>
+                    <li>Consistent interaction patterns</li>
+                    <li>Feature discoverability</li>
+                    <li>Integrated search capabilities</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="atomic-card">
+            <h2 class="atomic-card-title">Sample Navigation Menu</h2>
+            <div class="atomic-nav-demo">
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">Home</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Activity Feed</a></li>
+                        <li><a href="#">Recent Reports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">Analytics</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">Sustainability Metrics</a></li>
+                        <li><a href="#">Trend Analysis</a></li>
+                        <li><a href="#">Predictive Models</a></li>
+                        <li><a href="#">Custom Reports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">AI Tools</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">Gemini Search</a></li>
+                        <li><a href="#">Document Analysis</a></li>
+                        <li><a href="#">Storytelling AI</a></li>
+                        <li><a href="#">Company Search</a></li>
+                    </ul>
+                </div>
+                
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">Sustainability</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">ESRS Framework</a></li>
+                        <li><a href="#">Reporting Tools</a></li>
+                        <li><a href="#">Benchmarking</a></li>
+                        <li><a href="#">Compliance Check</a></li>
+                    </ul>
+                </div>
+                
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">Real Estate</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">Property Portfolio</a></li>
+                        <li><a href="#">BREEAM Metrics</a></li>
+                        <li><a href="#">Energy Efficiency</a></li>
+                        <li><a href="#">Green Financing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="atomic-nav-section">
+                    <h3 class="atomic-nav-title">System</h3>
+                    <ul class="atomic-nav-list">
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">User Management</a></li>
+                        <li><a href="#">API Access</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="atomic-card">
+            <h2 class="atomic-card-title">Navigation Cards Example</h2>
+            <div class="atomic-card-grid">
+                <div class="atomic-nav-card">
+                    <div class="atomic-nav-card-icon">📊</div>
+                    <h3 class="atomic-nav-card-title">Analytics Dashboard</h3>
+                    <p class="atomic-nav-card-desc">Comprehensive sustainability metrics and trends</p>
+                </div>
+                
+                <div class="atomic-nav-card">
+                    <div class="atomic-nav-card-icon">🔍</div>
+                    <h3 class="atomic-nav-card-title">Gemini Search</h3>
+                    <p class="atomic-nav-card-desc">AI-powered sustainability intelligence search</p>
+                </div>
+                
+                <div class="atomic-nav-card">
+                    <div class="atomic-nav-card-icon">🏢</div>
+                    <h3 class="atomic-nav-card-title">Real Estate Portal</h3>
+                    <p class="atomic-nav-card-desc">BREEAM metrics and property sustainability</p>
+                </div>
+                
+                <div class="atomic-nav-card">
+                    <div class="atomic-nav-card-icon">📝</div>
+                    <h3 class="atomic-nav-card-title">ESRS Compliance</h3>
+                    <p class="atomic-nav-card-desc">European sustainability reporting standards</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="atomic-footer">
+        <div class="atomic-footer-content">
+            <p>&copy; 2025 SustainaTrend™ Intelligence Platform</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Simple script to toggle sidebar on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.atomic-menu-toggle');
+            const sidebar = document.querySelector('.atomic-sidebar');
+            
+            if (toggleButton && sidebar) {
+                toggleButton.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    toggleButton.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+    
+    <!-- Additional JavaScript -->
+    
+</body>
+</html>
