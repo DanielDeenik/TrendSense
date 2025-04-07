@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SustainaTrend™ Regulatory Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-green-600">SustainaTrend™</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/regulatory" class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Regulatory
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700">
+                        <i class="fas fa-robot mr-2"></i>AI Co-Pilot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <!-- Documents Count -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-file-alt text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Documents
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="documents-count">
+                                        --
+                                    </div>
+                                    <div class="ml-2 text-sm text-gray-500" id="documents-growth">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frameworks Count -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-layer-group text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Frameworks
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="frameworks-count">
+                                        --
+                                    </div>
+                                    <div class="ml-2 text-sm text-gray-500">
+                                        active
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Score -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-yellow-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Compliance
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="compliance-score">
+                                        --
+                                    </div>
+                                    <div class="ml-2 text-sm text-gray-500">
+                                        avg. score
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Count -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-bar text-purple-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Analyses
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="analysis-count">
+                                        --
+                                    </div>
+                                    <div class="ml-2 text-sm text-gray-500" id="analysis-growth">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Frameworks -->
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <!-- Compliance Trend Chart -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Compliance Trend</h3>
+                <div class="relative" style="height: 300px;">
+                    <canvas id="complianceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Frameworks List -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Supported Frameworks</h3>
+                <div class="space-y-4" id="frameworks-list">
+                    <!-- Frameworks will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Fetch and update regulatory data
+        async function updateRegulatoryData() {
+            try {
+                const response = await fetch('/api/regulatory');
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('documents-count').textContent = data.stats.documents_count;
+                document.getElementById('documents-growth').textContent = data.stats.document_growth;
+                document.getElementById('frameworks-count').textContent = data.stats.frameworks_count;
+                document.getElementById('compliance-score').textContent = data.stats.avg_compliance;
+                document.getElementById('analysis-count').textContent = data.stats.analysis_count;
+                document.getElementById('analysis-growth').textContent = data.stats.analysis_growth;
+                
+                // Update frameworks list
+                const frameworksList = document.getElementById('frameworks-list');
+                frameworksList.innerHTML = data.frameworks.map(framework => `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900">${framework.name}</h4>
+                        <p class="mt-1 text-sm text-gray-600">${framework.count} documents analyzed</p>
+                    </div>
+                `).join('');
+                
+                // Update compliance chart
+                const ctx = document.getElementById('complianceChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: data.compliance_data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching regulatory data:', error);
+            }
+        }
+
+        // Initial data load
+        updateRegulatoryData();
+
+        // Refresh data every 5 minutes
+        setInterval(updateRegulatoryData, 300000);
+
+        // Figma styles object that matches our Tailwind configuration
+        const metricCardStyles = {
+            frame: {
+                background: 'rgb(255, 255, 255)',
+                cornerRadius: '8px',
+                shadow: 'medium',
+                padding: '24px'
+            },
+            title: {
+                typography: {
+                    fontSize: '16px',
+                    fontWeight: '500'
+                },
+                fill: 'rgb(17, 24, 39)'
+            },
+            value: {
+                typography: {
+                    fontSize: '30px',
+                    fontWeight: '600'
+                },
+                fill: 'rgb(17, 24, 39)'
+            },
+            change: {
+                typography: {
+                    fontSize: '14px',
+                    fontWeight: '500'
+                },
+                fill: 'rgb(34, 197, 94)' // For positive trend
+            }
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - TrendSense{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Analysis Results</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('trendsense.trendsense_dashboard') }}">Trendsense</a></li>
+        <li class="breadcrumb-item active">Analysis Results</li>
+    </ol>
+    
+    <!-- Document Information -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-alt me-1"></i>
+                    Document Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Document Type:</strong> {{ analysis.document_type }}</p>
+                            <p><strong>Company Name:</strong> {{ analysis.company_name }}</p>
+                            <p><strong>Upload Date:</strong> {{ analysis.upload_date }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Analysis Status:</strong> 
+                                <span class="badge {% if analysis.status == 'completed' %}bg-success{% elif analysis.status == 'processing' %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {{ analysis.status }}
+                                </span>
+                            </p>
+                            <p><strong>Analysis Date:</strong> {{ analysis.analysis_date }}</p>
+                            <p><strong>Document ID:</strong> {{ analysis.document_id }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line me-1"></i>
+                    Key Metrics
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="metricsTable">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                    <th>Year</th>
+                                    <th>Change</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for metric in analysis.metrics %}
+                                <tr>
+                                    <td>{{ metric.name }}</td>
+                                    <td>{{ metric.value }}</td>
+                                    <td>{{ metric.unit }}</td>
+                                    <td>{{ metric.year }}</td>
+                                    <td>
+                                        {% if metric.change > 0 %}
+                                        <span class="text-success">+{{ metric.change }}%</span>
+                                        {% elif metric.change < 0 %}
+                                        <span class="text-danger">{{ metric.change }}%</span>
+                                        {% else %}
+                                        <span class="text-muted">0%</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Targets and Commitments -->
+    <div class="row mb-4">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-bullseye me-1"></i>
+                    Targets
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="targetsTable">
+                            <thead>
+                                <tr>
+                                    <th>Target</th>
+                                    <th>Timeline</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for target in analysis.targets %}
+                                <tr>
+                                    <td>{{ target.description }}</td>
+                                    <td>{{ target.timeline }}</td>
+                                    <td>
+                                        <span class="badge {% if target.status == 'on_track' %}bg-success{% elif target.status == 'at_risk' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ target.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-handshake me-1"></i>
+                    Commitments
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="commitmentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Commitment</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commitment in analysis.commitments %}
+                                <tr>
+                                    <td>{{ commitment.description }}</td>
+                                    <td>{{ commitment.type }}</td>
+                                    <td>
+                                        <span class="badge {% if commitment.status == 'active' %}bg-success{% elif commitment.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ commitment.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Insights and Recommendations -->
+    <div class="row mb-4">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    Insights
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for insight in analysis.insights %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ insight.title }}</h5>
+                                <small class="text-muted">{{ insight.category }}</small>
+                            </div>
+                            <p class="mb-1">{{ insight.description }}</p>
+                            {% if insight.recommendation %}
+                            <small class="text-muted">Recommendation: {{ insight.recommendation }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-tasks me-1"></i>
+                    Recommendations
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for recommendation in analysis.recommendations %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ recommendation.title }}</h5>
+                                <small class="text-muted">{{ recommendation.priority }}</small>
+                            </div>
+                            <p class="mb-1">{{ recommendation.description }}</p>
+                            {% if recommendation.benefits %}
+                            <small class="text-muted">Benefits: {{ recommendation.benefits }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="row mb-4">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Metrics Trend
+                </div>
+                <div class="card-body">
+                    <canvas id="metricsTrendChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie me-1"></i>
+                    Target Progress
+                </div>
+                <div class="card-body">
+                    <canvas id="targetProgressChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-download me-1"></i>
+                    Export Options
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" id="downloadPdfBtn">
+                            <i class="fas fa-file-pdf me-1"></i>
+                            Download PDF Report
+                        </button>
+                        <button type="button" class="btn btn-success" id="downloadExcelBtn">
+                            <i class="fas fa-file-excel me-1"></i>
+                            Download Excel Data
+                        </button>
+                        <button type="button" class="btn btn-info" id="shareReportBtn">
+                            <i class="fas fa-share-alt me-1"></i>
+                            Share Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize DataTables
+        $('#metricsTable').DataTable({
+            order: [[0, 'asc']],
+            pageLength: 10
+        });
+        
+        $('#targetsTable').DataTable({
+            order: [[1, 'asc']],
+            pageLength: 5
+        });
+        
+        $('#commitmentsTable').DataTable({
+            order: [[2, 'asc']],
+            pageLength: 5
+        });
+        
+        // Initialize Charts
+        const metricsTrendCtx = document.getElementById('metricsTrendChart');
+        new Chart(metricsTrendCtx, {
+            type: 'line',
+            data: {
+                labels: {{ analysis.metrics_timeline|tojson }},
+                datasets: {{ analysis.metrics_datasets|tojson }}
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        const targetProgressCtx = document.getElementById('targetProgressChart');
+        new Chart(targetProgressCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['On Track', 'At Risk', 'Behind Schedule'],
+                datasets: [{
+                    data: [
+                        {{ analysis.target_progress.on_track }},
+                        {{ analysis.target_progress.at_risk }},
+                        {{ analysis.target_progress.behind_schedule }}
+                    ],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+        
+        // Export buttons
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            window.location.href = `/api/trendsense/analysis/{{ analysis.document_id }}/pdf`;
+        });
+        
+        document.getElementById('downloadExcelBtn').addEventListener('click', function() {
+            window.location.href = `/api/trendsense/analysis/{{ analysis.document_id }}/excel`;
+        });
+        
+        document.getElementById('shareReportBtn').addEventListener('click', function() {
+            // Implementation for sharing the report
+            alert('Share functionality will be implemented here');
+        });
+    });
+</script>
+{% endblock %} 

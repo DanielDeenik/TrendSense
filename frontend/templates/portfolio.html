@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% from "components/mcp_connect_modal.html" import mcp_connect_modal, mcp_connect_scripts %}
+{% from "components/mcp_connections.html" import mcp_connections %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ portfolio.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Portfolio Details</h5>
+                            <table class="table">
+                                <tr>
+                                    <th>Description:</th>
+                                    <td>{{ portfolio.description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created:</th>
+                                    <td>{{ portfolio.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Updated:</th>
+                                    <td>{{ portfolio.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Statistics</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Companies</h6>
+                                            <p class="card-text display-6">{{ portfolio.companies|length }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Connected Tools</h6>
+                                            <p class="card-text display-6">{{ portfolio.mcp_connections|length }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            {{ mcp_connections(portfolio) }}
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Companies</h5>
+                </div>
+                <div class="card-body">
+                    {% if portfolio.companies %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Sector</th>
+                                        <th>Country</th>
+                                        <th>Investment Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for company in portfolio.companies %}
+                                    <tr>
+                                        <td>{{ company.name }}</td>
+                                        <td>{{ company.sector }}</td>
+                                        <td>{{ company.country }}</td>
+                                        <td>{{ company.investment_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ company.status_color }}">
+                                                {{ company.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ url_for('company.view', id=company.id) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{{ url_for('company.edit', id=company.id) }}" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-building display-4 text-muted"></i>
+                            <p class="mt-3 text-muted">No companies in this portfolio yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include MCP Connect Modal -->
+{{ mcp_connect_modal() }}
+
+<!-- Notification Container -->
+<div id="notificationContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050"></div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ mcp_connect_scripts() }}
+{% endblock %} 

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VC/PE Sustainability Hub - SustainaTrend™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+        }
+        .card-hover {
+            transition: transform 0.2s;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-white">SustainaTrend™ VC/PE</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/vc-pe-dashboard" class="border-white text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/portfolio-analysis" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Portfolio Analysis
+                        </a>
+                        <a href="/investment-pipeline" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Investment Pipeline
+                        </a>
+                        <a href="/vc-pe/pdf-analyzer" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Document Analysis
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-300 hover:text-white text-sm font-medium">
+                        Main Platform
+                    </a>
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600">
+                        <i class="fas fa-robot mr-2"></i>AI Co-Pilot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">VC/PE Sustainability Hub</h1>
+            <p class="text-gray-600 mb-4">
+                Welcome to the VC/PE Sustainability Hub, your dedicated platform for analyzing and managing sustainability metrics across your investment portfolio.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="/vc-pe-dashboard" class="bg-blue-50 p-4 rounded-lg hover:bg-blue-100 transition-colors">
+                    <h3 class="text-lg font-medium text-blue-900">Portfolio Dashboard</h3>
+                    <p class="text-sm text-blue-700">View comprehensive sustainability metrics across your portfolio</p>
+                </a>
+                <a href="/portfolio-analysis" class="bg-green-50 p-4 rounded-lg hover:bg-green-100 transition-colors">
+                    <h3 class="text-lg font-medium text-green-900">Company Analysis</h3>
+                    <p class="text-sm text-green-700">Deep dive into individual company sustainability performance</p>
+                </a>
+                <a href="/investment-pipeline" class="bg-purple-50 p-4 rounded-lg hover:bg-purple-100 transition-colors">
+                    <h3 class="text-lg font-medium text-purple-900">Deal Pipeline</h3>
+                    <p class="text-sm text-purple-700">Track sustainability-focused investment opportunities</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <!-- Portfolio Value -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-line text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Portfolio Value
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="portfolio-value">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESG Compliance -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    ESG Compliance
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="esg-compliance">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Investments -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-leaf text-yellow-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Impact Investments
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="impact-investments">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sustainable Growth -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-bar text-purple-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Sustainable Growth
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="sustainable-growth">
+                                        --
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Insights -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Recent AI Insights</h3>
+            <div class="space-y-4" id="insights-list">
+                <!-- Insights will be populated here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Format currency
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        // Format percentage
+        function formatPercentage(value) {
+            return `${value}%`;
+        }
+
+        // Fetch and update portfolio data
+        async function updatePortfolioData() {
+            try {
+                const response = await fetch('/api/vc-pe/metrics');
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('portfolio-value').textContent = formatCurrency(data.total_portfolio_value);
+                document.getElementById('esg-compliance').textContent = formatPercentage(data.esg_compliance_rate);
+                document.getElementById('impact-investments').textContent = formatCurrency(data.impact_investments);
+                document.getElementById('sustainable-growth').textContent = formatPercentage(data.sustainable_growth_rate);
+            } catch (error) {
+                console.error('Error fetching portfolio data:', error);
+            }
+        }
+
+        // Fetch and update insights
+        async function updateInsights() {
+            try {
+                const response = await fetch('/api/vc-pe/insights');
+                const insights = await response.json();
+                
+                const insightsList = document.getElementById('insights-list');
+                insightsList.innerHTML = insights.map(insight => `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900">${insight.title}</h4>
+                        <p class="mt-1 text-sm text-gray-600">${insight.content}</p>
+                        <div class="mt-2 flex items-center justify-between">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                insight.impact === 'positive' ? 'bg-green-100 text-green-800' :
+                                insight.impact === 'negative' ? 'bg-red-100 text-red-800' :
+                                'bg-yellow-100 text-yellow-800'
+                            }">
+                                ${insight.impact.charAt(0).toUpperCase() + insight.impact.slice(1)}
+                            </span>
+                            <span class="text-xs text-gray-500">${insight.recommendation}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching insights:', error);
+            }
+        }
+
+        // Initial data load
+        updatePortfolioData();
+        updateInsights();
+
+        // Refresh data every 5 minutes
+        setInterval(() => {
+            updatePortfolioData();
+            updateInsights();
+        }, 300000);
+    </script>
+</body>
+</html> 

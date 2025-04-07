@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Document - TrendSense{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Upload Document</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('trendsense.trendsense_dashboard') }}">Trendsense</a></li>
+        <li class="breadcrumb-item active">Upload Document</li>
+    </ol>
+    
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-file-upload me-1"></i>
+                    Upload Document
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="documentType" class="form-label">Document Type</label>
+                            <select class="form-select" id="documentType" name="document_type" required>
+                                <option value="" selected disabled>Select a document type</option>
+                                <option value="sustainability_report">Sustainability Report</option>
+                                <option value="esg_report">ESG Report</option>
+                                <option value="annual_report">Annual Report</option>
+                                <option value="carbon_disclosure">Carbon Disclosure</option>
+                                <option value="water_disclosure">Water Disclosure</option>
+                                <option value="waste_disclosure">Waste Disclosure</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="companyName" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="companyName" name="company_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="documentFile" class="form-label">Document File</label>
+                            <input type="file" class="form-control" id="documentFile" name="file" accept=".pdf,.doc,.docx,.txt" required>
+                            <div class="form-text">Supported formats: PDF, DOC, DOCX, TXT</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="documentDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="documentDescription" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="extractData" name="extract_data" checked>
+                                <label class="form-check-label" for="extractData">
+                                    Extract data from document
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Document Guidelines
+                </div>
+                <div class="card-body">
+                    <h5>Supported Document Types</h5>
+                    <ul>
+                        <li><strong>Sustainability Report:</strong> Comprehensive reports on environmental, social, and governance performance</li>
+                        <li><strong>ESG Report:</strong> Environmental, Social, and Governance reports</li>
+                        <li><strong>Annual Report:</strong> Company annual reports with sustainability sections</li>
+                        <li><strong>Carbon Disclosure:</strong> Reports on carbon emissions and reduction strategies</li>
+                        <li><strong>Water Disclosure:</strong> Reports on water usage and management</li>
+                        <li><strong>Waste Disclosure:</strong> Reports on waste management and recycling</li>
+                    </ul>
+                    
+                    <h5 class="mt-4">File Requirements</h5>
+                    <ul>
+                        <li>Maximum file size: 10MB</li>
+                        <li>Supported formats: PDF, DOC, DOCX, TXT</li>
+                        <li>Text must be clear and readable</li>
+                        <li>Scanned documents must be OCR-processed</li>
+                    </ul>
+                    
+                    <h5 class="mt-4">Data Extraction</h5>
+                    <p>When data extraction is enabled, the system will:</p>
+                    <ul>
+                        <li>Identify key sustainability metrics</li>
+                        <li>Extract numerical data and targets</li>
+                        <li>Analyze commitments and goals</li>
+                        <li>Generate insights and recommendations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upload Progress Modal -->
+    <div class="modal fade" id="uploadProgressModal" tabindex="-1" aria-labelledby="uploadProgressModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadProgressModalLabel">Uploading Document</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="uploadProgress"></div>
+                    </div>
+                    <p id="uploadStatus">Preparing upload...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analysis Results Modal -->
+    <div class="modal fade" id="analysisResultsModal" tabindex="-1" aria-labelledby="analysisResultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="analysisResultsModalLabel">Analysis Results</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="analysisResults">
+                        <!-- Results will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="downloadReportBtn">Download Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadProgressModal = new bootstrap.Modal(document.getElementById('uploadProgressModal'));
+        const analysisResultsModal = new bootstrap.Modal(document.getElementById('analysisResultsModal'));
+        
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(uploadForm);
+            const fileInput = document.getElementById('documentFile');
+            
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                alert('File size exceeds 10MB limit');
+                return;
+            }
+            
+            // Show upload progress modal
+            uploadProgressModal.show();
+            
+            // Create XMLHttpRequest for upload with progress
+            const xhr = new XMLHttpRequest();
+            
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('uploadProgress').style.width = percentComplete + '%';
+                    document.getElementById('uploadStatus').textContent = `Uploading: ${Math.round(percentComplete)}%`;
+                }
+            });
+            
+            xhr.addEventListener('load', function() {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (response.success) {
+                        document.getElementById('uploadStatus').textContent = 'Upload complete! Analyzing document...';
+                        
+                        // If data extraction is enabled, show analysis results
+                        if (document.getElementById('extractData').checked) {
+                            // Poll for analysis completion
+                            pollAnalysisStatus(response.analysis_id);
+                        } else {
+                            uploadProgressModal.hide();
+                            alert('Document uploaded successfully!');
+                        }
+                    } else {
+                        uploadProgressModal.hide();
+                        alert('Upload failed: ' + (response.error || 'Unknown error'));
+                    }
+                } else {
+                    uploadProgressModal.hide();
+                    alert('Upload failed: ' + xhr.statusText);
+                }
+            });
+            
+            xhr.addEventListener('error', function() {
+                uploadProgressModal.hide();
+                alert('Upload failed: Network error');
+            });
+            
+            xhr.open('POST', '/api/trendsense/upload', true);
+            xhr.send(formData);
+        });
+        
+        function pollAnalysisStatus(analysisId) {
+            const pollInterval = setInterval(function() {
+                fetch(`/api/trendsense/analysis/${analysisId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'completed') {
+                            clearInterval(pollInterval);
+                            uploadProgressModal.hide();
+                            showAnalysisResults(data.results);
+                        } else if (data.status === 'failed') {
+                            clearInterval(pollInterval);
+                            uploadProgressModal.hide();
+                            alert('Analysis failed: ' + (data.error || 'Unknown error'));
+                        } else {
+                            document.getElementById('uploadStatus').textContent = 'Analyzing document: ' + data.status;
+                        }
+                    })
+                    .catch(error => {
+                        clearInterval(pollInterval);
+                        uploadProgressModal.hide();
+                        alert('Failed to check analysis status: ' + error.message);
+                    });
+            }, 2000); // Poll every 2 seconds
+        }
+        
+        function showAnalysisResults(results) {
+            let html = `
+                <div class="alert alert-success">
+                    <h4>Analysis Complete</h4>
+                    <p>Document has been successfully analyzed.</p>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h5>Key Metrics</h5>
+                        <ul>
+            `;
+            
+            results.key_metrics.forEach(metric => {
+                html += `<li>${metric.name}: ${metric.value} ${metric.unit}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Targets</h5>
+                        <ul>
+            `;
+            
+            results.targets.forEach(target => {
+                html += `<li>${target.description} (${target.timeline})</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Insights</h5>
+                        <ul>
+            `;
+            
+            results.insights.forEach(insight => {
+                html += `<li>${insight}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Recommendations</h5>
+                        <ul>
+            `;
+            
+            results.recommendations.forEach(recommendation => {
+                html += `<li>${recommendation}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('analysisResults').innerHTML = html;
+            analysisResultsModal.show();
+        }
+        
+        // Download report button
+        document.getElementById('downloadReportBtn').addEventListener('click', function() {
+            // Implementation for downloading the analysis report
+            alert('Report download functionality will be implemented here');
+        });
+    });
+</script>
+{% endblock %} 

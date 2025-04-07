@@ -1,0 +1,57 @@
+{% macro render_header() %}
+<header class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="TrendSense" height="30">
+            TrendSense
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/regulatory">Regulatory</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/portfolio">Portfolio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/analytics">Analytics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/import">Import</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/trendsense">
+                        <i class="fas fa-chart-line me-1"></i>
+                        Trendsense
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <div class="theme-switch-wrapper me-3">
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link nav-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% endmacro %} 

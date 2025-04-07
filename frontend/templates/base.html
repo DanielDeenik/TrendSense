@@ -1,0 +1,78 @@
+{% from "components/notifications.html" import flash_messages, notification_scripts %}
+{% from "components/trendsense.html" import render_status %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TrendSense{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/features/common.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/features/trendsense.css') }}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        {% from "components/header.html" import render_header %}
+        {{ render_header() }}
+        
+        <!-- Main Content -->
+        <main class="content-wrapper">
+            <div class="container">
+                <!-- Flash Messages -->
+                {{ flash_messages() }}
+                
+                <!-- Trendsense Status -->
+                <div class="trendsense-global-status mb-3">
+                    {{ render_status() }}
+                </div>
+                
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        {% from "components/footer.html" import render_footer %}
+        {{ render_footer() }}
+    </div>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/features/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/features/trendsense.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Notification Scripts -->
+    {{ notification_scripts() }}
+    
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+</body>
+</html> 

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% from "components/card.html" import metric_card, data_table %}
+
+{% block title %}Data Import - TrendSense™{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
+                Data Import
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Import and manage sustainability data for your portfolio
+            </p>
+        </div>
+    </div>
+
+    <!-- Import Section -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <!-- ESG Data Import -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                ESG Data Import
+            </h3>
+            <form action="{{ url_for('import_esg_data') }}" method="post" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Upload ESG Data File
+                    </label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <i class="fas fa-file-upload text-gray-400 text-3xl mb-3"></i>
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400">
+                                <label for="esg-file" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input id="esg-file" name="file" type="file" class="sr-only" accept=".csv,.xlsx,.xls">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                CSV, Excel files up to 10MB
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Import ESG Data
+                </button>
+            </form>
+        </div>
+
+        <!-- Carbon Data Import -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                Carbon Data Import
+            </h3>
+            <form action="{{ url_for('import_carbon_data') }}" method="post" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Upload Carbon Data File
+                    </label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-3"></i>
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400">
+                                <label for="carbon-file" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input id="carbon-file" name="file" type="file" class="sr-only" accept=".csv,.xlsx,.xls">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                CSV, Excel files up to 10MB
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Import Carbon Data
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recent Imports -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+            Recent Imports
+        </h3>
+        {% if recent_imports %}
+            {{ data_table(
+                headers=['Import Date', 'Type', 'File Name', 'Status', 'Actions'],
+                rows=recent_imports
+            ) }}
+        {% else %}
+            <p class="text-gray-500 dark:text-gray-400 text-center py-4">
+                No recent imports found
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Data Preview -->
+    {% if preview_data %}
+    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+            Data Preview
+        </h3>
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+            {{ metric_card(
+                title="Companies",
+                value=preview_data.companies_count,
+                change="",
+                trend="neutral",
+                icon_class="fa-building"
+            ) }}
+            
+            {{ metric_card(
+                title="Data Points",
+                value=preview_data.data_points,
+                change="",
+                trend="neutral",
+                icon_class="fa-database"
+            ) }}
+            
+            {{ metric_card(
+                title="Date Range",
+                value=preview_data.date_range,
+                change="",
+                trend="neutral",
+                icon_class="fa-calendar"
+            ) }}
+        </div>
+
+        {% if preview_data.sample_rows %}
+            <div class="mt-6">
+                <h4 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-2">
+                    Sample Data
+                </h4>
+                {{ data_table(
+                    headers=preview_data.headers,
+                    rows=preview_data.sample_rows
+                ) }}
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File upload preview
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+            const fileName = e.target.files[0].name;
+            const label = input.parentElement.querySelector('span');
+            label.textContent = fileName;
+        });
+    });
+
+    // Drag and drop functionality
+    const dropZones = document.querySelectorAll('.border-dashed');
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            zone.classList.add('border-indigo-500');
+        });
+
+        zone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            zone.classList.remove('border-indigo-500');
+        });
+
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            zone.classList.remove('border-indigo-500');
+            
+            const input = zone.querySelector('input[type="file"]');
+            const file = e.dataTransfer.files[0];
+            
+            // Create a new FileList object
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            input.files = dataTransfer.files;
+            
+            // Update label
+            const label = input.parentElement.querySelector('span');
+            label.textContent = file.name;
+        });
+    });
+});
+</script>
+{% endblock %} 

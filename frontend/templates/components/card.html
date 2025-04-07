@@ -1,0 +1,174 @@
+{% macro metric_card(title, value, change, trend, icon_class="fa-chart-line", bg_class="bg-white") %}
+<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300 {{ bg_class }}">
+    <div class="p-6">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ title }}
+                </h3>
+                <p class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100">
+                    {{ value }}
+                </p>
+                <p class="mt-2 flex items-center text-sm">
+                    <span class="{% if trend == 'positive' %}text-green-500{% else %}text-red-500{% endif %}">
+                        <i class="fas {% if trend == 'positive' %}fa-arrow-up{% else %}fa-arrow-down{% endif %} mr-1"></i>
+                        {{ change }}
+                    </span>
+                    <span class="text-gray-500 dark:text-gray-400 ml-2">vs last month</span>
+                </p>
+            </div>
+            <div class="flex-shrink-0 p-3 rounded-full {% if trend == 'positive' %}bg-green-100 dark:bg-green-800{% else %}bg-red-100 dark:bg-red-800{% endif %}">
+                <i class="fas {{ icon_class }} text-xl {% if trend == 'positive' %}text-green-500 dark:text-green-200{% else %}text-red-500 dark:text-red-200{% endif %}"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro insight_card(title, content, impact="medium", category="general") %}
+<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300">
+    <div class="p-6">
+        <div class="flex items-start">
+            <div class="flex-1">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center">
+                    {{ title }}
+                    {% if impact == "high" %}
+                        <span class="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200">High Impact</span>
+                    {% elif impact == "medium" %}
+                        <span class="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200">Medium Impact</span>
+                    {% endif %}
+                </h3>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    {{ content }}
+                </p>
+            </div>
+            <div class="ml-4">
+                {% if category == "emissions" %}
+                    <i class="fas fa-cloud text-blue-500 dark:text-blue-400"></i>
+                {% elif category == "water" %}
+                    <i class="fas fa-water text-blue-500 dark:text-blue-400"></i>
+                {% elif category == "energy" %}
+                    <i class="fas fa-bolt text-yellow-500 dark:text-yellow-400"></i>
+                {% else %}
+                    <i class="fas fa-lightbulb text-purple-500 dark:text-purple-400"></i>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro chart_card(title, chart_id, description=None) %}
+<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            {{ title }}
+        </h3>
+        {% if description %}
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {{ description }}
+        </p>
+        {% endif %}
+        <div class="mt-4 h-64">
+            <canvas id="{{ chart_id }}"></canvas>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro data_table(headers, rows, actions=False) %}
+<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    {% for header in headers %}
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        {{ header }}
+                    </th>
+                    {% endfor %}
+                    {% if actions %}
+                    <th scope="col" class="relative px-6 py-3">
+                        <span class="sr-only">Actions</span>
+                    </th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {% for row in rows %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    {% for cell in row %}
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                        {{ cell }}
+                    </td>
+                    {% endfor %}
+                    {% if actions %}
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
+                            Edit
+                        </button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_card(title, content, footer=None, icon=None) %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            {% if icon %}
+            <i class="{{ icon }} me-2"></i>
+            {% endif %}
+            {{ title }}
+        </h5>
+    </div>
+    <div class="card-body">
+        {{ content }}
+    </div>
+    {% if footer %}
+    <div class="card-footer bg-white">
+        {{ footer }}
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_data_card(title, data, icon=None) %}
+{% set content %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                {% for header in data.headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data.rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endset %}
+{{ render_card(title, content, icon=icon) }}
+{% endmacro %}
+
+{% macro render_chart_card(title, chart_id, icon=None) %}
+{% set content %}
+<div class="chart-container" style="position: relative; height:300px;">
+    <canvas id="{{ chart_id }}"></canvas>
+</div>
+{% endset %}
+{{ render_card(title, content, icon=icon) }}
+{% endmacro %} 

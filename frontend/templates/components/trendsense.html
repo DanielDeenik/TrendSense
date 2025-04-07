@@ -1,0 +1,105 @@
+{% macro render_status() %}
+<div class="trendsense-status">
+    <div class="d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm me-2" role="status" id="trendsense-status-spinner" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="badge bg-success" id="trendsense-connected">Connected</span>
+        <span class="badge bg-danger" id="trendsense-disconnected" style="display:none">Disconnected</span>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_analysis_card(title="Trendsense Analysis") %}
+<div class="card trendsense-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ title }}</h5>
+        {{ render_status() }}
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <label class="form-label">Analysis Depth</label>
+            <select class="form-select" id="trendsense-depth">
+                <option value="basic">Basic Analysis</option>
+                <option value="advanced">Advanced Analysis</option>
+                <option value="comprehensive">Comprehensive Analysis</option>
+            </select>
+        </div>
+        <div id="trendsense-insights-container">
+            <!-- Insights will be rendered here -->
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_confidence_badge(level) %}
+{% set badge_classes = {
+    'high': 'bg-success',
+    'medium': 'bg-warning',
+    'low': 'bg-danger'
+} %}
+<span class="badge {{ badge_classes[level] }} trendsense-confidence-{{ level }}">
+    {{ level|title }} Confidence
+</span>
+{% endmacro %}
+
+{% macro render_insight(title, content, confidence="medium", recommendations=None) %}
+<div class="trendsense-insight mb-3">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">{{ title }}</h6>
+            {{ render_confidence_badge(confidence) }}
+        </div>
+        <div class="card-body">
+            <p class="mb-3">{{ content }}</p>
+            {% if recommendations %}
+            <div class="trendsense-recommendations">
+                <h6 class="mb-2">Recommendations:</h6>
+                <ul class="mb-0">
+                    {% for rec in recommendations %}
+                    <li>{{ rec }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_processing_status() %}
+<div class="trendsense-processing-status">
+    <div class="d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Processing...</span>
+        </div>
+        <span>Processing document with Trendsense...</span>
+    </div>
+    <div class="progress mt-2">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_comparison_table(standard_data, trendsense_data) %}
+<div class="table-responsive">
+    <table class="table table-bordered trendsense-comparison">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Standard Extraction</th>
+                <th>Trendsense Enhanced</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in standard_data.keys() %}
+            <tr>
+                <td>{{ field }}</td>
+                <td>{{ standard_data[field] }}</td>
+                <td class="trendsense-highlight">{{ trendsense_data[field] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endmacro %} 

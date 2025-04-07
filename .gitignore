@@ -1,3 +1,6 @@
+# Environment variables
+.env
+
 # Python
 __pycache__/
 *.py[cod]
@@ -16,6 +19,7 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -32,11 +36,6 @@ yarn-debug.log
 yarn-error.log
 .DS_Store
 dist/
-.env
-.env.local
-.env.development
-.env.test
-.env.production
 
 # Database files
 *.sqlite3
@@ -58,16 +57,10 @@ temp/
 tmp/
 *.log
 *.swp
+*.swo
 
 # Jupyter Notebook
 .ipynb_checkpoints
-
-# Private files
-.env
-secrets.toml
-auth_config.json
-.api_keys
-.mapbox_token
 
 # Project specific
 generated/
@@ -80,3 +73,59 @@ uploads/
 .directory
 .Trash-*
 .nfs*
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+
+# Local development
+.env.local
+.env.*.local
+instance/
+.webassets-cache
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Distribution
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# OS
+.DS_Store
+Thumbs.db

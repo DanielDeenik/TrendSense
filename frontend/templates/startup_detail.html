@@ -1,0 +1,920 @@
+{% extends "base.html" %}
+
+{% block title %}{{ startup.name }} - TrendSense{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/vc-lens">VC Lens</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ startup.name }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Startup Overview -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Startup Overview</h5>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" onclick="editStartup({{ startup.id }})">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteStartup({{ startup.id }})">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> {{ startup.name }}</p>
+                            <p><strong>Description:</strong> {{ startup.description or 'No description available' }}</p>
+                            <p><strong>Sector:</strong> {{ startup.sector or 'Not specified' }}</p>
+                            <p><strong>Country:</strong> {{ startup.country or 'Not specified' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Founded Year:</strong> {{ startup.founded_year or 'Not specified' }}</p>
+                            <p><strong>Funding Stage:</strong> {{ startup.funding_stage or 'Not specified' }}</p>
+                            <p><strong>Portfolio:</strong> {{ startup.portfolio_name or 'Not assigned to a portfolio' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="uploadDocument({{ startup.id }})">
+                            <i class="bi bi-upload"></i> Upload Document
+                        </button>
+                        <button class="btn btn-primary" onclick="addLCAData({{ startup.id }})">
+                            <i class="bi bi-graph-up"></i> Add LCA Data
+                        </button>
+                        <button class="btn btn-primary" onclick="createMaterialityMatrix({{ startup.id }})">
+                            <i class="bi bi-table"></i> Create Materiality Matrix
+                        </button>
+                        <button class="btn btn-primary" onclick="assessStartup({{ startup.id }})">
+                            <i class="bi bi-check2-square"></i> Assess Startup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LCA Data -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Life Cycle Assessment (LCA) Data</h5>
+                    <button class="btn btn-primary" onclick="addLCAData({{ startup.id }})">
+                        <i class="bi bi-plus-lg"></i> Add LCA Data
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if startup.lca_data %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Product Information</h6>
+                            <p><strong>Product Name:</strong> {{ startup.lca_data.product_name }}</p>
+                            <p><strong>Functional Unit:</strong> {{ startup.lca_data.functional_unit }}</p>
+                            <p><strong>System Boundary:</strong> {{ startup.lca_data.system_boundary }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Environmental Impact</h6>
+                            <p><strong>Global Warming Potential:</strong> {{ startup.lca_data.global_warming_potential }}</p>
+                            <p><strong>Water Consumption:</strong> {{ startup.lca_data.water_consumption }}</p>
+                            <p><strong>Energy Consumption:</strong> {{ startup.lca_data.energy_consumption }}</p>
+                            <p><strong>Resource Depletion:</strong> {{ startup.lca_data.resource_depletion }}</p>
+                            <p><strong>Eutrophication:</strong> {{ startup.lca_data.eutrophication }}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6>Life Cycle Stages</h6>
+                            <p><strong>Raw Materials:</strong> {{ startup.lca_data.raw_materials }}</p>
+                            <p><strong>Manufacturing:</strong> {{ startup.lca_data.manufacturing }}</p>
+                            <p><strong>Distribution:</strong> {{ startup.lca_data.distribution }}</p>
+                            <p><strong>Use Phase:</strong> {{ startup.lca_data.use_phase }}</p>
+                            <p><strong>End of Life:</strong> {{ startup.lca_data.end_of_life }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Circularity Metrics</h6>
+                            <p><strong>Recyclability:</strong> {{ startup.lca_data.recyclability }}</p>
+                            <p><strong>Reusability:</strong> {{ startup.lca_data.reusability }}</p>
+                            <p><strong>Biodegradability:</strong> {{ startup.lca_data.biodegradability }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No LCA data available. Click the button above to add LCA data.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materiality Matrix -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Materiality Matrix</h5>
+                    <button class="btn btn-primary" onclick="createMaterialityMatrix({{ startup.id }})">
+                        <i class="bi bi-plus-lg"></i> Create Materiality Matrix
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if startup.materiality_matrix %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Context</h6>
+                            <p><strong>Sector:</strong> {{ startup.materiality_matrix.sector }}</p>
+                            <p><strong>Geography:</strong> {{ startup.materiality_matrix.geography }}</p>
+                            <p><strong>Company Size:</strong> {{ startup.materiality_matrix.company_size }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Regulatory Exposure</h6>
+                            <p><strong>Current Regulations:</strong> {{ startup.materiality_matrix.regulatory_exposure.current_regulations }}</p>
+                            <p><strong>Upcoming Regulations:</strong> {{ startup.materiality_matrix.regulatory_exposure.upcoming_regulations }}</p>
+                            <p><strong>Regulatory Risk Level:</strong> {{ startup.materiality_matrix.regulatory_exposure.risk_level }}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Matrix Data</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Impact Area</th>
+                                            <th>Business Impact</th>
+                                            <th>Stakeholder Impact</th>
+                                            <th>Materiality Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in startup.materiality_matrix.matrix_data %}
+                                        <tr>
+                                            <td>{{ item.impact_area }}</td>
+                                            <td>{{ item.business_impact }}</td>
+                                            <td>{{ item.stakeholder_impact }}</td>
+                                            <td>{{ item.materiality_level }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No materiality matrix available. Click the button above to create a materiality matrix.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Documents</h5>
+                    <button class="btn btn-primary" onclick="uploadDocument({{ startup.id }})">
+                        <i class="bi bi-plus-lg"></i> Upload Document
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if startup.documents %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Document Type</th>
+                                    <th>File Name</th>
+                                    <th>File Size</th>
+                                    <th>Upload Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for document in startup.documents %}
+                                <tr>
+                                    <td>{{ document.document_type }}</td>
+                                    <td>{{ document.file_name }}</td>
+                                    <td>{{ document.file_size }}</td>
+                                    <td>{{ document.created_at }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument({{ document.id }})">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="downloadDocument({{ document.id }})">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument({{ document.id }})">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No documents available. Click the button above to upload a document.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessments -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Assessments</h5>
+                    <button class="btn btn-primary" onclick="assessStartup({{ startup.id }})">
+                        <i class="bi bi-plus-lg"></i> New Assessment
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if startup.assessments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>VC Firm</th>
+                                    <th>Investment Thesis</th>
+                                    <th>Overall Readiness Score</th>
+                                    <th>Assessment Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assessment in startup.assessments %}
+                                <tr>
+                                    <td>{{ assessment.vc_firm_name }}</td>
+                                    <td>{{ assessment.investment_thesis_title }}</td>
+                                    <td>{{ assessment.overall_readiness_score }}</td>
+                                    <td>{{ assessment.created_at }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewAssessment({{ assessment.id }})">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteAssessment({{ assessment.id }})">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No assessments available. Click the button above to create a new assessment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Document Modal -->
+<div class="modal fade" id="uploadDocumentModal" tabindex="-1" aria-labelledby="uploadDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadDocumentModalLabel">Upload Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadDocumentForm">
+                    <div class="mb-3">
+                        <label for="documentType" class="form-label">Document Type</label>
+                        <select class="form-select" id="documentType" name="document_type" required>
+                            <option value="">Select Document Type</option>
+                            <option value="business_plan">Business Plan</option>
+                            <option value="financial_statement">Financial Statement</option>
+                            <option value="sustainability_report">Sustainability Report</option>
+                            <option value="lca_report">LCA Report</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentFile" class="form-label">File</label>
+                        <input type="file" class="form-control" id="documentFile" name="file" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveDocumentBtn">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add LCA Data Modal -->
+<div class="modal fade" id="addLCADataModal" tabindex="-1" aria-labelledby="addLCADataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLCADataModalLabel">Add LCA Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addLCADataForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" name="product_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="functionalUnit" class="form-label">Functional Unit</label>
+                            <input type="text" class="form-control" id="functionalUnit" name="functional_unit">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="systemBoundary" class="form-label">System Boundary</label>
+                        <textarea class="form-control" id="systemBoundary" name="system_boundary" rows="2"></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="rawMaterials" class="form-label">Raw Materials</label>
+                            <textarea class="form-control" id="rawMaterials" name="raw_materials" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="manufacturing" class="form-label">Manufacturing</label>
+                            <textarea class="form-control" id="manufacturing" name="manufacturing" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="distribution" class="form-label">Distribution</label>
+                            <textarea class="form-control" id="distribution" name="distribution" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="usePhase" class="form-label">Use Phase</label>
+                            <textarea class="form-control" id="usePhase" name="use_phase" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endOfLife" class="form-label">End of Life</label>
+                        <textarea class="form-control" id="endOfLife" name="end_of_life" rows="3"></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="globalWarmingPotential" class="form-label">Global Warming Potential</label>
+                            <input type="text" class="form-control" id="globalWarmingPotential" name="global_warming_potential">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="waterConsumption" class="form-label">Water Consumption</label>
+                            <input type="text" class="form-control" id="waterConsumption" name="water_consumption">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="energyConsumption" class="form-label">Energy Consumption</label>
+                            <input type="text" class="form-control" id="energyConsumption" name="energy_consumption">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="resourceDepletion" class="form-label">Resource Depletion</label>
+                            <input type="text" class="form-control" id="resourceDepletion" name="resource_depletion">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="eutrophication" class="form-label">Eutrophication</label>
+                            <input type="text" class="form-control" id="eutrophication" name="eutrophication">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="recyclability" class="form-label">Recyclability</label>
+                            <input type="text" class="form-control" id="recyclability" name="recyclability">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="reusability" class="form-label">Reusability</label>
+                            <input type="text" class="form-control" id="reusability" name="reusability">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="biodegradability" class="form-label">Biodegradability</label>
+                            <input type="text" class="form-control" id="biodegradability" name="biodegradability">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveLCADataBtn">Save LCA Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Materiality Matrix Modal -->
+<div class="modal fade" id="createMaterialityMatrixModal" tabindex="-1" aria-labelledby="createMaterialityMatrixModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMaterialityMatrixModalLabel">Create Materiality Matrix</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createMaterialityMatrixForm">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="matrixSector" class="form-label">Sector</label>
+                            <input type="text" class="form-control" id="matrixSector" name="sector">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="matrixGeography" class="form-label">Geography</label>
+                            <input type="text" class="form-control" id="matrixGeography" name="geography">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="matrixCompanySize" class="form-label">Company Size</label>
+                            <input type="text" class="form-control" id="matrixCompanySize" name="company_size">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matrixData" class="form-label">Matrix Data</label>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="matrixDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Impact Area</th>
+                                        <th>Business Impact</th>
+                                        <th>Stakeholder Impact</th>
+                                        <th>Materiality Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="text" class="form-control" name="impact_area[]"></td>
+                                        <td><input type="number" class="form-control" name="business_impact[]" min="1" max="5"></td>
+                                        <td><input type="number" class="form-control" name="stakeholder_impact[]" min="1" max="5"></td>
+                                        <td><input type="text" class="form-control" name="materiality_level[]" readonly></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addMatrixRow()">
+                            <i class="bi bi-plus-lg"></i> Add Row
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="regulatoryExposure" class="form-label">Regulatory Exposure</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="currentRegulations" class="form-label">Current Regulations</label>
+                                <textarea class="form-control" id="currentRegulations" name="current_regulations" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="upcomingRegulations" class="form-label">Upcoming Regulations</label>
+                                <textarea class="form-control" id="upcomingRegulations" name="upcoming_regulations" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="regulatoryRiskLevel" class="form-label">Regulatory Risk Level</label>
+                                <select class="form-select" id="regulatoryRiskLevel" name="risk_level">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveMaterialityMatrixBtn">Save Materiality Matrix</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assess Startup Modal -->
+<div class="modal fade" id="assessStartupModal" tabindex="-1" aria-labelledby="assessStartupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assessStartupModalLabel">Assess Startup</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="assessStartupForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="assessmentVCFirm" class="form-label">VC Firm *</label>
+                            <select class="form-select" id="assessmentVCFirm" name="vc_firm_id" required>
+                                <option value="">Select VC Firm</option>
+                                <!-- VC firms will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="assessmentThesis" class="form-label">Investment Thesis</label>
+                            <select class="form-select" id="assessmentThesis" name="investment_thesis_id">
+                                <option value="">Select Investment Thesis</option>
+                                <!-- Investment theses will be loaded here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="productViabilityScore" class="form-label">Product Viability Score</label>
+                            <input type="number" class="form-control" id="productViabilityScore" name="product_viability_score" min="0" max="1" step="0.01">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="operationalMaturityScore" class="form-label">Operational Maturity Score</label>
+                            <input type="number" class="form-control" id="operationalMaturityScore" name="operational_maturity_score" min="0" max="1" step="0.01">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="governanceRiskScore" class="form-label">Governance Risk Score</label>
+                            <input type="number" class="form-control" id="governanceRiskScore" name="governance_risk_score" min="0" max="1" step="0.01">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="strategicFitScore" class="form-label">Strategic Fit Score</label>
+                            <input type="number" class="form-control" id="strategicFitScore" name="strategic_fit_score" min="0" max="1" step="0.01">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="marketSignalScore" class="form-label">Market Signal Score</label>
+                            <input type="number" class="form-control" id="marketSignalScore" name="market_signal_score" min="0" max="1" step="0.01">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="overallReadinessScore" class="form-label">Overall Readiness Score</label>
+                            <input type="number" class="form-control" id="overallReadinessScore" name="overall_readiness_score" min="0" max="1" step="0.01">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productViabilityDetails" class="form-label">Product Viability Details</label>
+                        <textarea class="form-control" id="productViabilityDetails" name="product_viability_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="operationalMaturityDetails" class="form-label">Operational Maturity Details</label>
+                        <textarea class="form-control" id="operationalMaturityDetails" name="operational_maturity_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="governanceRiskDetails" class="form-label">Governance Risk Details</label>
+                        <textarea class="form-control" id="governanceRiskDetails" name="governance_risk_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="strategicFitDetails" class="form-label">Strategic Fit Details</label>
+                        <textarea class="form-control" id="strategicFitDetails" name="strategic_fit_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="marketSignalDetails" class="form-label">Market Signal Details</label>
+                        <textarea class="form-control" id="marketSignalDetails" name="market_signal_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="aiInsights" class="form-label">AI Insights</label>
+                        <textarea class="form-control" id="aiInsights" name="ai_insights" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="improvementRecommendations" class="form-label">Improvement Recommendations</label>
+                        <textarea class="form-control" id="improvementRecommendations" name="improvement_recommendations" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveAssessmentBtn">Save Assessment</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Upload document
+    function uploadDocument(startupId) {
+        const modal = new bootstrap.Modal(document.getElementById('uploadDocumentModal'));
+        modal.show();
+        
+        document.getElementById('saveDocumentBtn').addEventListener('click', function() {
+            const form = document.getElementById('uploadDocumentForm');
+            const formData = new FormData(form);
+            
+            fetch(`/api/vc/startups/${startupId}/documents`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Document uploaded successfully', 'success');
+                    modal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error uploading document:', error);
+                    showNotification(error.message, 'error');
+                });
+        });
+    }
+    
+    // Add LCA data
+    function addLCAData(startupId) {
+        const modal = new bootstrap.Modal(document.getElementById('addLCADataModal'));
+        modal.show();
+        
+        document.getElementById('saveLCADataBtn').addEventListener('click', function() {
+            const form = document.getElementById('addLCADataForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            fetch(`/api/vc/startups/${startupId}/lca`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('LCA data created successfully', 'success');
+                    modal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error creating LCA data:', error);
+                    showNotification(error.message, 'error');
+                });
+        });
+    }
+    
+    // Create materiality matrix
+    function createMaterialityMatrix(startupId) {
+        const modal = new bootstrap.Modal(document.getElementById('createMaterialityMatrixModal'));
+        modal.show();
+        
+        document.getElementById('saveMaterialityMatrixBtn').addEventListener('click', function() {
+            const form = document.getElementById('createMaterialityMatrixForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Process matrix data
+            const matrixData = [];
+            const impactAreas = formData.getAll('impact_area[]');
+            const businessImpacts = formData.getAll('business_impact[]');
+            const stakeholderImpacts = formData.getAll('stakeholder_impact[]');
+            
+            for (let i = 0; i < impactAreas.length; i++) {
+                matrixData.push({
+                    impact_area: impactAreas[i],
+                    business_impact: businessImpacts[i],
+                    stakeholder_impact: stakeholderImpacts[i],
+                    materiality_level: calculateMaterialityLevel(businessImpacts[i], stakeholderImpacts[i])
+                });
+            }
+            
+            data.matrix_data = matrixData;
+            
+            fetch(`/api/vc/startups/${startupId}/materiality`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Materiality matrix created successfully', 'success');
+                    modal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error creating materiality matrix:', error);
+                    showNotification(error.message, 'error');
+                });
+        });
+    }
+    
+    // Calculate materiality level
+    function calculateMaterialityLevel(businessImpact, stakeholderImpact) {
+        const total = parseInt(businessImpact) + parseInt(stakeholderImpact);
+        
+        if (total >= 8) {
+            return 'High';
+        } else if (total >= 5) {
+            return 'Medium';
+        } else {
+            return 'Low';
+        }
+    }
+    
+    // Add matrix row
+    function addMatrixRow() {
+        const tbody = document.querySelector('#matrixDataTable tbody');
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+            <td><input type="text" class="form-control" name="impact_area[]"></td>
+            <td><input type="number" class="form-control" name="business_impact[]" min="1" max="5"></td>
+            <td><input type="number" class="form-control" name="stakeholder_impact[]" min="1" max="5"></td>
+            <td><input type="text" class="form-control" name="materiality_level[]" readonly></td>
+        `;
+        
+        tbody.appendChild(tr);
+    }
+    
+    // Assess startup
+    function assessStartup(startupId) {
+        const modal = new bootstrap.Modal(document.getElementById('assessStartupModal'));
+        modal.show();
+        
+        // Load VC firms
+        fetch('/api/vc/firms')
+            .then(response => response.json())
+            .then(data => {
+                const vcFirmSelect = document.querySelector('#assessmentVCFirm');
+                vcFirmSelect.innerHTML = '<option value="">Select VC Firm</option>';
+                
+                data.vc_firms.forEach(firm => {
+                    const option = document.createElement('option');
+                    option.value = firm.id;
+                    option.textContent = firm.name;
+                    vcFirmSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading VC firms:', error);
+                showNotification('Error loading VC firms', 'error');
+            });
+        
+        // Load investment theses when VC firm is selected
+        document.querySelector('#assessmentVCFirm').addEventListener('change', function() {
+            const vcFirmId = this.value;
+            
+            if (vcFirmId) {
+                fetch(`/api/vc/theses?vc_firm_id=${vcFirmId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const thesisSelect = document.querySelector('#assessmentThesis');
+                        thesisSelect.innerHTML = '<option value="">Select Investment Thesis</option>';
+                        
+                        data.investment_theses.forEach(thesis => {
+                            const option = document.createElement('option');
+                            option.value = thesis.id;
+                            option.textContent = thesis.title;
+                            thesisSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading investment theses:', error);
+                        showNotification('Error loading investment theses', 'error');
+                    });
+            }
+        });
+        
+        document.getElementById('saveAssessmentBtn').addEventListener('click', function() {
+            const form = document.getElementById('assessStartupForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            fetch(`/api/vc/startups/${startupId}/assess`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Startup assessed successfully', 'success');
+                    modal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error assessing startup:', error);
+                    showNotification(error.message, 'error');
+                });
+        });
+    }
+    
+    // View document
+    function viewDocument(documentId) {
+        window.location.href = `/api/vc/documents/${documentId}`;
+    }
+    
+    // Download document
+    function downloadDocument(documentId) {
+        window.location.href = `/api/vc/documents/${documentId}/download`;
+    }
+    
+    // Delete document
+    function deleteDocument(documentId) {
+        if (confirm('Are you sure you want to delete this document?')) {
+            fetch(`/api/vc/documents/${documentId}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Document deleted successfully', 'success');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting document:', error);
+                    showNotification(error.message, 'error');
+                });
+        }
+    }
+    
+    // View assessment
+    function viewAssessment(assessmentId) {
+        window.location.href = `/vc-lens/assessment/${assessmentId}`;
+    }
+    
+    // Delete assessment
+    function deleteAssessment(assessmentId) {
+        if (confirm('Are you sure you want to delete this assessment?')) {
+            fetch(`/api/vc/assessments/${assessmentId}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Assessment deleted successfully', 'success');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting assessment:', error);
+                    showNotification(error.message, 'error');
+                });
+        }
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.appendChild(toast);
+        
+        document.body.appendChild(container);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', function() {
+            container.remove();
+        });
+    }
+</script>
+{% endblock %} 

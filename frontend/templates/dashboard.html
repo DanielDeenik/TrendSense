@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TrendSense{% endblock %}
+
+{% block content %}
+<!-- Navigation Controls -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
+    <div class="btn-group" role="group" aria-label="Navigation controls">
+        <button type="button" class="btn btn-outline-secondary" id="backButton" disabled>
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="forwardButton" disabled>
+            Forward <i class="fas fa-arrow-right ms-1"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Metrics Cards -->
+<div class="row g-4 mb-4">
+    <!-- Carbon Intensity -->
+    <div class="col-md-6 col-lg-3">
+        {% from "components/card.html" import metric_card %}
+        {{ metric_card(
+            title="Carbon Intensity",
+            value="--",
+            change="0%",
+            trend="neutral",
+            icon_class="fa-smog",
+            bg_class="bg-white"
+        ) }}
+    </div>
+
+    <!-- ESG Score -->
+    <div class="col-md-6 col-lg-3">
+        {{ metric_card(
+            title="ESG Score",
+            value="--",
+            change="0%",
+            trend="neutral",
+            icon_class="fa-chart-line",
+            bg_class="bg-white"
+        ) }}
+    </div>
+
+    <!-- Renewable Energy -->
+    <div class="col-md-6 col-lg-3">
+        {{ metric_card(
+            title="Renewable Energy",
+            value="--",
+            change="0%",
+            trend="neutral",
+            icon_class="fa-solar-panel",
+            bg_class="bg-white"
+        ) }}
+    </div>
+
+    <!-- Water Intensity -->
+    <div class="col-md-6 col-lg-3">
+        {{ metric_card(
+            title="Water Intensity",
+            value="--",
+            change="0%",
+            trend="neutral",
+            icon_class="fa-tint",
+            bg_class="bg-white"
+        ) }}
+    </div>
+</div>
+
+<!-- Charts and Insights -->
+<div class="row g-4">
+    <!-- Emissions Chart -->
+    <div class="col-lg-6">
+        {% from "components/card.html" import chart_card %}
+        {{ chart_card(
+            title="Emissions Trend",
+            chart_id="emissionsChart",
+            description="Historical emissions data over time"
+        ) }}
+    </div>
+
+    <!-- AI Insights -->
+    <div class="col-lg-6">
+        {% from "components/card.html" import render_card %}
+        {% set insights_content %}
+        <div class="space-y-3" id="insights-list">
+            <!-- Insights will be populated here -->
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Loading insights...</p>
+            </div>
+        </div>
+        {% endset %}
+        {{ render_card("AI Insights", insights_content, icon="fas fa-lightbulb") }}
+    </div>
+</div>
+
+<!-- Trendsense Analysis Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        {% from "components/trendsense.html" import render_analysis_card, render_processing_status %}
+        {{ render_processing_status() }}
+        {{ render_analysis_card(title="Trendsense Analysis") }}
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h4 class="mb-3">Quick Actions</h4>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('vc.vc_lens') }}" class="btn btn-primary">
+                <i class="fas fa-search-dollar me-2"></i>VC Lens
+            </a>
+            <a href="{{ url_for('trendsense.dashboard') }}" class="btn btn-success">
+                <i class="fas fa-chart-line me-2"></i>Trendsense
+            </a>
+            <a href="{{ url_for('import_document') }}" class="btn btn-info">
+                <i class="fas fa-file-import me-2"></i>Import Document
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize charts
+    const emissionsCtx = document.getElementById('emissionsChart');
+    new Chart(emissionsCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Emissions',
+                data: [12, 19, 3, 5, 2, 3],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Load insights
+    fetch('/api/insights')
+        .then(response => response.json())
+        .then(data => {
+            const insightsList = document.getElementById('insights-list');
+            insightsList.innerHTML = data.insights.map(insight => `
+                <div class="insight-item">
+                    <h6>${insight.title}</h6>
+                    <p class="text-muted mb-0">${insight.content}</p>
+                </div>
+            `).join('');
+        })
+        .catch(error => {
+            console.error('Error loading insights:', error);
+            const insightsList = document.getElementById('insights-list');
+            insightsList.innerHTML = `
+                <div class="alert alert-danger">
+                    Failed to load insights. Please try again later.
+                </div>
+            `;
+        });
+});
+</script>
+{% endblock %} 

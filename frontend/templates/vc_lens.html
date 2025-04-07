@@ -1,0 +1,681 @@
+{% extends "base.html" %}
+
+{% block title %}VC Lens - TrendSense{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 mb-0">VC Lens</h1>
+            <p class="text-muted">VC-grade sustainability assessment tool for actionable investment insights</p>
+        </div>
+    </div>
+
+    <!-- VC Firms Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">VC Firms</h5>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVCFirmModal">
+                        <i class="bi bi-plus-lg"></i> Add VC Firm
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="vcFirmsTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Headquarters</th>
+                                    <th>Fund Size</th>
+                                    <th>Investment Focus</th>
+                                    <th>Sustainability Focus</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- VC firms will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolios Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Portfolios</h5>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPortfolioModal">
+                        <i class="bi bi-plus-lg"></i> Add Portfolio
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="portfoliosTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>VC Firm</th>
+                                    <th>Fund Name</th>
+                                    <th>Vintage Year</th>
+                                    <th>Startups</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Portfolios will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Startups Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Startups</h5>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStartupModal">
+                        <i class="bi bi-plus-lg"></i> Add Startup
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="startupsTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Portfolio</th>
+                                    <th>Sector</th>
+                                    <th>Country</th>
+                                    <th>Funding Stage</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Startups will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add VC Firm Modal -->
+<div class="modal fade" id="addVCFirmModal" tabindex="-1" aria-labelledby="addVCFirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addVCFirmModalLabel">Add VC Firm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addVCFirmForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="vcFirmName" class="form-label">Name *</label>
+                            <input type="text" class="form-control" id="vcFirmName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="vcFirmWebsite" class="form-label">Website</label>
+                            <input type="url" class="form-control" id="vcFirmWebsite" name="website">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="vcFirmFoundedYear" class="form-label">Founded Year</label>
+                            <input type="number" class="form-control" id="vcFirmFoundedYear" name="founded_year">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="vcFirmHeadquarters" class="form-label">Headquarters</label>
+                            <input type="text" class="form-control" id="vcFirmHeadquarters" name="headquarters">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="vcFirmFundSize" class="form-label">Fund Size</label>
+                            <input type="text" class="form-control" id="vcFirmFundSize" name="fund_size">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="vcFirmInvestmentFocus" class="form-label">Investment Focus</label>
+                            <input type="text" class="form-control" id="vcFirmInvestmentFocus" name="investment_focus">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vcFirmDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="vcFirmDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vcFirmSustainabilityFocus" class="form-label">Sustainability Focus</label>
+                        <textarea class="form-control" id="vcFirmSustainabilityFocus" name="sustainability_focus" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vcFirmImpactGoals" class="form-label">Impact Goals</label>
+                        <textarea class="form-control" id="vcFirmImpactGoals" name="impact_goals" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveVCFirmBtn">Save VC Firm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Portfolio Modal -->
+<div class="modal fade" id="addPortfolioModal" tabindex="-1" aria-labelledby="addPortfolioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPortfolioModalLabel">Add Portfolio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPortfolioForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="portfolioName" class="form-label">Name *</label>
+                            <input type="text" class="form-control" id="portfolioName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="portfolioVCFirm" class="form-label">VC Firm *</label>
+                            <select class="form-select" id="portfolioVCFirm" name="vc_firm_id" required>
+                                <option value="">Select VC Firm</option>
+                                <!-- VC firms will be loaded here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="portfolioFundName" class="form-label">Fund Name</label>
+                            <input type="text" class="form-control" id="portfolioFundName" name="fund_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="portfolioVintageYear" class="form-label">Vintage Year</label>
+                            <input type="number" class="form-control" id="portfolioVintageYear" name="vintage_year">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="portfolioDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="portfolioDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="portfolioInvestmentThesis" class="form-label">Investment Thesis</label>
+                        <select class="form-select" id="portfolioInvestmentThesis" name="investment_thesis_id">
+                            <option value="">Select Investment Thesis</option>
+                            <!-- Investment theses will be loaded here -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePortfolioBtn">Save Portfolio</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Startup Modal -->
+<div class="modal fade" id="addStartupModal" tabindex="-1" aria-labelledby="addStartupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStartupModalLabel">Add Startup</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStartupForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startupName" class="form-label">Name *</label>
+                            <input type="text" class="form-control" id="startupName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="startupPortfolio" class="form-label">Portfolio</label>
+                            <select class="form-select" id="startupPortfolio" name="portfolio_id">
+                                <option value="">Select Portfolio</option>
+                                <!-- Portfolios will be loaded here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startupSector" class="form-label">Sector</label>
+                            <input type="text" class="form-control" id="startupSector" name="sector">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="startupCountry" class="form-label">Country</label>
+                            <input type="text" class="form-control" id="startupCountry" name="country">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startupFoundedYear" class="form-label">Founded Year</label>
+                            <input type="number" class="form-control" id="startupFoundedYear" name="founded_year">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="startupFundingStage" class="form-label">Funding Stage</label>
+                            <select class="form-select" id="startupFundingStage" name="funding_stage">
+                                <option value="">Select Funding Stage</option>
+                                <option value="pre-seed">Pre-seed</option>
+                                <option value="seed">Seed</option>
+                                <option value="series_a">Series A</option>
+                                <option value="series_b">Series B</option>
+                                <option value="series_c">Series C</option>
+                                <option value="series_d">Series D</option>
+                                <option value="series_e">Series E</option>
+                                <option value="series_f">Series F</option>
+                                <option value="series_g">Series G</option>
+                                <option value="series_h">Series H</option>
+                                <option value="series_i">Series I</option>
+                                <option value="series_j">Series J</option>
+                                <option value="series_k">Series K</option>
+                                <option value="series_l">Series L</option>
+                                <option value="series_m">Series M</option>
+                                <option value="series_n">Series N</option>
+                                <option value="series_o">Series O</option>
+                                <option value="series_p">Series P</option>
+                                <option value="series_q">Series Q</option>
+                                <option value="series_r">Series R</option>
+                                <option value="series_s">Series S</option>
+                                <option value="series_t">Series T</option>
+                                <option value="series_u">Series U</option>
+                                <option value="series_v">Series V</option>
+                                <option value="series_w">Series W</option>
+                                <option value="series_x">Series X</option>
+                                <option value="series_y">Series Y</option>
+                                <option value="series_z">Series Z</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startupDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="startupDescription" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveStartupBtn">Save Startup</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Load VC firms
+    function loadVCFirms() {
+        fetch('/api/vc/firms')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#vcFirmsTable tbody');
+                tbody.innerHTML = '';
+                
+                data.vc_firms.forEach(firm => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${firm.name}</td>
+                        <td>${firm.headquarters || '-'}</td>
+                        <td>${firm.fund_size || '-'}</td>
+                        <td>${firm.investment_focus || '-'}</td>
+                        <td>${firm.sustainability_focus || '-'}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewVCFirm(${firm.id})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="editVCFirm(${firm.id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVCFirm(${firm.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                // Update VC firm select in portfolio modal
+                const vcFirmSelect = document.querySelector('#portfolioVCFirm');
+                vcFirmSelect.innerHTML = '<option value="">Select VC Firm</option>';
+                
+                data.vc_firms.forEach(firm => {
+                    const option = document.createElement('option');
+                    option.value = firm.id;
+                    option.textContent = firm.name;
+                    vcFirmSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading VC firms:', error);
+                showNotification('Error loading VC firms', 'error');
+            });
+    }
+    
+    // Load portfolios
+    function loadPortfolios() {
+        fetch('/api/vc/portfolios')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#portfoliosTable tbody');
+                tbody.innerHTML = '';
+                
+                data.portfolios.forEach(portfolio => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${portfolio.name}</td>
+                        <td>${portfolio.vc_firm_name || '-'}</td>
+                        <td>${portfolio.fund_name || '-'}</td>
+                        <td>${portfolio.vintage_year || '-'}</td>
+                        <td>${portfolio.startup_count || 0}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewPortfolio(${portfolio.id})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="editPortfolio(${portfolio.id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletePortfolio(${portfolio.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                // Update portfolio select in startup modal
+                const portfolioSelect = document.querySelector('#startupPortfolio');
+                portfolioSelect.innerHTML = '<option value="">Select Portfolio</option>';
+                
+                data.portfolios.forEach(portfolio => {
+                    const option = document.createElement('option');
+                    option.value = portfolio.id;
+                    option.textContent = portfolio.name;
+                    portfolioSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading portfolios:', error);
+                showNotification('Error loading portfolios', 'error');
+            });
+    }
+    
+    // Load startups
+    function loadStartups() {
+        fetch('/api/vc/startups')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#startupsTable tbody');
+                tbody.innerHTML = '';
+                
+                data.startups.forEach(startup => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${startup.name}</td>
+                        <td>${startup.portfolio_name || '-'}</td>
+                        <td>${startup.sector || '-'}</td>
+                        <td>${startup.country || '-'}</td>
+                        <td>${startup.funding_stage || '-'}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewStartup(${startup.id})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="editStartup(${startup.id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteStartup(${startup.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading startups:', error);
+                showNotification('Error loading startups', 'error');
+            });
+    }
+    
+    // Save VC firm
+    document.getElementById('saveVCFirmBtn').addEventListener('click', function() {
+        const form = document.getElementById('addVCFirmForm');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        fetch('/api/vc/firms', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                showNotification('VC firm created successfully', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('addVCFirmModal')).hide();
+                loadVCFirms();
+            })
+            .catch(error => {
+                console.error('Error creating VC firm:', error);
+                showNotification(error.message, 'error');
+            });
+    });
+    
+    // Save portfolio
+    document.getElementById('savePortfolioBtn').addEventListener('click', function() {
+        const form = document.getElementById('addPortfolioForm');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        fetch('/api/vc/portfolios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                showNotification('Portfolio created successfully', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('addPortfolioModal')).hide();
+                loadPortfolios();
+            })
+            .catch(error => {
+                console.error('Error creating portfolio:', error);
+                showNotification(error.message, 'error');
+            });
+    });
+    
+    // Save startup
+    document.getElementById('saveStartupBtn').addEventListener('click', function() {
+        const form = document.getElementById('addStartupForm');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        fetch('/api/vc/startups', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                showNotification('Startup created successfully', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('addStartupModal')).hide();
+                loadStartups();
+            })
+            .catch(error => {
+                console.error('Error creating startup:', error);
+                showNotification(error.message, 'error');
+            });
+    });
+    
+    // View VC firm
+    function viewVCFirm(id) {
+        window.location.href = `/vc-lens/firm/${id}`;
+    }
+    
+    // Edit VC firm
+    function editVCFirm(id) {
+        window.location.href = `/vc-lens/firm/${id}/edit`;
+    }
+    
+    // Delete VC firm
+    function deleteVCFirm(id) {
+        if (confirm('Are you sure you want to delete this VC firm?')) {
+            fetch(`/api/vc/firms/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('VC firm deleted successfully', 'success');
+                    loadVCFirms();
+                })
+                .catch(error => {
+                    console.error('Error deleting VC firm:', error);
+                    showNotification(error.message, 'error');
+                });
+        }
+    }
+    
+    // View portfolio
+    function viewPortfolio(id) {
+        window.location.href = `/vc-lens/portfolio/${id}`;
+    }
+    
+    // Edit portfolio
+    function editPortfolio(id) {
+        window.location.href = `/vc-lens/portfolio/${id}/edit`;
+    }
+    
+    // Delete portfolio
+    function deletePortfolio(id) {
+        if (confirm('Are you sure you want to delete this portfolio?')) {
+            fetch(`/api/vc/portfolios/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Portfolio deleted successfully', 'success');
+                    loadPortfolios();
+                })
+                .catch(error => {
+                    console.error('Error deleting portfolio:', error);
+                    showNotification(error.message, 'error');
+                });
+        }
+    }
+    
+    // View startup
+    function viewStartup(id) {
+        window.location.href = `/vc-lens/startup/${id}`;
+    }
+    
+    // Edit startup
+    function editStartup(id) {
+        window.location.href = `/vc-lens/startup/${id}/edit`;
+    }
+    
+    // Delete startup
+    function deleteStartup(id) {
+        if (confirm('Are you sure you want to delete this startup?')) {
+            fetch(`/api/vc/startups/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification('Startup deleted successfully', 'success');
+                    loadStartups();
+                })
+                .catch(error => {
+                    console.error('Error deleting startup:', error);
+                    showNotification(error.message, 'error');
+                });
+        }
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.appendChild(toast);
+        
+        document.body.appendChild(container);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', function() {
+            container.remove();
+        });
+    }
+    
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadVCFirms();
+        loadPortfolios();
+        loadStartups();
+    });
+</script>
+{% endblock %} 

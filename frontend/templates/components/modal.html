@@ -1,0 +1,39 @@
+{% macro render_modal(id, title, content, footer=None) %}
+<div class="modal fade" id="{{ id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ content }}
+            </div>
+            {% if footer %}
+            <div class="modal-footer">
+                {{ footer }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_form_modal(id, title, form_content, submit_text="Save", cancel_text="Cancel") %}
+{% set footer %}
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ cancel_text }}</button>
+<button type="submit" class="btn btn-primary">{{ submit_text }}</button>
+{% endset %}
+{{ render_modal(id, title, form_content, footer) }}
+{% endmacro %}
+
+{% macro render_confirm_modal(id, title, message, confirm_text="Confirm", cancel_text="Cancel") %}
+{% set content %}
+<p>{{ message }}</p>
+{% endset %}
+{% set footer %}
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ cancel_text }}</button>
+<button type="button" class="btn btn-danger" id="{{ id }}Confirm">{{ confirm_text }}</button>
+{% endset %}
+{{ render_modal(id, title, content, footer) }}
+{% endmacro %} 

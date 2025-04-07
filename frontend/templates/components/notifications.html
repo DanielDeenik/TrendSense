@@ -1,0 +1,89 @@
+{% macro flash_messages() %}
+<div class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50">
+    <div id="notification-container" class="max-w-sm w-full space-y-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="notification transform ease-out duration-300 transition translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2
+                                rounded-lg shadow-lg 
+                                {% if category == 'error' %}
+                                    bg-red-50 dark:bg-red-900
+                                {% elif category == 'success' %}
+                                    bg-green-50 dark:bg-green-900
+                                {% else %}
+                                    bg-blue-50 dark:bg-blue-900
+                                {% endif %}">
+                        <div class="p-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    {% if category == 'error' %}
+                                        <i class="fas fa-exclamation-circle text-red-400 dark:text-red-300"></i>
+                                    {% elif category == 'success' %}
+                                        <i class="fas fa-check-circle text-green-400 dark:text-green-300"></i>
+                                    {% else %}
+                                        <i class="fas fa-info-circle text-blue-400 dark:text-blue-300"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3 w-0 flex-1 pt-0.5">
+                                    <p class="text-sm font-medium
+                                        {% if category == 'error' %}
+                                            text-red-800 dark:text-red-100
+                                        {% elif category == 'success' %}
+                                            text-green-800 dark:text-green-100
+                                        {% else %}
+                                            text-blue-800 dark:text-blue-100
+                                        {% endif %}">
+                                        {{ message }}
+                                    </p>
+                                </div>
+                                <div class="ml-4 flex-shrink-0 flex">
+                                    <button class="notification-close rounded-md inline-flex text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <span class="sr-only">Close</span>
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro notification_scripts() %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show notifications with animation
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        // Trigger animation after a small delay
+        setTimeout(() => {
+            notification.classList.remove('translate-y-2', 'opacity-0', 'sm:translate-y-0', 'sm:translate-x-2');
+            notification.classList.add('translate-y-0', 'opacity-100', 'sm:translate-x-0');
+        }, 100);
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            hideNotification(notification);
+        }, 5000);
+
+        // Close button functionality
+        const closeButton = notification.querySelector('.notification-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                hideNotification(notification);
+            });
+        }
+    });
+
+    function hideNotification(notification) {
+        notification.classList.add('opacity-0');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+});
+</script>
+{% endmacro %} 

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% from "components/card.html" import metric_card, chart_card, insight_card %}
+
+{% block title %}ESG Performance - TrendSense™{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
+                ESG Performance
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Comprehensive analysis of environmental, social, and governance metrics
+            </p>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <button type="button" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-download mr-2"></i>
+                Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {{ metric_card(
+            title="ESG Score",
+            value=metrics.esg_score.value|string + "/100",
+            change=metrics.esg_score.change|string + "%",
+            trend=metrics.esg_score.trend,
+            icon_class="fa-star"
+        ) }}
+        
+        {{ metric_card(
+            title="Carbon Intensity",
+            value=metrics.carbon_intensity.value|string + " tCO2e",
+            change=metrics.carbon_intensity.change|string + "%",
+            trend=metrics.carbon_intensity.trend,
+            icon_class="fa-cloud"
+        ) }}
+        
+        {{ metric_card(
+            title="Renewable Energy",
+            value=metrics.renewable_energy.value|string + "%",
+            change="+" + metrics.renewable_energy.change|string + "%",
+            trend=metrics.renewable_energy.trend,
+            icon_class="fa-solar-panel"
+        ) }}
+        
+        {{ metric_card(
+            title="Water Intensity",
+            value=metrics.water_intensity.value|string + " m³/USD",
+            change=metrics.water_intensity.change|string + "%",
+            trend=metrics.water_intensity.trend,
+            icon_class="fa-water"
+        ) }}
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        {{ chart_card(
+            title="ESG Score Breakdown",
+            chart_id="esgBreakdownChart",
+            description="Detailed breakdown of Environmental, Social, and Governance scores"
+        ) }}
+        
+        {{ chart_card(
+            title="Historical Performance",
+            chart_id="historicalPerformanceChart",
+            description="12-month trend of key ESG metrics"
+        ) }}
+    </div>
+
+    <!-- Insights Section -->
+    <div class="space-y-4">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            Key Insights
+        </h3>
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {{ insight_card(
+                title="Carbon Reduction Progress",
+                content="Your emissions reduction is outpacing industry benchmarks by 6.2%. Key contributors: Renewable energy adoption and facility upgrades.",
+                impact="high",
+                category="emissions"
+            ) }}
+            
+            {{ insight_card(
+                title="Water Management",
+                content="Three manufacturing facilities are in high water stress regions. Consider implementing advanced water recycling technologies.",
+                impact="medium",
+                category="water"
+            ) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ESG Score Breakdown Chart
+    new Chart(document.getElementById('esgBreakdownChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Environmental', 'Social', 'Governance', 'Innovation', 'Risk Management'],
+            datasets: [{
+                label: 'Current Score',
+                data: [85, 78, 92, 70, 88],
+                backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                borderColor: 'rgba(79, 70, 229, 1)',
+                pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            }
+        }
+    });
+
+    // Historical Performance Chart
+    new Chart(document.getElementById('historicalPerformanceChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'ESG Score',
+                data: [75, 78, 80, 79, 82, 85, 84, 86, 88, 87, 89, 92],
+                borderColor: 'rgba(79, 70, 229, 1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 70,
+                    max: 100
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

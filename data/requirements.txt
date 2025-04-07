@@ -1,0 +1,36 @@
+# Web Framework
+Flask==3.0.2
+Werkzeug==3.0.1
+Flask-SQLAlchemy==3.1.1
+
+# Database
+pymongo==4.6.1
+motor==3.3.2
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.3
+openpyxl==3.1.2
+
+# Data Validation
+pydantic==2.6.1
+
+# Web Scraping
+beautifulsoup4==4.12.3
+requests==2.31.0
+selenium==4.18.1
+webdriver-manager==4.0.1
+
+# Utilities
+python-dotenv==1.0.1
+python-dateutil==2.8.2
+pytz==2024.1
+
+# Testing
+pytest==8.0.0
+pytest-cov==4.1.0
+
+# Development
+black==24.1.1
+flake8==7.0.0
+mypy==1.8.0 

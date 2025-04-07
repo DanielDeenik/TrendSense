@@ -1,0 +1,301 @@
+{% macro mcp_connect_modal() %}
+<!-- MCP Connect Modal -->
+<div id="mcpConnectModal" class="modal fade" tabindex="-1" aria-labelledby="mcpConnectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mcpConnectModalLabel">Connect External Tool</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="mcpUrl" class="form-label">MCP URL</label>
+                    <input type="text" class="form-control" id="mcpUrl" placeholder="https://example.com/.well-known/mcp.json">
+                    <div class="form-text">Enter the URL to the MCP specification file (.well-known/mcp.json)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="mcpApiKey" class="form-label">API Key (Optional)</label>
+                    <input type="password" class="form-control" id="mcpApiKey" placeholder="Enter API key if required">
+                </div>
+                
+                <div id="mcpLoading" class="d-none">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="text-center mt-2">Fetching MCP specification...</p>
+                </div>
+                
+                <div id="mcpError" class="alert alert-danger d-none" role="alert">
+                    <p id="mcpErrorMessage"></p>
+                </div>
+                
+                <div id="mcpCapabilities" class="d-none">
+                    <h6 class="mt-4">Available Capabilities</h6>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title" id="mcpName"></h5>
+                            <p class="card-text" id="mcpDescription"></p>
+                            <p class="card-text"><small class="text-muted">Version: <span id="mcpVersion"></span></small></p>
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-3">Endpoints</h6>
+                    <div class="list-group" id="mcpEndpoints">
+                        <!-- Endpoints will be added here dynamically -->
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Portfolio Mapping</h6>
+                        <div class="mb-3">
+                            <label for="portfolioSelect" class="form-label">Select Portfolio</label>
+                            <select class="form-select" id="portfolioSelect">
+                                <option value="" selected disabled>Choose a portfolio...</option>
+                                <!-- Portfolios will be added here dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="mcpConnectBtn" disabled>Connect</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro mcp_connect_scripts() %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get modal elements
+        const mcpUrlInput = document.getElementById('mcpUrl');
+        const mcpApiKeyInput = document.getElementById('mcpApiKey');
+        const mcpLoading = document.getElementById('mcpLoading');
+        const mcpError = document.getElementById('mcpError');
+        const mcpErrorMessage = document.getElementById('mcpErrorMessage');
+        const mcpCapabilities = document.getElementById('mcpCapabilities');
+        const mcpName = document.getElementById('mcpName');
+        const mcpDescription = document.getElementById('mcpDescription');
+        const mcpVersion = document.getElementById('mcpVersion');
+        const mcpEndpoints = document.getElementById('mcpEndpoints');
+        const portfolioSelect = document.getElementById('portfolioSelect');
+        const mcpConnectBtn = document.getElementById('mcpConnectBtn');
+        
+        // Function to fetch MCP specification
+        async function fetchMcpSpec() {
+            const url = mcpUrlInput.value.trim();
+            const apiKey = mcpApiKeyInput.value.trim();
+            
+            if (!url) {
+                showError('Please enter a valid MCP URL');
+                return;
+            }
+            
+            // Show loading state
+            mcpLoading.classList.remove('d-none');
+            mcpError.classList.add('d-none');
+            mcpCapabilities.classList.add('d-none');
+            mcpConnectBtn.disabled = true;
+            
+            try {
+                // Fetch MCP specification
+                const response = await fetch('/api/mcp/fetch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        api_key: apiKey || null
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch MCP specification');
+                }
+                
+                const data = await response.json();
+                
+                // Display capabilities
+                displayCapabilities(data);
+                
+                // Load portfolios
+                await loadPortfolios();
+                
+                // Enable connect button
+                mcpConnectBtn.disabled = false;
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                mcpLoading.classList.add('d-none');
+            }
+        }
+        
+        // Function to display capabilities
+        function displayCapabilities(data) {
+            mcpName.textContent = data.name || 'Unknown';
+            mcpDescription.textContent = data.description || 'No description available';
+            mcpVersion.textContent = data.version || 'Unknown';
+            
+            // Clear existing endpoints
+            mcpEndpoints.innerHTML = '';
+            
+            // Add endpoints
+            if (data.endpoints && data.endpoints.length > 0) {
+                data.endpoints.forEach(endpoint => {
+                    const endpointElement = document.createElement('a');
+                    endpointElement.href = '#';
+                    endpointElement.className = 'list-group-item list-group-item-action';
+                    endpointElement.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${endpoint.path}</h6>
+                            <small class="badge bg-primary">${endpoint.method}</small>
+                        </div>
+                        <p class="mb-1">${endpoint.description || 'No description available'}</p>
+                    `;
+                    mcpEndpoints.appendChild(endpointElement);
+                });
+            } else {
+                const noEndpoints = document.createElement('div');
+                noEndpoints.className = 'list-group-item';
+                noEndpoints.textContent = 'No endpoints available';
+                mcpEndpoints.appendChild(noEndpoints);
+            }
+            
+            // Show capabilities
+            mcpCapabilities.classList.remove('d-none');
+        }
+        
+        // Function to load portfolios
+        async function loadPortfolios() {
+            try {
+                const response = await fetch('/api/portfolios');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load portfolios');
+                }
+                
+                const data = await response.json();
+                
+                // Clear existing options
+                portfolioSelect.innerHTML = '<option value="" selected disabled>Choose a portfolio...</option>';
+                
+                // Add portfolios
+                if (data.portfolios && data.portfolios.length > 0) {
+                    data.portfolios.forEach(portfolio => {
+                        const option = document.createElement('option');
+                        option.value = portfolio.id;
+                        option.textContent = portfolio.name;
+                        portfolioSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading portfolios:', error);
+            }
+        }
+        
+        // Function to show error
+        function showError(message) {
+            mcpErrorMessage.textContent = message;
+            mcpError.classList.remove('d-none');
+            mcpCapabilities.classList.add('d-none');
+        }
+        
+        // Function to connect MCP tool
+        async function connectMcpTool() {
+            const url = mcpUrlInput.value.trim();
+            const apiKey = mcpApiKeyInput.value.trim();
+            const portfolioId = portfolioSelect.value;
+            
+            if (!url || !portfolioId) {
+                showError('Please enter a valid MCP URL and select a portfolio');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/mcp/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        api_key: apiKey || null,
+                        portfolio_id: portfolioId
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to connect MCP tool');
+                }
+                
+                const data = await response.json();
+                
+                // Show success message
+                const modal = bootstrap.Modal.getInstance(document.getElementById('mcpConnectModal'));
+                modal.hide();
+                
+                // Show success notification
+                showNotification('success', 'MCP tool connected successfully');
+                
+                // Reload page or update UI as needed
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        // Function to show notification
+        function showNotification(type, message) {
+            const notificationContainer = document.getElementById('notificationContainer');
+            if (!notificationContainer) return;
+            
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 150);
+            }, 5000);
+        }
+        
+        // Event listeners
+        mcpUrlInput.addEventListener('change', fetchMcpSpec);
+        mcpConnectBtn.addEventListener('click', connectMcpTool);
+        
+        // Add event listener to the "Connect External Tool" button
+        const connectExternalToolBtn = document.getElementById('connectExternalToolBtn');
+        if (connectExternalToolBtn) {
+            connectExternalToolBtn.addEventListener('click', function() {
+                // Reset form
+                mcpUrlInput.value = '';
+                mcpApiKeyInput.value = '';
+                mcpError.classList.add('d-none');
+                mcpCapabilities.classList.add('d-none');
+                mcpConnectBtn.disabled = true;
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('mcpConnectModal'));
+                modal.show();
+            });
+        }
+    });
+</script>
+{% endmacro %} 

@@ -1,0 +1,330 @@
+/* Theme System CSS */
+:root {
+    /* Light Theme Variables */
+    --light-bg-primary: #ffffff;
+    --light-bg-secondary: #f8f9fa;
+    --light-bg-tertiary: #e9ecef;
+    --light-text-primary: #212529;
+    --light-text-secondary: #495057;
+    --light-text-tertiary: #6c757d;
+    --light-border: #dee2e6;
+    --light-accent: #00a67e;
+    --light-accent-hover: #008c6a;
+    --light-success: #28a745;
+    --light-warning: #ffc107;
+    --light-danger: #dc3545;
+    --light-info: #17a2b8;
+    --light-chart-grid: #e9ecef;
+    --light-sidebar-bg: #f8f9fa;
+    --light-card-bg: #ffffff;
+    --light-hover-bg: #e9ecef;
+
+    /* Dark Theme Variables */
+    --dark-bg-primary: #1a1a1a;
+    --dark-bg-secondary: #2d2d2d;
+    --dark-bg-tertiary: #404040;
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #cccccc;
+    --dark-text-tertiary: #999999;
+    --dark-border: #404040;
+    --dark-accent: #00d4a0;
+    --dark-accent-hover: #00bf8e;
+    --dark-success: #2fd653;
+    --dark-warning: #ffcd39;
+    --dark-danger: #ff4d4d;
+    --dark-info: #17a2b8;
+    --dark-chart-grid: #404040;
+    --dark-sidebar-bg: #2d2d2d;
+    --dark-card-bg: #333333;
+    --dark-hover-bg: #404040;
+}
+
+/* Light Theme */
+.light-theme {
+    --bg-primary: var(--light-bg-primary);
+    --bg-secondary: var(--light-bg-secondary);
+    --bg-tertiary: var(--light-bg-tertiary);
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --text-tertiary: var(--light-text-tertiary);
+    --border-color: var(--light-border);
+    --accent-color: var(--light-accent);
+    --accent-hover: var(--light-accent-hover);
+    --success-color: var(--light-success);
+    --warning-color: var(--light-warning);
+    --danger-color: var(--light-danger);
+    --info-color: var(--light-info);
+    --chart-grid: var(--light-chart-grid);
+    --sidebar-bg: var(--light-sidebar-bg);
+    --card-bg: var(--light-card-bg);
+    --hover-bg: var(--light-hover-bg);
+}
+
+/* Dark Theme */
+.dark-theme {
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --bg-tertiary: var(--dark-bg-tertiary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --text-tertiary: var(--dark-text-tertiary);
+    --border-color: var(--dark-border);
+    --accent-color: var(--dark-accent);
+    --accent-hover: var(--dark-accent-hover);
+    --success-color: var(--dark-success);
+    --warning-color: var(--dark-warning);
+    --danger-color: var(--dark-danger);
+    --info-color: var(--dark-info);
+    --chart-grid: var(--dark-chart-grid);
+    --sidebar-bg: var(--dark-sidebar-bg);
+    --card-bg: var(--dark-card-bg);
+    --hover-bg: var(--dark-hover-bg);
+}
+
+/* Base Styles */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar-item {
+    color: var(--text-secondary);
+}
+
+.sidebar-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.sidebar-item.active {
+    color: var(--accent-color);
+    background-color: var(--bg-tertiary);
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Chart Styles */
+.chart-container {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.chart-grid {
+    stroke: var(--chart-grid);
+}
+
+/* Table Styles */
+table {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+th {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+tr:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Form Styles */
+input, select, textarea {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-color);
+}
+
+/* Alert Styles */
+.alert-success {
+    background-color: var(--success-color);
+    color: var(--text-primary);
+}
+
+.alert-warning {
+    background-color: var(--warning-color);
+    color: var(--text-primary);
+}
+
+.alert-danger {
+    background-color: var(--danger-color);
+    color: var(--text-primary);
+}
+
+.alert-info {
+    background-color: var(--info-color);
+    color: var(--text-primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Metric Card Styles */
+.metric-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.metric-value {
+    color: var(--accent-color);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.metric-change {
+    font-size: 0.9rem;
+}
+
+.metric-change.positive {
+    color: var(--success-color);
+}
+
+.metric-change.negative {
+    color: var(--danger-color);
+}
+
+/* Chart Customization */
+.chart-title {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.chart-legend {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Theme Switch Styles */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 24px;
+    position: relative;
+    width: 48px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+}
+
+.slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 16px;
+}
+
+input:checked + .slider {
+    background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Dark mode adjustments for theme switch */
+[data-bs-theme="dark"] .theme-switch .slider {
+    background-color: #666;
+}
+
+[data-bs-theme="dark"] .theme-switch .slider:before {
+    background-color: #fff;
+} 

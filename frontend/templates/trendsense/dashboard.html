@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% from "components/trendsense.html" import render_analysis_card, render_insight, render_processing_status %}
+
+{% block title %}Trendsense Dashboard - TrendSense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2">Trendsense Dashboard</h1>
+        <p class="text-muted">Advanced analytics and insights powered by Trendsense</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Analysis Card -->
+    <div class="col-lg-8 mb-4">
+        {{ render_analysis_card() }}
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Total Analyses</span>
+                    <span class="badge bg-primary" id="totalAnalyses">0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Success Rate</span>
+                    <span class="badge bg-success" id="successRate">0%</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Average Confidence</span>
+                    <span class="badge bg-info" id="avgConfidence">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Insights -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Insights</h5>
+                <button class="btn btn-sm btn-outline-primary" id="refreshInsights">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="insightsContainer">
+                    <!-- Insights will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Status Modal -->
+<div class="modal fade" id="processingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                {{ render_processing_status() }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Trendsense UI
+    TrendsenseUI.init();
+    
+    // Load initial insights
+    loadInsights();
+    
+    // Bind refresh button
+    document.getElementById('refreshInsights').addEventListener('click', loadInsights);
+});
+
+async function loadInsights() {
+    try {
+        const response = await fetch('/api/trendsense/insights');
+        const data = await response.json();
+        
+        if (data.success) {
+            const container = document.getElementById('insightsContainer');
+            container.innerHTML = data.insights.map(insight => `
+                <div class="trendsense-insight mb-3">
+                    ${TrendsenseUI.renderInsight(insight)}
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error loading insights:', error);
+        TrendsenseUI.showToast('error', 'Failed to load insights');
+    }
+}
+</script>
+{% endblock %} 
