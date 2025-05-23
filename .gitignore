@@ -147,6 +147,8 @@ Thumbs.db
 # Firebase
 firebase-debug.log
 .firebase/
+firebase/service-account-key*.json
+**/service-account-key*.json
 
 # Logs
 logs/
