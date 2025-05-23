@@ -168,3 +168,6 @@ vector_db/
 # Temporary files
 *.tmp
 *.temp
+
+# Subdirectories that are separate git repos
+SustainaTrendTm/
