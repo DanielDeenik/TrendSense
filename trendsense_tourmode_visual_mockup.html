@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendSense™ TourMode Visual Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .slide {
+            height: 600px;
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cot-tooltip {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background-color: #111827;
+            border-radius: 0.75rem;
+            padding: 16px;
+            width: 380px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #374151;
+            z-index: 50;
+        }
+        
+        .highlight-overlay {
+            position: absolute;
+            border: 2px solid #3b82f6;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+            z-index: 40;
+        }
+        
+        .tour-controls {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            display: flex;
+            gap: 8px;
+            z-index: 50;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #3b82f6;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #3b82f6 }
+        }
+    </style>
+</head>
+<body class="p-8">
+    <h1 class="text-3xl font-bold mb-8 text-center">TrendSense™ Chain of Thought TourMode</h1>
+    <p class="text-center mb-12 max-w-3xl mx-auto">Visual mockups demonstrating the Chain of Thought guided tour experience. These mockups showcase how the AI reveals its reasoning process while guiding users through the platform.</p>
+    
+    <!-- Scene 1: Introduction & Tour Activation -->
+    <div class="mb-16">
+        <h2 class="text-xl font-semibold mb-4">Scene 1: Introduction & Tour Activation</h2>
+        <div class="slide p-6">
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-xl font-bold">TrendSense™</div>
+                <div class="flex items-center space-x-4">
+                    <button id="toggle-tour-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center animate-pulse">
+                        <i class="mr-2">🤖</i>
+                        <span>AI-Guided Tour</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="font-medium mb-2">Trend Overview</h3>
+                    <div class="h-40 bg-gray-700 rounded-lg"></div>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="font-medium mb-2">Recent Activity</h3>
+                    <div class="h-40 bg-gray-700 rounded-lg"></div>
+                </div>
+            </div>
+            
+            <!-- URL Bar -->
+            <div class="mt-6 bg-gray-800 p-2 rounded-lg flex items-center">
+                <span class="text-gray-400 mr-2">URL:</span>
+                <span>https://trendsense.ai/dashboard<span class="text-green-400 font-bold">?tour=true</span></span>
+            </div>
+            
+            <!-- Narration -->
+            <div class="mt-8 bg-gray-800 p-4 rounded-lg">
+                <p class="text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">Narration:</span> "Welcome to TrendSense™, our AI-powered sustainability investment platform. Users can activate the Chain of Thought guided tour in two ways: by clicking this toggle button in the interface or by adding '?tour=true' to any URL."
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 2: TrendRadar - Initial Trend Scanning -->
+    <div class="mb-16">
+        <h2 class="text-xl font-semibold mb-4">Scene 2: TrendRadar - Initial Trend Scanning</h2>
+        <div class="slide p-6">
+            <!-- TrendRadar Visualization -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                <h3 class="font-medium mb-2">TrendRadar</h3>
+                <div class="h-80 bg-gray-700 rounded-lg relative">
+                    <!-- Quadrants -->
+                    <div class="absolute inset-0 flex flex-col">
+                        <div class="flex flex-1">
+                            <div class="w-1/2 border-r border-b border-gray-600 flex items-center justify-center text-gray-400">Watch</div>
+                            <div class="w-1/2 border-b border-gray-600 flex items-center justify-center text-green-400 font-bold">Act</div>
+                        </div>
+                        <div class="flex flex-1">
+                            <div class="w-1/2 border-r border-gray-600 flex items-center justify-center text-gray-400">Skip</div>
+                            <div class="w-1/2 flex items-center justify-center text-gray-400">Prepare</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Highlight Overlay -->
+                    <div class="highlight-overlay" style="top: 20px; right: 20px; width: 45%; height: 45%;"></div>
+                </div>
+            </div>
+            
+            <!-- Chain of Thought Tooltip -->
+            <div class="cot-tooltip">
+                <p class="text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">🧠 </span>
+                    <span class="typewriter">I begin by scanning macro signals across the market. I'm looking at trends in the 'Act' zone - these have strong data signals, ESG maturity, and rising capital allocation.</span>
+                </p>
+            </div>
+            
+            <!-- Tour Controls -->
+            <div class="tour-controls">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    <span class="mr-1">←</span> Previous
+                </button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    Next <span class="ml-1">→</span>
+                </button>
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2">
+                    <span class="mr-1">×</span> Exit Tour
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 5: VC Lens - Company Analysis -->
+    <div class="mb-16">
+        <h2 class="text-xl font-semibold mb-4">Scene 5: VC Lens - Company Analysis</h2>
+        <div class="slide p-6">
+            <!-- VC Lens Filters -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                <h3 class="font-medium mb-2">Filters</h3>
+                <div class="flex space-x-4">
+                    <div class="bg-gray-700 px-3 py-2 rounded-lg text-sm">ESG: <span class="text-green-400">Circularity</span></div>
+                    <div class="bg-gray-700 px-3 py-2 rounded-lg text-sm">Region: <span class="text-green-400">LATAM</span></div>
+                    <div class="bg-gray-700 px-3 py-2 rounded-lg text-sm">Stage: <span class="text-green-400">Series A</span></div>
+                </div>
+            </div>
+            
+            <!-- Company Results -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                <h3 class="font-medium mb-2">Results</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- ReCircle Card (Highlighted) -->
+                    <div class="bg-gray-700 p-4 rounded-lg border-2 border-blue-500">
+                        <h4 class="font-medium mb-1">ReCircle</h4>
+                        <p class="text-sm text-gray-400 mb-2">B2B packaging startup in LATAM</p>
+                        <div class="flex items-center mb-1">
+                            <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                            <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <span class="text-xs">85</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 w-24">Growth:</span>
+                            <span class="text-xs text-green-500">+42%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Other Companies -->
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-medium mb-1">CircularPack</h4>
+                        <p class="text-sm text-gray-400 mb-2">Packaging solutions</p>
+                        <div class="flex items-center mb-1">
+                            <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                            <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                            <span class="text-xs">78</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 w-24">Growth:</span>
+                            <span class="text-xs text-green-500">+35%</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-medium mb-1">EcoLoop</h4>
+                        <p class="text-sm text-gray-400 mb-2">Circular marketplace</p>
+                        <div class="flex items-center mb-1">
+                            <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                            <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                            </div>
+                            <span class="text-xs">72</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 w-24">Growth:</span>
+                            <span class="text-xs text-green-500">+28%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chain of Thought Tooltip -->
+            <div class="cot-tooltip">
+                <p class="text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">🧠 </span>
+                    <span class="typewriter">ReCircle stands out with an ESG score of 85 and growth of +42%. Their B2B packaging solution shows strong product-market fit and scalability potential.</span>
+                </p>
+            </div>
+            
+            <!-- Tour Controls -->
+            <div class="tour-controls">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    <span class="mr-1">←</span> Previous
+                </button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    Next <span class="ml-1">→</span>
+                </button>
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2">
+                    <span class="mr-1">×</span> Exit Tour
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 9: Graph Analytics - Relationship Visualization -->
+    <div class="mb-16">
+        <h2 class="text-xl font-semibold mb-4">Scene 9: Graph Analytics - Relationship Visualization</h2>
+        <div class="slide p-6">
+            <!-- Graph Visualization -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                <h3 class="font-medium mb-2">Venture Signal Graph</h3>
+                <div class="h-80 bg-gray-700 rounded-lg relative">
+                    <!-- Simplified Graph Visualization -->
+                    <svg width="100%" height="100%" viewBox="0 0 800 300">
+                        <!-- Nodes -->
+                        <circle cx="400" cy="150" r="30" fill="#3b82f6" stroke="#fff" stroke-width="2" />
+                        <text x="400" y="150" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12">ReCircle</text>
+                        
+                        <circle cx="250" cy="100" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        <circle cx="550" cy="100" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        <circle cx="300" cy="220" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        <circle cx="500" cy="220" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        <circle cx="180" cy="180" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        <circle cx="620" cy="180" r="20" fill="#4b5563" stroke="#4b5563" stroke-width="2" />
+                        
+                        <!-- Connections -->
+                        <line x1="400" y1="150" x2="250" y2="100" stroke="#6b7280" stroke-width="2" />
+                        <line x1="400" y1="150" x2="550" y2="100" stroke="#6b7280" stroke-width="2" />
+                        <line x1="400" y1="150" x2="300" y2="220" stroke="#6b7280" stroke-width="2" />
+                        <line x1="400" y1="150" x2="500" y2="220" stroke="#6b7280" stroke-width="2" />
+                        <line x1="400" y1="150" x2="180" y2="180" stroke="#6b7280" stroke-width="2" />
+                        <line x1="400" y1="150" x2="620" y2="180" stroke="#6b7280" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Chain of Thought Tooltip -->
+            <div class="cot-tooltip">
+                <p class="text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">🧠 </span>
+                    <span class="typewriter">The Venture Signal Graph helps visualize complex relationships between entities in the sustainability ecosystem. Each node represents an entity - companies, trends, funds, or projects.</span>
+                </p>
+            </div>
+            
+            <!-- Tour Controls -->
+            <div class="tour-controls">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    <span class="mr-1">←</span> Previous
+                </button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    Next <span class="ml-1">→</span>
+                </button>
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2">
+                    <span class="mr-1">×</span> Exit Tour
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 12: Copilot Integration -->
+    <div class="mb-16">
+        <h2 class="text-xl font-semibold mb-4">Scene 12: Copilot Integration - Natural Language Queries</h2>
+        <div class="slide p-6">
+            <!-- Copilot Interface -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                <h3 class="font-medium mb-2">AI Copilot</h3>
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <div class="flex mb-4">
+                        <input type="text" placeholder="Ask me anything about trends, companies, or investments..." class="bg-gray-800 text-white px-4 py-2 rounded-lg flex-1 mr-2">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Ask</button>
+                    </div>
+                    <div class="text-sm text-gray-400 mb-2">Example queries:</div>
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <div class="bg-gray-800 p-2 rounded-lg text-xs">Compare ReCircle's unit economics to industry benchmarks</div>
+                        <div class="bg-gray-800 p-2 rounded-lg text-xs">Generate an ESG impact summary for LP reporting</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <div class="text-sm font-medium mb-2">Response:</div>
+                        <div class="text-sm text-gray-300 mb-2">
+                            <span class="text-blue-400 font-bold">🧠 Chain of Thought:</span> I'll analyze ReCircle's unit economics by examining COGS, CAC, LTV, and margins. Then I'll compare to industry benchmarks for B2B packaging solutions in LATAM.
+                        </div>
+                        <div class="text-sm text-gray-300">
+                            ReCircle's unit economics show a 42% gross margin (vs. 35% industry average) and a CAC:LTV ratio of 1:5.2 (vs. 1:3.8 industry average). Their payback period is 9 months, which is 3 months faster than the industry benchmark.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chain of Thought Tooltip -->
+            <div class="cot-tooltip">
+                <p class="text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">🧠 </span>
+                    <span class="typewriter">You can ask me anything. I synthesize signals and ESG data into insights and LP-ready summaries. My responses include Chain of Thought reasoning so you can see how I arrived at my conclusions.</span>
+                </p>
+            </div>
+            
+            <!-- Tour Controls -->
+            <div class="tour-controls">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    <span class="mr-1">←</span> Previous
+                </button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                    Next <span class="ml-1">→</span>
+                </button>
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2">
+                    <span class="mr-1">×</span> Exit Tour
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-12 mb-8">
+        <p class="text-gray-400 text-sm">This visual mockup demonstrates the Chain of Thought TourMode experience in TrendSense™.</p>
+        <p class="text-gray-400 text-sm">The actual implementation is fully integrated into the existing codebase without requiring any structural changes.</p>
+    </div>
+</body>
+</html>
