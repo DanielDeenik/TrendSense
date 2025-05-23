@@ -1,0 +1,944 @@
+{% extends "finbase.html" %}
+
+{% block title %}Strategy Storytelling - Strategy Hub - SustainaTrend™{% endblock %}
+
+{% block additional_head %}
+<!-- Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<!-- D3.js for advanced visualizations -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('strategy.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Strategy Storytelling</h1>
+    </div>
+
+    <!-- Storytelling Configuration Form -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-book-open mr-2 text-blue-500"></i>
+            Narrative Configuration
+        </h2>
+        <form id="storytelling-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Strategy Selection -->
+                <div>
+                    <label for="strategy-select" class="block text-sm font-medium text-gray-400 mb-1">Select Strategy</label>
+                    <select id="strategy-select" name="strategy_id" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select a Strategy --</option>
+                        {% for strategy in strategies %}
+                        <option value="{{ strategy.id }}">{{ strategy.name }} ({{ strategy.framework }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Data Source Selection -->
+                <div>
+                    <label for="data-source" class="block text-sm font-medium text-gray-400 mb-1">Data Source</label>
+                    <select id="data-source" name="data_source" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Data Source --</option>
+                        <option value="sustainability_metrics">Sustainability Metrics</option>
+                        <option value="financial_data">Financial Data</option>
+                        <option value="market_trends">Market Trends</option>
+                        <option value="esg_ratings">ESG Ratings</option>
+                        <option value="carbon_emissions">Carbon Emissions</option>
+                        <option value="graph_analytics">Graph Analytics</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Narrative Type -->
+                <div>
+                    <label for="narrative-type" class="block text-sm font-medium text-gray-400 mb-1">Narrative Type</label>
+                    <select id="narrative-type" name="narrative_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="impact">Impact Narrative</option>
+                        <option value="challenge">Challenge & Overcome Narrative</option>
+                        <option value="innovation">Innovation Narrative</option>
+                        <option value="journey">Journey Narrative</option>
+                    </select>
+                </div>
+
+                <!-- Target Audience -->
+                <div>
+                    <label for="audience" class="block text-sm font-medium text-gray-400 mb-1">Target Audience</label>
+                    <select id="audience" name="audience" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="stakeholders">General Stakeholders</option>
+                        <option value="investors">Investors</option>
+                        <option value="customers">Customers</option>
+                        <option value="employees">Employees</option>
+                        <option value="regulators">Regulators</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="flex justify-end">
+                <button type="button" id="generate-story" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                    <i class="fas fa-magic mr-1"></i> Generate Narrative
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section (initially hidden) -->
+    <div id="results-section" class="hidden">
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-book mr-2 text-green-500"></i>
+                <span id="results-title">Strategic Narrative</span>
+            </h2>
+
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+
+            <!-- Results Content -->
+            <div id="results-content" class="hidden">
+                <!-- Narrative Content -->
+                <div class="bg-gray-800 p-6 rounded-lg mb-6">
+                    <div id="narrative-content" class="text-gray-300"></div>
+                    <div id="audience-considerations" class="mt-4 text-gray-300 border-t border-gray-700 pt-4"></div>
+                </div>
+
+                <!-- Contagious Framework Analysis -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-virus mr-2 text-purple-500"></i>
+                        Viral Potential Analysis
+                    </h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Radar Chart -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Contagious Framework Scores</h4>
+                            <div class="h-80 relative">
+                                <canvas id="contagious-chart"></canvas>
+                            </div>
+                            <div class="text-sm text-gray-400 mt-2">
+                                Comparison with industry benchmarks across all six elements of the Contagious Framework.
+                            </div>
+                        </div>
+
+                        <!-- Viral Potential Metrics -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Viral Potential Breakdown</h4>
+                            <div id="viral-metrics" class="space-y-4"></div>
+                            <div class="mt-4 pt-4 border-t border-gray-700">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-300">Overall Viral Potential:</span>
+                                    <div class="flex items-center">
+                                        <span id="overall-score" class="text-2xl font-bold mr-2">0</span>
+                                        <span class="text-gray-400">/100</span>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2">
+                                    <div id="overall-score-bar" class="bg-purple-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benchmarking Analysis -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-2 text-blue-500"></i>
+                        Industry Benchmarking
+                    </h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Benchmark Chart -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Overall Score Comparison</h4>
+                            <div class="h-80 relative">
+                                <canvas id="benchmark-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Benchmark Insights -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Benchmark Insights</h4>
+                            <ul id="benchmark-insights" class="space-y-3 text-gray-300"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Narrative Arc Visualization -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+                        Narrative Arc Visualization
+                    </h3>
+
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <div class="h-80 relative">
+                            <canvas id="story-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400 mt-2">
+                        This chart visualizes how the narrative unfolds over time, showing the progression of key metrics and highlighting dramatic moments.
+                    </div>
+                </div>
+
+                <!-- Graph Data Visualization (initially hidden) -->
+                <div id="graph-data-section" class="card p-6 mb-6 hidden">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-project-diagram mr-2 text-purple-500"></i>
+                        Network Graph Visualization
+                    </h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Graph Visualization -->
+                        <div class="lg:col-span-2 bg-gray-800 p-4 rounded-lg">
+                            <div id="storyGraphContainer" class="h-80 bg-gray-900 rounded-lg"></div>
+                            <div class="flex justify-between mt-3">
+                                <div class="text-sm text-gray-400">
+                                    <span class="inline-block w-3 h-3 rounded-full bg-blue-400 mr-1"></span> Companies
+                                    <span class="inline-block w-3 h-3 rounded-full bg-green-400 mx-1"></span> Trends
+                                    <span class="inline-block w-3 h-3 rounded-full bg-yellow-400 mx-1"></span> Projects
+                                </div>
+                                <a href="{{ url_for('graph_analytics.index') }}" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                                    <span>View Full Graph</span>
+                                    <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Graph Metrics -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Network Metrics</h4>
+                            <div id="graph-metrics" class="space-y-3">
+                                <div class="bg-gray-700 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-400">Centrality</div>
+                                    <div class="text-xl font-bold text-blue-400">0.65</div>
+                                </div>
+                                <div class="bg-gray-700 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-400">Connectivity</div>
+                                    <div class="text-xl font-bold text-green-400">0.72</div>
+                                </div>
+                                <div class="bg-gray-700 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-400">Influence Score</div>
+                                    <div class="text-xl font-bold text-purple-400">0.68</div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-700">
+                                <h4 class="text-md font-medium mb-2">Key Insights</h4>
+                                <ul id="graph-insights" class="text-sm text-gray-300 space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                                        <span>Strong connection between sustainability trends and company initiatives</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                                        <span>High centrality indicates strategic positioning</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                                        <span>Potential for increased network effects</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storytelling Recommendations -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                        Storytelling Recommendations
+                    </h3>
+
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-300 mb-4">Based on the Contagious Framework analysis, here are recommendations to improve the viral potential of your narrative:</p>
+                        <ul id="recommendations-list" class="space-y-3 text-gray-300"></ul>
+                    </div>
+                </div>
+
+                <!-- Social Sharing Section -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-share-alt mr-2 text-green-500"></i>
+                        Share Your Story
+                    </h3>
+
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <p class="text-gray-300 mb-4">Share this strategic narrative with your network:</p>
+
+                        <div class="flex flex-wrap gap-4 justify-center">
+                            <!-- Twitter/X Share Button -->
+                            <button id="share-twitter" class="flex items-center justify-center bg-black hover:bg-gray-900 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i class="fab fa-x-twitter mr-2"></i>
+                                Share on X
+                            </button>
+
+                            <!-- LinkedIn Share Button -->
+                            <button id="share-linkedin" class="flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i class="fab fa-linkedin-in mr-2"></i>
+                                Share on LinkedIn
+                            </button>
+
+                            <!-- Discord Share Button -->
+                            <button id="share-discord" class="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i class="fab fa-discord mr-2"></i>
+                                Share on Discord
+                            </button>
+
+                            <!-- Substack Share Button -->
+                            <button id="share-substack" class="flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-newspaper mr-2"></i>
+                                Share on Substack
+                            </button>
+                        </div>
+
+                        <!-- Copy Link Section -->
+                        <div class="mt-6">
+                            <div class="flex">
+                                <input type="text" id="share-url" class="flex-grow bg-gray-700 border border-gray-600 rounded-l-lg px-4 py-2 text-white focus:outline-none" readonly>
+                                <button id="copy-link" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-r-lg transition-colors">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p id="copy-message" class="text-green-500 mt-2 text-center hidden">Link copied to clipboard!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/force-graph"></script>
+<script src="{{ url_for('static', filename='js/graph_data.js') }}"></script>
+<script src="{{ url_for('static', filename='js/strategy-graph-integration.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generate story button
+        const generateBtn = document.getElementById('generate-story');
+        const resultsSection = document.getElementById('results-section');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const resultsContent = document.getElementById('results-content');
+        const strategySelect = document.getElementById('strategy-select');
+        const dataSourceSelect = document.getElementById('data-source');
+        const narrativeType = document.getElementById('narrative-type');
+        const audience = document.getElementById('audience');
+        const graphDataSection = document.getElementById('graph-data-section');
+
+        generateBtn.addEventListener('click', function() {
+            // Validate form
+            if (!strategySelect.value || !dataSourceSelect.value) {
+                alert('Please select both a strategy and a data source.');
+                return;
+            }
+
+            // Show results section and loading indicator
+            resultsSection.classList.remove('hidden');
+            loadingIndicator.classList.remove('hidden');
+            resultsContent.classList.add('hidden');
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Get form data
+            const formData = {
+                strategy_id: strategySelect.value,
+                data_source: dataSourceSelect.value,
+                narrative_type: narrativeType.value,
+                audience: audience.value
+            };
+
+            // Fetch storytelling results
+            fetch('/strategy/storytelling-api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator and show results
+                loadingIndicator.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+
+                // Update results title
+                const resultsTitle = document.getElementById('results-title');
+                const selectedStrategy = strategySelect.options[strategySelect.selectedIndex].text;
+                resultsTitle.textContent = `Strategic Narrative: ${selectedStrategy}`;
+
+                // Update narrative content
+                const narrativeContent = document.getElementById('narrative-content');
+                narrativeContent.innerHTML = data.narrative.content;
+
+                // Update audience considerations
+                const audienceConsiderations = document.getElementById('audience-considerations');
+                audienceConsiderations.innerHTML = data.narrative.audience_considerations;
+
+                // Show/hide graph data section based on data source
+                if (dataSourceSelect.value === 'graph_analytics') {
+                    graphDataSection.classList.remove('hidden');
+                    initializeGraphVisualization();
+                } else {
+                    graphDataSection.classList.add('hidden');
+                }
+
+                // Update viral metrics
+                const viralMetrics = document.getElementById('viral-metrics');
+                viralMetrics.innerHTML = '';
+
+                for (const [key, value] of Object.entries(data.viral_potential.elements)) {
+                    const metricElement = document.createElement('div');
+                    metricElement.innerHTML = `
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-300">${key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            <span class="text-gray-300">${value.score}/100</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${value.score}%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">${value.description}</div>
+                    `;
+                    viralMetrics.appendChild(metricElement);
+                }
+
+                // Update overall score
+                const overallScore = document.getElementById('overall-score');
+                const overallScoreBar = document.getElementById('overall-score-bar');
+                const score = Math.round(data.viral_potential.overall_score);
+                overallScore.textContent = score;
+                overallScoreBar.style.width = `${score}%`;
+
+                // Update recommendations
+                const recommendationsList = document.getElementById('recommendations-list');
+                recommendationsList.innerHTML = '';
+
+                data.recommendations.forEach(recommendation => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>${recommendation}</span>
+                    `;
+                    recommendationsList.appendChild(li);
+                });
+
+                // Update benchmark insights
+                const benchmarkInsightsList = document.getElementById('benchmark-insights');
+                benchmarkInsightsList.innerHTML = '';
+
+                data.benchmarks.insights.forEach(insight => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `
+                        <i class="fas fa-chart-line text-blue-500 mt-1 mr-2"></i>
+                        <span>${insight}</span>
+                    `;
+                    benchmarkInsightsList.appendChild(li);
+                });
+
+                // Render contagious framework chart
+                renderRadarChart('contagious-chart', data.contagious_chart);
+
+                // Render benchmark comparison chart
+                renderBarChart('benchmark-chart', {
+                    labels: ['Your Narrative', 'Sustainability', 'Finance', 'Technology', 'Top Performers'],
+                    datasets: [{
+                        label: 'Overall Viral Potential',
+                        data: [
+                            data.benchmarks.data.your_score,
+                            data.benchmarks.data.benchmarks.sustainability,
+                            data.benchmarks.data.benchmarks.finance,
+                            data.benchmarks.data.benchmarks.technology,
+                            data.benchmarks.data.benchmarks.top_performers
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                });
+
+                // Render story chart
+                renderLineChart('story-chart', data.story_chart);
+
+                // Set up sharing functionality
+                setupSharingButtons(selectedStrategy, data);
+            })
+            .catch(error => {
+                console.error('Error generating storytelling:', error);
+                loadingIndicator.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+
+                // Show error message
+                const narrativeContent = document.getElementById('narrative-content');
+                narrativeContent.innerHTML = `<div class="text-red-500">Error generating storytelling: ${error.message || 'Unknown error'}</div>`;
+            });
+        });
+
+        // Function to render radar chart
+        function renderRadarChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (window[canvasId + 'Chart']) {
+                window[canvasId + 'Chart'].destroy();
+            }
+
+            // Create chart configuration
+            const chartConfig = {
+                type: 'radar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            pointLabels: {
+                                color: '#9ca3af'
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                backdropColor: 'transparent',
+                                stepSize: 20
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e5e7eb'
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Create the chart
+            window[canvasId + 'Chart'] = new Chart(ctx, chartConfig);
+        }
+
+        // Function to render line chart
+        function renderLineChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (window[canvasId + 'Chart']) {
+                window[canvasId + 'Chart'].destroy();
+            }
+
+            // Create chart configuration
+            const chartConfig = {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            };
+
+            // Create the chart
+            window[canvasId + 'Chart'] = new Chart(ctx, chartConfig);
+        }
+
+        // Function to render bar chart
+        function renderBarChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (window[canvasId + 'Chart']) {
+                window[canvasId + 'Chart'].destroy();
+            }
+
+            // Create chart configuration
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Create the chart
+            window[canvasId + 'Chart'] = new Chart(ctx, chartConfig);
+        }
+
+        // Function to initialize graph visualization
+        function initializeGraphVisualization() {
+            const storyGraphContainer = document.getElementById('storyGraphContainer');
+            if (!storyGraphContainer) return;
+
+            // Create a smaller subset of nodes and links for the story view
+            // Filter to include only the most relevant nodes for the story
+            const storyNodes = graphNodes.filter(node => {
+                // Include nodes that are relevant to sustainability storytelling
+                return node.type === 'trend' ||
+                       (node.type === 'company' && node.sustainability_metrics) ||
+                       (node.type === 'project' && node.sustainability_metrics);
+            }).slice(0, 10); // Limit to 10 nodes for better visualization
+
+            // Get the IDs of the selected nodes
+            const storyNodeIds = storyNodes.map(node => node.id);
+
+            // Filter links to only include those between the selected nodes
+            const storyLinks = graphEdges.filter(link => {
+                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+                return storyNodeIds.includes(sourceId) && storyNodeIds.includes(targetId);
+            });
+
+            // Create the graph
+            const Graph = ForceGraph()
+                (storyGraphContainer)
+                .graphData({
+                    nodes: storyNodes,
+                    links: storyLinks
+                })
+                .nodeLabel(node => `${node.name} (${node.type})`)
+                .nodeColor(node => node.color || getNodeColor(node.type))
+                .nodeRelSize(5)
+                .linkWidth(link => (link.strength || 1) * 2)
+                .linkDirectionalArrowLength(3)
+                .linkDirectionalArrowRelPos(1)
+                .linkCurvature(0.25)
+                .linkLabel(link => link.type)
+                .onNodeClick(node => {
+                    // Update graph metrics when a node is clicked
+                    updateGraphMetrics(node);
+                });
+
+            // Calculate and update graph metrics
+            updateGraphMetrics();
+        }
+
+        // Function to update graph metrics
+        function updateGraphMetrics(selectedNode = null) {
+            // Get the graph metrics container
+            const graphMetricsContainer = document.getElementById('graph-metrics');
+            if (!graphMetricsContainer) return;
+
+            // Calculate centrality, connectivity, and influence scores
+            let centrality = 0.65;
+            let connectivity = 0.72;
+            let influence = 0.68;
+
+            if (selectedNode) {
+                // Count connections for the selected node
+                const connections = graphEdges.filter(link => {
+                    const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                    const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+                    return sourceId === selectedNode.id || targetId === selectedNode.id;
+                }).length;
+
+                // Calculate metrics based on the selected node
+                centrality = Math.min(connections / 10, 1).toFixed(2);
+                connectivity = (0.5 + (connections / 20)).toFixed(2);
+                influence = ((centrality * 0.6) + (connectivity * 0.4)).toFixed(2);
+            }
+
+            // Update the metrics display
+            graphMetricsContainer.innerHTML = `
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="text-sm text-gray-400">Centrality</div>
+                    <div class="text-xl font-bold text-blue-400">${centrality}</div>
+                </div>
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="text-sm text-gray-400">Connectivity</div>
+                    <div class="text-xl font-bold text-green-400">${connectivity}</div>
+                </div>
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="text-sm text-gray-400">Influence Score</div>
+                    <div class="text-xl font-bold text-purple-400">${influence}</div>
+                </div>
+            `;
+
+            // Update graph insights
+            const graphInsights = document.getElementById('graph-insights');
+            if (graphInsights) {
+                if (selectedNode) {
+                    // Generate insights specific to the selected node
+                    graphInsights.innerHTML = `
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>${selectedNode.name} has a ${influence > 0.7 ? 'high' : influence > 0.5 ? 'moderate' : 'low'} influence in the network</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>${selectedNode.type === 'trend' ? 'This trend impacts multiple companies and projects' :
+                                   selectedNode.type === 'company' ? 'This company is connected to key sustainability trends' :
+                                   'This project contributes to important sustainability goals'}</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>Strengthening connections could increase ${selectedNode.type} impact</span>
+                        </li>
+                    `;
+                } else {
+                    // Default insights
+                    graphInsights.innerHTML = `
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>Strong connection between sustainability trends and company initiatives</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>High centrality indicates strategic positioning</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-xs text-blue-500 mt-1 mr-2"></i>
+                            <span>Potential for increased network effects</span>
+                        </li>
+                    `;
+                }
+            }
+        }
+
+        // Helper function to get node color based on type
+        function getNodeColor(type) {
+            const colors = {
+                'company': '#3b82f6',  // Blue
+                'trend': '#10b981',    // Green
+                'project': '#f59e0b',  // Amber
+                'default': '#9333ea'   // Purple
+            };
+            return colors[type] || colors.default;
+        }
+
+        // Function to set up sharing buttons
+        function setupSharingButtons(strategyName, data) {
+            // Generate a unique ID for this story
+            const storyId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+
+            // Create a shareable URL
+            const baseUrl = window.location.origin;
+            const shareUrl = `${baseUrl}/strategy/story/${storyId}`;
+
+            // Set the share URL in the input field
+            const shareUrlInput = document.getElementById('share-url');
+            shareUrlInput.value = shareUrl;
+
+            // Store the story data in localStorage for retrieval when shared link is accessed
+            const storyData = {
+                id: storyId,
+                strategy: strategyName,
+                narrative: data.narrative,
+                viral_potential: data.viral_potential,
+                benchmarks: data.benchmarks,
+                story_chart: data.story_chart,
+                contagious_chart: data.contagious_chart,
+                recommendations: data.recommendations,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                localStorage.setItem(`story_${storyId}`, JSON.stringify(storyData));
+            } catch (e) {
+                console.error('Error storing story data:', e);
+            }
+
+            // Set up Twitter/X share button
+            const twitterBtn = document.getElementById('share-twitter');
+            twitterBtn.addEventListener('click', function() {
+                const text = `Check out this strategic narrative: "${strategyName}" with a viral potential score of ${Math.round(data.viral_potential.overall_score)}%`;
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+                window.open(twitterUrl, '_blank');
+            });
+
+            // Set up LinkedIn share button
+            const linkedinBtn = document.getElementById('share-linkedin');
+            linkedinBtn.addEventListener('click', function() {
+                const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+                window.open(linkedinUrl, '_blank');
+            });
+
+            // Set up Discord share button
+            const discordBtn = document.getElementById('share-discord');
+            discordBtn.addEventListener('click', function() {
+                // Create a message for Discord
+                const message = `**Strategic Narrative: ${strategyName}**\nViral Potential: ${Math.round(data.viral_potential.overall_score)}%\n${shareUrl}`;
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(message).then(() => {
+                    alert('Discord message copied to clipboard. Paste it into Discord to share!');
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                    // Fallback for browsers that don't support clipboard API
+                    const textarea = document.createElement('textarea');
+                    textarea.value = message;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('Discord message copied to clipboard. Paste it into Discord to share!');
+                });
+            });
+
+            // Set up Substack share button
+            const substackBtn = document.getElementById('share-substack');
+            substackBtn.addEventListener('click', function() {
+                // Create a message for Substack
+                const title = `Strategic Narrative: ${strategyName}`;
+                const content = `
+                <h2>${title}</h2>
+                <p>Viral Potential Score: ${Math.round(data.viral_potential.overall_score)}%</p>
+                <p>${data.narrative.content}</p>
+                <p>View the full analysis at: <a href="${shareUrl}">${shareUrl}</a></p>
+                `;
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(content).then(() => {
+                    alert('Content copied to clipboard. Paste it into your Substack editor to share!');
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                    // Fallback for browsers that don't support clipboard API
+                    const textarea = document.createElement('textarea');
+                    textarea.value = content;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('Content copied to clipboard. Paste it into your Substack editor to share!');
+                });
+            });
+
+            // Set up copy link button
+            const copyLinkBtn = document.getElementById('copy-link');
+            const copyMessage = document.getElementById('copy-message');
+
+            copyLinkBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    copyMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden');
+                    }, 3000);
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                    // Fallback for browsers that don't support clipboard API
+                    shareUrlInput.select();
+                    document.execCommand('copy');
+                    copyMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden');
+                    }, 3000);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

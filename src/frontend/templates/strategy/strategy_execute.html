@@ -1,0 +1,362 @@
+{% extends "finbase.html" %}
+
+{% block title %}Execute Strategy - Strategy Hub - SustainaTrend™{% endblock %}
+
+{% block additional_head %}
+<!-- Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<!-- D3.js for advanced visualizations -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('strategy.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Execute Strategy</h1>
+    </div>
+
+    <!-- Strategy Selection Form -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-cogs mr-2 text-blue-500"></i>
+            Strategy Configuration
+        </h2>
+        <form id="strategy-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Strategy Selection -->
+                <div>
+                    <label for="strategy-select" class="block text-sm font-medium text-gray-400 mb-1">Select Strategy</label>
+                    <select id="strategy-select" name="strategy_id" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select a Strategy --</option>
+                        {% for strategy in strategies %}
+                        <option value="{{ strategy.id }}">{{ strategy.name }} ({{ strategy.framework }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Data Source Selection -->
+                <div>
+                    <label for="data-source" class="block text-sm font-medium text-gray-400 mb-1">Data Source</label>
+                    <select id="data-source" name="data_source" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Data Source --</option>
+                        <option value="sustainability_metrics">Sustainability Metrics</option>
+                        <option value="financial_data">Financial Data</option>
+                        <option value="market_trends">Market Trends</option>
+                        <option value="esg_ratings">ESG Ratings</option>
+                        <option value="carbon_emissions">Carbon Emissions</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Advanced Options (collapsible) -->
+            <div>
+                <button type="button" id="advanced-options-toggle" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                    <i class="fas fa-caret-right mr-1 transform transition-transform" id="advanced-caret"></i>
+                    <span>Advanced Options</span>
+                </button>
+                <div id="advanced-options" class="hidden mt-4 p-4 bg-gray-800 rounded-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="time-period" class="block text-sm font-medium text-gray-400 mb-1">Time Period</label>
+                            <select id="time-period" name="time_period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1y">Last Year</option>
+                                <option value="2y">Last 2 Years</option>
+                                <option value="5y">Last 5 Years</option>
+                                <option value="all">All Available Data</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="visualization-type" class="block text-sm font-medium text-gray-400 mb-1">Visualization Type</label>
+                            <select id="visualization-type" name="visualization_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="bar">Bar Chart</option>
+                                <option value="line">Line Chart</option>
+                                <option value="radar">Radar Chart</option>
+                                <option value="pie">Pie Chart</option>
+                                <option value="table">Data Table</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Execute Button -->
+            <div class="flex justify-end">
+                <button type="button" id="execute-strategy" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                    Execute Strategy
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section (initially hidden) -->
+    <div id="results-section" class="hidden">
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-chart-line mr-2 text-green-500"></i>
+                <span id="results-title">Strategy Results</span>
+            </h2>
+            
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+            
+            <!-- Results Content -->
+            <div id="results-content" class="hidden">
+                <!-- Strategy Summary -->
+                <div class="bg-gray-800 p-4 rounded-lg mb-6">
+                    <h3 class="text-lg font-medium mb-2">Strategy Summary</h3>
+                    <div id="strategy-summary" class="text-gray-300"></div>
+                </div>
+                
+                <!-- Visualization Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium mb-4">Primary Visualization</h3>
+                        <div class="h-80 relative">
+                            <canvas id="primary-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium mb-4">Secondary Visualization</h3>
+                        <div class="h-80 relative">
+                            <canvas id="secondary-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Table -->
+                <div class="mt-6 bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium mb-4">Detailed Results</h3>
+                    <div class="overflow-x-auto">
+                        <table id="results-table" class="min-w-full bg-gray-900 rounded-lg overflow-hidden">
+                            <thead>
+                                <tr id="table-header">
+                                    <!-- Table headers will be dynamically populated -->
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Table rows will be dynamically populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Insights and Recommendations -->
+                <div class="mt-6 bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium mb-2">Insights & Recommendations</h3>
+                    <div id="insights" class="text-gray-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle advanced options
+        const advancedToggle = document.getElementById('advanced-options-toggle');
+        const advancedOptions = document.getElementById('advanced-options');
+        const advancedCaret = document.getElementById('advanced-caret');
+        
+        advancedToggle.addEventListener('click', function() {
+            advancedOptions.classList.toggle('hidden');
+            advancedCaret.classList.toggle('rotate-90');
+        });
+        
+        // Execute strategy button
+        const executeBtn = document.getElementById('execute-strategy');
+        const resultsSection = document.getElementById('results-section');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const resultsContent = document.getElementById('results-content');
+        const strategySelect = document.getElementById('strategy-select');
+        const dataSourceSelect = document.getElementById('data-source');
+        const visualizationType = document.getElementById('visualization-type');
+        
+        executeBtn.addEventListener('click', function() {
+            // Validate form
+            if (!strategySelect.value || !dataSourceSelect.value) {
+                alert('Please select both a strategy and a data source.');
+                return;
+            }
+            
+            // Show results section and loading indicator
+            resultsSection.classList.remove('hidden');
+            loadingIndicator.classList.remove('hidden');
+            resultsContent.classList.add('hidden');
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Get form data
+            const formData = {
+                strategy_id: strategySelect.value,
+                data_source: dataSourceSelect.value,
+                time_period: document.getElementById('time-period').value,
+                visualization_type: visualizationType.value
+            };
+            
+            // Fetch strategy execution results
+            fetch('/strategy/execute-api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator and show results
+                loadingIndicator.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+                
+                // Update results title
+                const resultsTitle = document.getElementById('results-title');
+                const selectedStrategy = strategySelect.options[strategySelect.selectedIndex].text;
+                resultsTitle.textContent = `Results: ${selectedStrategy}`;
+                
+                // Update strategy summary
+                const strategySummary = document.getElementById('strategy-summary');
+                strategySummary.innerHTML = data.summary;
+                
+                // Update insights
+                const insights = document.getElementById('insights');
+                insights.innerHTML = data.insights.map(insight => `<p class="mb-2">• ${insight}</p>`).join('');
+                
+                // Render primary chart
+                renderChart('primary-chart', data.primary_chart, formData.visualization_type);
+                
+                // Render secondary chart
+                renderChart('secondary-chart', data.secondary_chart, 'radar');
+                
+                // Populate data table
+                populateTable(data.table_data);
+            })
+            .catch(error => {
+                console.error('Error executing strategy:', error);
+                loadingIndicator.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+                
+                // Show error message
+                const strategySummary = document.getElementById('strategy-summary');
+                strategySummary.innerHTML = `<div class="text-red-500">Error executing strategy: ${error.message || 'Unknown error'}</div>`;
+            });
+        });
+        
+        // Function to render charts
+        function renderChart(canvasId, chartData, chartType) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window[canvasId + 'Chart']) {
+                window[canvasId + 'Chart'].destroy();
+            }
+            
+            // Create chart configuration based on type
+            let chartConfig = {
+                type: chartType,
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e5e7eb'
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // Special configuration for radar charts
+            if (chartType === 'radar') {
+                chartConfig.options.scales = {};
+                chartConfig.options.elements = {
+                    line: {
+                        borderWidth: 3
+                    }
+                };
+                chartConfig.options.scales.r = {
+                    angleLines: {
+                        color: 'rgba(75, 85, 99, 0.2)'
+                    },
+                    grid: {
+                        color: 'rgba(75, 85, 99, 0.2)'
+                    },
+                    pointLabels: {
+                        color: '#9ca3af'
+                    },
+                    ticks: {
+                        color: '#9ca3af',
+                        backdropColor: 'transparent'
+                    }
+                };
+            }
+            
+            // Create the chart
+            window[canvasId + 'Chart'] = new Chart(ctx, chartConfig);
+        }
+        
+        // Function to populate data table
+        function populateTable(tableData) {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+            
+            // Clear existing content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Add headers
+            tableData.headers.forEach(header => {
+                const th = document.createElement('th');
+                th.className = 'px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider';
+                th.textContent = header;
+                tableHeader.appendChild(th);
+            });
+            
+            // Add rows
+            tableData.rows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-800';
+                
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.className = 'px-4 py-3 whitespace-nowrap text-gray-300';
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                
+                tableBody.appendChild(tr);
+            });
+        }
+    });
+</script>
+{% endblock %}

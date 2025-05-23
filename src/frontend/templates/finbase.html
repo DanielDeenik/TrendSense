@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TrendSense™{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            950: '#042f2e',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Additional head content -->
+    {% block additional_head %}{% endblock %}
+
+    <style>
+        /* Light mode styles */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f9fafb;
+            --sidebar-border: #e5e7eb;
+        }
+
+        /* Dark mode styles */
+        .dark {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+            --card-bg: #1f2937;
+            --sidebar-bg: #111827;
+            --sidebar-border: #374151;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #4b5563;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #374151;
+        }
+
+        /* Sidebar styles */
+        #sidebar {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        /* Navigation styles */
+        .nav-section {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item:hover .nav-tooltip {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .nav-tooltip {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+            width: max-content;
+            max-width: 200px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Improved active state */
+        .active-nav-item {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Section dividers */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            margin: 1rem 0;
+        }
+
+        /* Additional styles */
+        {% block additional_styles %}{% endblock %}
+
+        /* Generative UI styles */
+        .generative-ui-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generative-ui-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .generative-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Side Navigation -->
+    <div class="flex h-screen bg-gray-900">
+        <!-- Side Navigation Bar -->
+        <div id="sidebar" class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
+            <!-- Logo and Toggle -->
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <a href="/" class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-chart-line text-green-500 mr-2"></i>
+                    <span>TrendSense™</span>
+                </a>
+                <div class="flex items-center space-x-2">
+                    <!-- Tour Toggle -->
+                    <label class="flex items-center cursor-pointer space-x-2">
+                        <input type="checkbox" id="tourToggle" class="hidden">
+                        <span class="relative">
+                            <span class="block w-10 h-5 bg-gray-600 rounded-full shadow-inner"></span>
+                            <span id="tourToggleIndicator" class="absolute block w-3 h-3 mt-1 ml-1 bg-white rounded-full shadow inset-y-0 left-0 transition-transform duration-300 transform"></span>
+                        </span>
+                        <span class="text-xs text-gray-400">🧠 Tour</span>
+                    </label>
+
+                    <!-- Sidebar Toggle (Mobile) -->
+                    <button id="sidebar-toggle" class="md:hidden text-gray-400 hover:text-white">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto py-4" id="main-navigation">
+                <ul class="space-y-2 px-4">
+                    {% if navigation.categories is iterable and navigation.structure is defined %}
+                        {% for category in navigation.categories %}
+                            {% if category.id in navigation.structure %}
+                                {% set category_data = navigation.structure[category.id] %}
+
+                            <!-- Category: {{ category.name }} -->
+                            <li class="mt-6 nav-category" id="category-{{ category.id }}">
+                                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-2">
+                                    {{ category.name }}
+                                </h3>
+
+                                <div class="border-l-2 border-gray-700 ml-2 pl-2">
+                                    <ul class="space-y-2">
+                                        <!-- Standard Navigation Items -->
+                                        {% for item in category_data.items %}
+                                            <li class="nav-item" data-url="{{ item.url }}">
+                                                <a href="{{ item.url }}"
+                                                   class="flex items-center text-gray-300 hover:text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors nav-link"
+                                                   title="{{ item.name }}"
+                                                   data-category="{{ category.id }}">
+                                                    <i class="fas fa-{{ item.icon }} mr-3"></i>
+                                                    <span>{{ item.name }}</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+
+                                        <!-- Generative UI Buttons -->
+                                        {% if category_data.generative_items %}
+                                            <li class="mt-3 pt-2 border-t border-gray-700">
+                                                <p class="text-xs text-gray-500 mb-2 px-2">Generative AI</p>
+                                                <ul class="space-y-1">
+                                                    {% for item in category_data.generative_items %}
+                                                        <li class="generative-item">
+                                                            <a href="{{ item.url }}"
+                                                               class="flex items-center text-gray-300 hover:text-white py-2 px-4 rounded-lg hover:bg-blue-900 hover:bg-opacity-30 transition-colors generative-ui-btn"
+                                                               title="{{ item.name }}"
+                                                               data-action="{{ item.action }}"
+                                                               data-target="{{ item.target }}">
+                                                                <i class="fas fa-{{ item.icon }} mr-3 text-blue-400"></i>
+                                                                <span>{{ item.name }}</span>
+                                                                <span class="ml-auto">
+                                                                    <i class="fas fa-magic text-blue-400 generative-pulse"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <!-- Fallback navigation if categories are not available -->
+                        <li class="nav-item">
+                            <a href="/" class="flex items-center text-gray-300 hover:text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <!-- User Section -->
+            <div class="p-4 border-t border-gray-700">
+                <div class="flex items-center justify-between">
+                    <a href="/login" class="text-gray-300 hover:text-white transition-colors flex items-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </a>
+                    <a href="/signup" class="btn-primary px-3 py-1.5 rounded-lg text-sm">
+                        Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 overflow-auto bg-gray-900">
+            <!-- Main Content -->
+            <main class="min-h-screen p-8">
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Tour Button Component -->
+            {% include "components/tour_button.html" %}
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('hidden');
+        });
+
+        // Close sidebar when clicking overlay
+        document.getElementById('sidebar-overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('open');
+            this.classList.add('hidden');
+        });
+
+        // Tour toggle functionality
+        const tourToggle = document.getElementById('tourToggle');
+        const tourToggleIndicator = document.getElementById('tourToggleIndicator');
+
+        if (tourToggle && tourToggleIndicator) {
+            // Set initial state based on localStorage
+            if (localStorage.getItem('TrendSense_Tour') === 'on') {
+                tourToggle.checked = true;
+                tourToggleIndicator.classList.add('translate-x-5');
+            }
+
+            // Add change event listener
+            tourToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    // Update toggle appearance
+                    tourToggleIndicator.classList.add('translate-x-5');
+                    // Store tour state
+                    localStorage.setItem('TrendSense_Tour', 'on');
+                    localStorage.setItem('tourManuallyEnabled', 'true');
+                    // Start tour if available
+                    if (window.tourMode) {
+                        window.tourMode.startTour();
+                    } else {
+                        // Reload page with tour parameter
+                        window.location.href = window.location.pathname + '?tour=true';
+                    }
+                } else {
+                    // Update toggle appearance
+                    tourToggleIndicator.classList.remove('translate-x-5');
+                    // Store tour state
+                    localStorage.setItem('TrendSense_Tour', 'off');
+                    localStorage.removeItem('tourManuallyEnabled');
+                    // End tour if available
+                    if (window.tourMode) {
+                        window.tourMode.endTour();
+                    }
+                }
+            });
+        }
+
+        // Navigation functionality is now handled by navigation-helper.js
+        // This ensures consistent behavior across all pages
+    </script>
+
+    <!-- Navigation Helper -->
+    <script src="{{ url_for('static', filename='js/navigation-helper.js') }}"></script>
+
+    <!-- AI Tooltips and Popups -->
+    <script src="{{ url_for('static', filename='js/ai-tooltips.js') }}"></script>
+
+    <!-- Generative UI -->
+    <script src="{{ url_for('static', filename='js/generative-ui.js') }}"></script>
+
+    <!-- TourMode Scripts -->
+    <script>
+        // Check if tour should be loaded
+        function shouldLoadTour() {
+            // Check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourParam = urlParams.get('tour');
+
+            // Check localStorage for manual enabling
+            const manuallyEnabled = localStorage.getItem('tourManuallyEnabled') === 'true';
+
+            // Check if tour is not completed
+            const tourCompleted = localStorage.getItem('tourCompleted') === 'true';
+
+            // Load tour if URL parameter is 'true' or manually enabled or not completed
+            return tourParam === 'true' || manuallyEnabled || !tourCompleted;
+        }
+
+        // Conditionally load tour scripts
+        if (shouldLoadTour()) {
+            // Create and load tour-configs.js
+            const tourConfigsScript = document.createElement('script');
+            tourConfigsScript.src = "{{ url_for('static', filename='js/tour-configs.js') }}";
+            document.head.appendChild(tourConfigsScript);
+
+            // Create and load tour-mode.js
+            const tourModeScript = document.createElement('script');
+            tourModeScript.src = "{{ url_for('static', filename='js/tour-mode.js') }}";
+            document.head.appendChild(tourModeScript);
+
+            // Create and load tour_config.js
+            const tourConfigScript = document.createElement('script');
+            tourConfigScript.src = "{{ url_for('static', filename='js/tour_config.js') }}";
+            document.head.appendChild(tourConfigScript);
+
+            // Create and load tour-help-logger.js
+            const tourHelpLoggerScript = document.createElement('script');
+            tourHelpLoggerScript.src = "{{ url_for('static', filename='js/tour-help-logger.js') }}";
+            document.head.appendChild(tourHelpLoggerScript);
+
+            // Create and load tour-copilot-responses.js
+            const tourCopilotResponsesScript = document.createElement('script');
+            tourCopilotResponsesScript.src = "{{ url_for('static', filename='js/tour-copilot-responses.js') }}";
+            document.head.appendChild(tourCopilotResponsesScript);
+        }
+    </script>
+
+    <!-- Include help modal component -->
+    {% include "components/help_modal.html" %}
+
+    <!-- Additional scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

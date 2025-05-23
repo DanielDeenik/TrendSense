@@ -1,0 +1,327 @@
+/* Component Styles for SustainaTrend™ */
+
+/* Cards */
+.card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden;
+}
+
+.card-header {
+    @apply px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6;
+}
+
+.card-body {
+    @apply px-4 py-5 sm:p-6;
+}
+
+.card-footer {
+    @apply px-4 py-4 border-t border-gray-200 dark:border-gray-700 sm:px-6;
+}
+
+/* Forms */
+.form-group {
+    @apply space-y-1 mb-4;
+}
+
+.form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300;
+}
+
+.form-input {
+    @apply block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm;
+}
+
+.form-select {
+    @apply block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm;
+}
+
+.form-checkbox {
+    @apply h-4 w-4 text-green-600 border-gray-300 dark:border-gray-600 rounded focus:ring-green-500;
+}
+
+.form-radio {
+    @apply h-4 w-4 text-green-600 border-gray-300 dark:border-gray-600 focus:ring-green-500;
+}
+
+.form-help {
+    @apply mt-1 text-sm text-gray-500 dark:text-gray-400;
+}
+
+/* Buttons */
+.btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+    @apply btn text-white bg-green-600 hover:bg-green-700 focus:ring-green-500;
+}
+
+.btn-secondary {
+    @apply btn text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-green-500;
+}
+
+.btn-danger {
+    @apply btn text-white bg-red-600 hover:bg-red-700 focus:ring-red-500;
+}
+
+.btn-sm {
+    @apply px-3 py-1.5 text-xs;
+}
+
+.btn-lg {
+    @apply px-6 py-3 text-base;
+}
+
+.btn-icon {
+    @apply p-2 rounded-full;
+}
+
+/* Alerts */
+.alert {
+    @apply p-4 rounded-md mb-4;
+}
+
+.alert-success {
+    @apply alert bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100;
+}
+
+.alert-danger {
+    @apply alert bg-red-50 dark:bg-red-900 text-red-800 dark:text-red-100;
+}
+
+.alert-warning {
+    @apply alert bg-yellow-50 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100;
+}
+
+.alert-info {
+    @apply alert bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100;
+}
+
+/* Navigation */
+.nav-link {
+    @apply text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white;
+}
+
+.nav-link-active {
+    @apply text-green-600 dark:text-green-400;
+}
+
+/* Icon Navigation */
+.icon-nav-item {
+    @apply flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-200;
+}
+
+.icon-nav-item-active {
+    @apply icon-nav-item bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-100;
+}
+
+.icon-nav-item-inactive {
+    @apply icon-nav-item text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700;
+}
+
+.icon-nav-icon {
+    @apply text-xl mb-1;
+}
+
+.icon-nav-label {
+    @apply text-xs font-medium text-center;
+}
+
+/* Badges */
+.badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-green {
+    @apply badge bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100;
+}
+
+.badge-red {
+    @apply badge bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100;
+}
+
+.badge-yellow {
+    @apply badge bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100;
+}
+
+.badge-blue {
+    @apply badge bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100;
+}
+
+.badge-gray {
+    @apply badge bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100;
+}
+
+/* Tables */
+.table-container {
+    @apply overflow-x-auto rounded-lg shadow;
+}
+
+.table {
+    @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+}
+
+.table-header {
+    @apply bg-gray-50 dark:bg-gray-700;
+}
+
+.table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider;
+}
+
+.table-body {
+    @apply bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700;
+}
+
+.table-row {
+    @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+}
+
+.table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300;
+}
+
+/* Modals */
+.modal-backdrop {
+    @apply fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 transition-opacity;
+}
+
+.modal-container {
+    @apply fixed inset-0 z-10 overflow-y-auto;
+}
+
+.modal-content {
+    @apply relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full;
+}
+
+.modal-header {
+    @apply px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6;
+}
+
+.modal-body {
+    @apply px-4 py-5 sm:p-6;
+}
+
+.modal-footer {
+    @apply px-4 py-3 bg-gray-50 dark:bg-gray-700 sm:px-6 sm:flex sm:flex-row-reverse;
+}
+
+/* Loading States */
+.loading-spinner {
+    @apply animate-spin h-5 w-5 text-gray-500 dark:text-gray-300;
+}
+
+.loading-overlay {
+    @apply fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 flex items-center justify-center;
+}
+
+/* Tabs */
+.tabs {
+    @apply border-b border-gray-200 dark:border-gray-700;
+}
+
+.tab {
+    @apply py-4 px-1 border-b-2 font-medium text-sm;
+}
+
+.tab-active {
+    @apply tab border-green-500 text-green-600 dark:text-green-400;
+}
+
+.tab-inactive {
+    @apply tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600;
+}
+
+.tab-content {
+    @apply py-4;
+}
+
+/* Pagination */
+.pagination {
+    @apply flex justify-center mt-4 space-x-1;
+}
+
+.pagination-item {
+    @apply px-3 py-1 rounded-md text-sm font-medium;
+}
+
+.pagination-active {
+    @apply pagination-item bg-green-600 text-white;
+}
+
+.pagination-inactive {
+    @apply pagination-item text-gray-700 bg-white hover:bg-gray-50 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700;
+}
+
+/* Tooltips */
+.tooltip {
+    @apply absolute z-10 p-2 bg-gray-900 text-white text-xs rounded shadow-lg;
+}
+
+/* Progress */
+.progress-container {
+    @apply w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5;
+}
+
+.progress-bar {
+    @apply bg-green-600 h-2.5 rounded-full;
+}
+
+/* Stats */
+.stat-card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-5;
+}
+
+.stat-value {
+    @apply text-3xl font-bold text-gray-900 dark:text-white;
+}
+
+.stat-label {
+    @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+}
+
+.stat-trend-up {
+    @apply flex items-center text-green-600 dark:text-green-400;
+}
+
+.stat-trend-down {
+    @apply flex items-center text-red-600 dark:text-red-400;
+}
+
+/* Charts */
+.chart-container {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 h-80;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.dashboard-grid-item {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden;
+}
+
+.dashboard-grid-item-header {
+    @apply px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center;
+}
+
+.dashboard-grid-item-body {
+    @apply p-4;
+}
+
+/* Icon Grid */
+.icon-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4;
+}
+
+.icon-grid-item {
+    @apply flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700;
+}
+
+.icon-grid-icon {
+    @apply text-3xl mb-2 text-gray-500 dark:text-gray-400;
+}
+
+.icon-grid-label {
+    @apply text-sm font-medium text-center text-gray-700 dark:text-gray-300;
+}

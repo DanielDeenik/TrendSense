@@ -1,0 +1,57 @@
+{% extends "finbase.html" %}
+
+{% block title %}500 - Server Error - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full text-center">
+        <div class="mb-8">
+            <div class="text-red-500 text-9xl font-bold mb-4">500</div>
+            <h1 class="text-3xl font-bold mb-2">Server Error</h1>
+            <p class="text-gray-400 mb-8">Something went wrong on our end. We're working to fix the issue.</p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/" class="btn-primary px-6 py-2 rounded-lg">
+                    Go Home
+                </a>
+                <button onclick="window.location.reload()" class="btn-secondary px-6 py-2 rounded-lg">
+                    Try Again
+                </button>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <h2 class="text-lg font-medium mb-4">Error Details</h2>
+            {% if error_message %}
+                <div class="bg-gray-800 p-4 rounded-lg mb-4 text-left">
+                    <p class="text-gray-400 mb-2">{{ error_message }}</p>
+                    {% if error_type %}
+                        <div class="text-sm text-gray-500 mt-2">
+                            <span class="font-medium">Error Type:</span> {{ error_type }}
+                        </div>
+                    {% endif %}
+                    {% if error_code %}
+                        <div class="text-sm text-gray-500">
+                            <span class="font-medium">Error Code:</span> {{ error_code }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="text-gray-400 mb-4">An unexpected error occurred. Our team has been notified.</p>
+            {% endif %}
+
+            <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                <a href="/" class="text-blue-500 hover:text-blue-400 inline-flex items-center">
+                    <i class="fas fa-home mr-2"></i> Return to Home
+                </a>
+                <a href="javascript:history.back()" class="text-gray-400 hover:text-gray-300 inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Go Back
+                </a>
+                <a href="mailto:support@sustainatrend.com" class="text-green-500 hover:text-green-400 inline-flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

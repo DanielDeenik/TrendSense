@@ -1,0 +1,1035 @@
+{% extends "finbase.html" %}
+
+{% block title %}VC Lens™ - TrendSense™{% endblock %}
+
+{% block content %}
+{% include "components/tour_button.html" %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">VC Lens™</h1>
+        <div class="flex items-center">
+            <span class="text-gray-400 mr-2">Firebase:</span>
+            {% if firebase_available %}
+                <span class="text-green-500">Connected</span>
+            {% else %}
+                <span class="text-red-500">Disconnected</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="vc-lens-dashboard" class="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-white mb-4">Private Equity Look-Through</h2>
+        <p class="text-xl text-gray-300 mb-6">
+            VC Lens™ provides comprehensive analysis of sustainability trends and metrics for private equity investments.
+        </p>
+
+        <!-- Filters Section -->
+        <div id="vc-lens-filters" class="bg-gray-700 p-4 rounded-lg mb-6">
+            <h3 class="text-lg font-medium mb-3">Filters</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">ESG Focus</label>
+                    <select data-filter="esg" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                        <option value="All">All</option>
+                        <option value="Circularity">Circularity</option>
+                        <option value="Carbon">Carbon</option>
+                        <option value="Social Impact">Social Impact</option>
+                        <option value="Governance">Governance</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Region</label>
+                    <select data-filter="region" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                        <option value="All">All</option>
+                        <option value="North America">North America</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                        <option value="LATAM">LATAM</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Stage</label>
+                    <select data-filter="stage" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                        <option value="All">All</option>
+                        <option value="Seed">Seed</option>
+                        <option value="Series A">Series A</option>
+                        <option value="Series B">Series B</option>
+                        <option value="Growth">Growth</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Sustainability Score</label>
+                    <select data-filter="score" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                        <option value="All">All</option>
+                        <option value="High">High (80+)</option>
+                        <option value="Medium">Medium (50-80)</option>
+                        <option value="Low">Low (Below 50)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="vc-lens-results" class="bg-gray-700 p-4 rounded-lg mb-6">
+            <h3 class="text-lg font-medium mb-3">Filtered Results</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">ReCircle</h4>
+                    <p class="text-sm text-gray-400 mb-2">B2B packaging startup in LATAM</p>
+                    <div class="flex items-center mb-1">
+                        <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <span class="text-xs">85</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 w-24">Growth:</span>
+                        <span class="text-xs text-green-500">+42%</span>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">CircularPack</h4>
+                    <p class="text-sm text-gray-400 mb-2">Sustainable packaging solutions</p>
+                    <div class="flex items-center mb-1">
+                        <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                        <span class="text-xs">78</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 w-24">Growth:</span>
+                        <span class="text-xs text-green-500">+35%</span>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">EcoLoop</h4>
+                    <p class="text-sm text-gray-400 mb-2">Circular economy marketplace</p>
+                    <div class="flex items-center mb-1">
+                        <span class="text-xs text-gray-500 w-24">ESG Score:</span>
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                        <span class="text-xs">72</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 w-24">Growth:</span>
+                        <span class="text-xs text-green-500">+28%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mt-4">
+                <button id="venture-signal-graph-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+                    <i class="fas fa-project-diagram mr-2"></i>
+                    <span>View Venture Signal Graph</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Venture Signal Graph (hidden by default) -->
+        <div id="venture-signal-graph" class="bg-gray-700 p-4 rounded-lg mb-6 hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-lg font-medium">Venture Signal Graph</h3>
+                <button class="text-gray-400 hover:text-white" onclick="document.getElementById('venture-signal-graph').classList.add('hidden')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg" style="height: 400px; position: relative;">
+                <!-- Simulated graph with ReCircle node -->
+                <div id="node-ReCircle" class="absolute" style="top: 180px; left: 300px;">
+                    <div class="w-24 h-24 bg-blue-500 bg-opacity-20 border-2 border-blue-500 rounded-full flex items-center justify-center cursor-pointer">
+                        <div class="text-center">
+                            <div class="text-sm font-medium text-blue-300">ReCircle</div>
+                            <div class="text-xs text-blue-200">B2B Packaging</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Simulated connections -->
+                <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+                    <line x1="312" y1="192" x2="150" y2="100" stroke="#4B5563" stroke-width="1" />
+                    <line x1="312" y1="192" x2="450" y2="100" stroke="#4B5563" stroke-width="1" />
+                    <line x1="312" y1="192" x2="150" y2="300" stroke="#4B5563" stroke-width="1" />
+                    <line x1="312" y1="192" x2="450" y2="300" stroke="#4B5563" stroke-width="1" />
+                </svg>
+                <!-- Other nodes (simplified) -->
+                <div class="absolute" style="top: 88px; left: 138px;">
+                    <div class="w-16 h-16 bg-green-500 bg-opacity-20 border-2 border-green-500 rounded-full flex items-center justify-center">
+                        <div class="text-xs text-center text-green-300">Circular Economy</div>
+                    </div>
+                </div>
+                <div class="absolute" style="top: 88px; left: 438px;">
+                    <div class="w-16 h-16 bg-purple-500 bg-opacity-20 border-2 border-purple-500 rounded-full flex items-center justify-center">
+                        <div class="text-xs text-center text-purple-300">Sustainability Podcast</div>
+                    </div>
+                </div>
+                <div class="absolute" style="top: 288px; left: 138px;">
+                    <div class="w-16 h-16 bg-yellow-500 bg-opacity-20 border-2 border-yellow-500 rounded-full flex items-center justify-center">
+                        <div class="text-xs text-center text-yellow-300">LATAM Market</div>
+                    </div>
+                </div>
+                <div class="absolute" style="top: 288px; left: 438px;">
+                    <div class="w-16 h-16 bg-red-500 bg-opacity-20 border-2 border-red-500 rounded-full flex items-center justify-center">
+                        <div class="text-xs text-center text-red-300">X Discussions</div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 p-3 bg-gray-800 rounded-lg">
+                <h4 class="text-sm font-medium mb-2">ReCircle Analysis</h4>
+                <p class="text-xs text-gray-400">
+                    ReCircle has rising positive sentiment and appears in sustainability podcasts + X discussions — strong early signal.
+                    The company is well-positioned in the LATAM market and has strong connections to the Circular Economy trend.
+                </p>
+                <div class="mt-2">
+                    <div class="flex items-center mb-1">
+                        <span class="text-xs text-gray-500 w-24">Social Buzz:</span>
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                        <span class="text-xs">78%</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 w-24">Sentiment:</span>
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                        <span class="text-xs">92% Positive</span>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-3 space-x-2">
+                    <button id="lifecycle-btn" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-leaf mr-1"></i>
+                        <span>View Lifecycle Scorecard</span>
+                    </button>
+                    <button id="esg-compliance-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        <span>ESG Compliance</span>
+                    </button>
+                    <button id="portfolio-signal-btn" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-project-diagram mr-1"></i>
+                        <span>Portfolio Signal</span>
+                    </button>
+                    <button id="capital-exit-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-chart-line mr-1"></i>
+                        <span>Capital & Exit</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ESG Compliance Panel (hidden by default) -->
+            <div id="esg-compliance-panel" class="mt-3 p-3 bg-gray-800 rounded-lg hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-sm font-medium">ESG Compliance & Regulatory Readiness</h4>
+                    <button class="text-gray-400 hover:text-white" onclick="document.getElementById('esg-compliance-panel').classList.add('hidden')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- ESG Categories -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">ESG Categories Tagged</h5>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-green-800 bg-opacity-20 border border-green-600 rounded-lg px-2 py-0.5 text-xs text-green-400">Circularity</span>
+                        <span class="bg-blue-800 bg-opacity-20 border border-blue-600 rounded-lg px-2 py-0.5 text-xs text-blue-400">Water Efficiency</span>
+                        <span class="bg-purple-800 bg-opacity-20 border border-purple-600 rounded-lg px-2 py-0.5 text-xs text-purple-400">Carbon Neutrality</span>
+                        <span class="bg-gray-700 bg-opacity-20 border border-gray-500 rounded-lg px-2 py-0.5 text-xs text-gray-400">SFDR Level 1</span>
+                    </div>
+                </div>
+
+                <!-- Compliance Readiness -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Compliance Readiness</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">CSRD-ready disclosures</span>
+                                <span class="text-xs text-green-500">High</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Lifecycle Analysis</span>
+                                <span class="text-xs text-green-500">Present</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">GHG Scope 1-3 Reporting</span>
+                                <span class="text-xs text-yellow-500">Partial</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Verification -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Data Source Verification</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg flex items-center">
+                            <i class="fas fa-file-pdf text-red-400 mr-2"></i>
+                            <span class="text-xs">OCR from Sustainability Report</span>
+                            <span class="ml-auto text-xs text-green-500">Verified</span>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg flex items-center">
+                            <i class="fas fa-table text-blue-400 mr-2"></i>
+                            <span class="text-xs">ESG Data Tags</span>
+                            <span class="ml-auto text-xs text-green-500">Verified</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conclusion -->
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <span class="text-sm font-medium">Regulatory Score Confidence</span>
+                        <span class="ml-auto">
+                            <span class="bg-green-800 bg-opacity-20 border border-green-600 rounded-lg px-2 py-0.5 text-xs text-green-400">
+                                <i class="fas fa-check-circle mr-1"></i>LP-Ready
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-400">
+                        This company shows strong alignment with SFDR and CSRD metrics. Verified LCA submitted. Scope 3 needs work, but risk is manageable.
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center mt-3">
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-plus-circle mr-1"></i>
+                        <span>Add to LP-Ready Shortlist</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Portfolio Signal Analysis Panel (hidden by default) -->
+            <div id="portfolio-signal-panel" class="mt-3 p-3 bg-gray-800 rounded-lg hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-sm font-medium">Cross-Portfolio Signal Analysis & Clustering</h4>
+                    <button class="text-gray-400 hover:text-white" onclick="document.getElementById('portfolio-signal-panel').classList.add('hidden')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-400 mb-3">
+                    To gain confidence, I want to see if this trend pattern is emerging across other portfolio candidates or LP-aligned strategies.
+                </p>
+
+                <!-- Vector Similarity Search -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Vector Similarity Search</h5>
+                    <div class="bg-gray-700 p-2 rounded-lg mb-2">
+                        <div class="flex items-center text-xs text-gray-400">
+                            <span>Query:</span>
+                            <code class="ml-2 bg-gray-800 px-2 py-0.5 rounded">company_embedding + "circularity" + "LATAM"</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Similar Companies -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Similar Companies</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium">EcoLoop</span>
+                                <span class="bg-yellow-800 bg-opacity-20 border border-yellow-600 rounded-lg px-1.5 py-0.5 text-xs text-yellow-400">
+                                    <i class="fas fa-arrow-up mr-0.5"></i>X/Reddit
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-gray-400">Similarity:</span>
+                                <div class="w-16 bg-gray-800 rounded-full h-1.5 mx-2">
+                                    <div class="bg-purple-500 h-1.5 rounded-full" style="width: 92%"></div>
+                                </div>
+                                <span class="text-xs">92%</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium">CircularPack</span>
+                                <span class="bg-yellow-800 bg-opacity-20 border border-yellow-600 rounded-lg px-1.5 py-0.5 text-xs text-yellow-400">
+                                    <i class="fas fa-arrow-up mr-0.5"></i>X/Reddit
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-gray-400">Similarity:</span>
+                                <div class="w-16 bg-gray-800 rounded-full h-1.5 mx-2">
+                                    <div class="bg-purple-500 h-1.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                                <span class="text-xs">88%</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium">ZeroWaste</span>
+                                <span class="bg-yellow-800 bg-opacity-20 border border-yellow-600 rounded-lg px-1.5 py-0.5 text-xs text-yellow-400">
+                                    <i class="fas fa-arrow-up mr-0.5"></i>X/Reddit
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-gray-400">Similarity:</span>
+                                <div class="w-16 bg-gray-800 rounded-full h-1.5 mx-2">
+                                    <div class="bg-purple-500 h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <span class="text-xs">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LP-Backed Portfolio Companies -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">LP-Backed Portfolio Companies</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium">PackFresh</span>
+                                <span class="bg-blue-800 bg-opacity-20 border border-blue-600 rounded-lg px-1.5 py-0.5 text-xs text-blue-400">
+                                    <i class="fas fa-briefcase mr-0.5"></i>LP Portfolio
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-gray-400">Fund:</span>
+                                <span class="text-xs ml-2">Sustainability Partners</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium">GreenCycle</span>
+                                <span class="bg-blue-800 bg-opacity-20 border border-blue-600 rounded-lg px-1.5 py-0.5 text-xs text-blue-400">
+                                    <i class="fas fa-briefcase mr-0.5"></i>LP Portfolio
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-gray-400">Fund:</span>
+                                <span class="text-xs ml-2">Impact Ventures</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shared Trends -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Shared Trends</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <span class="text-xs font-medium">Recommerce Logistics</span>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-gray-400">Momentum:</span>
+                                <div class="w-16 bg-gray-800 rounded-full h-1.5 mx-2">
+                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 78%"></div>
+                                </div>
+                                <span class="text-xs text-green-500">Rising</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <span class="text-xs font-medium">Zero-packaging B2B</span>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-gray-400">Momentum:</span>
+                                <div class="w-16 bg-gray-800 rounded-full h-1.5 mx-2">
+                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <span class="text-xs text-green-500">Rising</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Heatmap -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Social Heatmap & Timeline</h5>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <div class="h-24 mb-2 relative">
+                            <!-- Timeline visualization (simplified) -->
+                            <div class="absolute inset-0 flex items-end">
+                                <div class="w-1/4 h-4 bg-gray-600 rounded-l-sm"></div>
+                                <div class="w-1/4 h-8 bg-blue-600"></div>
+                                <div class="w-1/4 h-16 bg-blue-500"></div>
+                                <div class="w-1/4 h-20 bg-blue-400 rounded-r-sm"></div>
+                            </div>
+                            <!-- Timeline labels -->
+                            <div class="absolute bottom-0 left-0 w-full flex justify-between text-xs text-gray-400 pt-1">
+                                <span>3 months ago</span>
+                                <span>2 months ago</span>
+                                <span>1 month ago</span>
+                                <span>Now</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            These companies were unknown 3 months ago. Now, social sentiment is +67% and investor mentions have doubled.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Conclusion -->
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <span class="text-sm font-medium">Cluster Analysis</span>
+                        <span class="ml-auto">
+                            <span class="bg-purple-800 bg-opacity-20 border border-purple-600 rounded-lg px-2 py-0.5 text-xs text-purple-400">
+                                <i class="fas fa-chart-network mr-1"></i>Cluster Opportunity
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-400">
+                        This isn't a one-off. Multiple companies in this cluster show similar traction. Momentum is moving from fringe to thesis-fit.
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center mt-3 space-x-2">
+                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-bookmark mr-1"></i>
+                        <span>Track Cluster</span>
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-chart-bar mr-1"></i>
+                        <span>Compare ESG Scores</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Capital Signal + Exit Path Alignment Panel (hidden by default) -->
+            <div id="capital-exit-panel" class="mt-3 p-3 bg-gray-800 rounded-lg hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-sm font-medium">Capital Signal + Exit Path Alignment</h4>
+                    <button class="text-gray-400 hover:text-white" onclick="document.getElementById('capital-exit-panel').classList.add('hidden')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-400 mb-3">
+                    Signal quality is strong. But is there capital flowing into this space — and are exits realistic within this fund's timeline?
+                </p>
+
+                <!-- Capital Inflows -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Capital Inflows by Stage and Geography</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Seed → Series A</span>
+                                <span class="text-xs text-green-500">3x growth</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">Past 12 months</div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Series B</span>
+                                <span class="text-xs text-yellow-500">Low</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 30%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">High risk/high upside</div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Impact-Focused Funds</span>
+                                <span class="text-xs text-green-500">Dominant</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">Compatible with LP mandates</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exit Pathways -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Exit Pathways Analysis</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">M&A Activity</span>
+                                <span class="text-xs text-green-500">Moderate</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">3 deals in past 6 months</div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Corporate Buyers</span>
+                                <span class="text-xs text-green-500">Active</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">Unilever, Amazon Sustainability Fund</div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Time-to-Exit (Adjacent)</span>
+                                <span class="text-xs text-yellow-500">5-7 years</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">Longer than average</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Risk Appetite Match -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">Portfolio Risk Appetite Match</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">Early-Stage Fund Fit</span>
+                                <span class="text-xs text-green-500">Good Fit</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-2 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs">&lt;6-Year Exit Window</span>
+                                <span class="text-xs text-yellow-500">Requires Strategic Acquirer</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5">
+                                <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- M&A Deal Heatmap -->
+                <div class="mb-3">
+                    <h5 class="text-xs font-medium mb-2">M&A Deal Heatmap</h5>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <div class="h-24 mb-2 relative">
+                            <!-- Heatmap visualization (simplified) -->
+                            <div class="grid grid-cols-4 grid-rows-3 gap-1 h-full">
+                                <div class="bg-green-900 rounded-sm"></div>
+                                <div class="bg-green-800 rounded-sm"></div>
+                                <div class="bg-green-700 rounded-sm"></div>
+                                <div class="bg-green-600 rounded-sm"></div>
+                                <div class="bg-green-800 rounded-sm"></div>
+                                <div class="bg-green-700 rounded-sm"></div>
+                                <div class="bg-green-600 rounded-sm"></div>
+                                <div class="bg-green-500 rounded-sm"></div>
+                                <div class="bg-green-700 rounded-sm"></div>
+                                <div class="bg-green-600 rounded-sm"></div>
+                                <div class="bg-green-500 rounded-sm"></div>
+                                <div class="bg-green-400 rounded-sm"></div>
+                            </div>
+                            <!-- Heatmap labels -->
+                            <div class="absolute top-0 left-0 w-full h-full flex flex-col justify-between pointer-events-none">
+                                <div class="flex justify-between text-xs text-gray-400">
+                                    <span>2020</span>
+                                    <span>2021</span>
+                                    <span>2022</span>
+                                    <span>2023</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400">
+                            <span>Low Activity</span>
+                            <span>High Activity</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conclusion -->
+                <div class="bg-gray-700 p-3 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <span class="text-sm font-medium">Capital & Exit Analysis</span>
+                        <span class="ml-auto">
+                            <span class="bg-yellow-800 bg-opacity-20 border border-yellow-600 rounded-lg px-2 py-0.5 text-xs text-yellow-400">
+                                <i class="fas fa-chart-line mr-1"></i>Early-Stage Opportunity
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-400">
+                        Early-stage capital is accelerating. Exit optionality exists via M&A, not IPO. Strategic alignment with buyers like Unilever strengthens the case.
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center mt-3 space-x-2">
+                    <button class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-file-export mr-1"></i>
+                        <span>Export to LP Brief</span>
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-eye mr-1"></i>
+                        <span>Prepare Watch Memo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lifecycle Scorecard (hidden by default) -->
+            <div id="lifecycle-scorecard" class="mt-3 p-3 bg-gray-800 rounded-lg hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-sm font-medium">Lifecycle Scorecard</h4>
+                    <button class="text-gray-400 hover:text-white" onclick="document.getElementById('lifecycle-scorecard').classList.add('hidden')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-400 mb-3">
+                    Even if a trend is hot, we need to look at impact and risk. The Lifecycle Scorecard shows key sustainability metrics.
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-700 p-2 rounded-lg">
+                        <h5 class="text-xs font-medium mb-1">CO₂ Impact</h5>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-800 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
+                            </div>
+                            <span class="text-xs text-green-500">Low</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-lg">
+                        <h5 class="text-xs font-medium mb-1">Circularity Potential</h5>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-800 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                            <span class="text-xs text-green-500">High</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-lg">
+                        <h5 class="text-xs font-medium mb-1">CSRD Compliance</h5>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-800 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <span class="text-xs text-green-500">Compliant</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-lg">
+                        <h5 class="text-xs font-medium mb-1">ESG Risk Flags</h5>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-800 rounded-full h-2 mr-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 10%"></div>
+                            </div>
+                            <span class="text-xs text-green-500">Minimal</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 text-xs text-gray-400">
+                    <strong class="text-green-500">Conclusion:</strong> Low carbon intensity. High reuse factor. CSRD-compliant. Minimal ESG red flags. This improves risk-adjusted return potential.
+                </div>
+                <div id="action-buttons" class="flex justify-center mt-3 space-x-2">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-thumbtack mr-1"></i>
+                        <span>Track Trend</span>
+                    </button>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-file-export mr-1"></i>
+                        <span>Export to LP Brief</span>
+                    </button>
+                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs flex items-center">
+                        <i class="fas fa-brain mr-1"></i>
+                        <span>View Similar Trends</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <a href="{{ url_for('trendsense.index') }}" class="block">
+                <div class="bg-gray-700 rounded-lg p-6 h-full hover:bg-gray-600 transition-colors">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-line text-2xl text-blue-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">TrendSense™</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        AI-powered sustainability trend analysis for identifying emerging opportunities and risks.
+                    </p>
+                    <div class="text-blue-400 font-semibold">Explore TrendSense →</div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('trendradar.index') }}" class="block">
+                <div class="bg-gray-700 rounded-lg p-6 h-full hover:bg-gray-600 transition-colors">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-radar text-2xl text-purple-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">TrendRadar™</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Multi-dimensional visualization of sustainability metrics across different categories.
+                    </p>
+                    <div class="text-purple-400 font-semibold">Explore TrendRadar →</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-search-dollar mr-2 text-green-500"></i>
+            Look-Through Engine
+        </h2>
+        <p class="text-gray-300 mb-6">
+            The Look-Through Engine propagates metrics through Fund → Company → Project structure, providing comprehensive sustainability analysis at all levels.
+        </p>
+
+        <div class="bg-gray-800 p-5 rounded-lg mb-6">
+            <h3 class="text-lg font-medium mb-3">Key Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-project-diagram text-blue-500 mr-2"></i>
+                        <h4 class="font-medium">Hierarchical Analysis</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Analyze sustainability metrics at fund, company, and project levels.
+                    </p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
+                        <h4 class="font-medium">Portfolio Composition</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Understand the sustainability composition of your investment portfolio.
+                    </p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-balance-scale text-green-500 mr-2"></i>
+                        <h4 class="font-medium">Risk Assessment</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Identify sustainability risks and opportunities across your investments.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ url_for('lookthrough.index') }}" class="btn-primary px-6 py-3 rounded-lg inline-flex items-center"
+               data-ai-tooltip="Analyze sustainability metrics across your investment portfolio through the Fund → Company → Project hierarchy">
+                <i class="fas fa-rocket mr-2"></i> Launch Look-Through Engine
+            </a>
+        </div>
+    </div>
+
+    <!-- Funds Overview -->
+    <div class="card p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold flex items-center">
+                <i class="fas fa-landmark mr-2 text-blue-500"></i>
+                Funds Overview
+            </h2>
+            <a href="{{ url_for('vc_lens.funds') }}" class="text-blue-400 hover:text-blue-300 transition-colors text-sm">
+                View All Funds →
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Fund Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">AUM ($M)</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Focus</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sustainability Score</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for fund in funds[:5] %}
+                        <tr class="hover:bg-gray-700">
+                            <td class="px-4 py-3 whitespace-nowrap font-medium">{{ fund.name }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ (fund.aum / 1000000)|round(1) }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ fund.focus }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                                        <div class="bg-blue-500 h-2 rounded-full" style="width: {{ fund.sustainability_score }}%"></div>
+                                    </div>
+                                    <span>{{ fund.sustainability_score }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="px-4 py-3 text-center text-gray-400">No funds available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Companies Overview -->
+    <div class="card p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold flex items-center">
+                <i class="fas fa-building mr-2 text-green-500"></i>
+                Companies Overview
+            </h2>
+            <a href="{{ url_for('vc_lens.companies') }}" class="text-green-400 hover:text-green-300 transition-colors text-sm">
+                View All Companies →
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Company Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sector</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Valuation ($M)</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Growth Rate</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sustainability Score</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for company in companies[:5] %}
+                        <tr class="hover:bg-gray-700">
+                            <td class="px-4 py-3 whitespace-nowrap font-medium">{{ company.name }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ company.sector }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ (company.valuation / 1000000)|round(1) }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ company.growth_rate }}%</td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: {{ company.sustainability_score }}%"></div>
+                                    </div>
+                                    <span>{{ company.sustainability_score }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="px-4 py-3 text-center text-gray-400">No companies available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle Venture Signal Graph button
+        const ventureSignalGraphBtn = document.getElementById('venture-signal-graph-btn');
+        const ventureSignalGraph = document.getElementById('venture-signal-graph');
+
+        if (ventureSignalGraphBtn && ventureSignalGraph) {
+            ventureSignalGraphBtn.addEventListener('click', function() {
+                // Hide all panels first
+                hideAllPanels();
+                // Show the venture signal graph
+                ventureSignalGraph.classList.remove('hidden');
+            });
+        }
+
+        // Handle Lifecycle Scorecard button
+        const lifecycleBtn = document.getElementById('lifecycle-btn');
+        const lifecycleScorecard = document.getElementById('lifecycle-scorecard');
+
+        if (lifecycleBtn && lifecycleScorecard) {
+            lifecycleBtn.addEventListener('click', function() {
+                // Hide all panels first
+                hideAllPanels();
+                // Show the lifecycle scorecard
+                lifecycleScorecard.classList.remove('hidden');
+            });
+        }
+
+        // Handle ESG Compliance button
+        const esgComplianceBtn = document.getElementById('esg-compliance-btn');
+        const esgCompliancePanel = document.getElementById('esg-compliance-panel');
+
+        if (esgComplianceBtn && esgCompliancePanel) {
+            esgComplianceBtn.addEventListener('click', function() {
+                // Hide all panels first
+                hideAllPanels();
+                // Show the ESG compliance panel
+                esgCompliancePanel.classList.remove('hidden');
+            });
+        }
+
+        // Handle Portfolio Signal button
+        const portfolioSignalBtn = document.getElementById('portfolio-signal-btn');
+        const portfolioSignalPanel = document.getElementById('portfolio-signal-panel');
+
+        if (portfolioSignalBtn && portfolioSignalPanel) {
+            portfolioSignalBtn.addEventListener('click', function() {
+                // Hide all panels first
+                hideAllPanels();
+                // Show the portfolio signal panel
+                portfolioSignalPanel.classList.remove('hidden');
+            });
+        }
+
+        // Handle Capital Exit button
+        const capitalExitBtn = document.getElementById('capital-exit-btn');
+        const capitalExitPanel = document.getElementById('capital-exit-panel');
+
+        if (capitalExitBtn && capitalExitPanel) {
+            capitalExitBtn.addEventListener('click', function() {
+                // Hide all panels first
+                hideAllPanels();
+                // Show the capital exit panel
+                capitalExitPanel.classList.remove('hidden');
+            });
+        }
+
+        // Helper function to hide all panels
+        function hideAllPanels() {
+            const panels = [
+                lifecycleScorecard,
+                esgCompliancePanel,
+                portfolioSignalPanel,
+                capitalExitPanel,
+                ventureSignalGraph
+            ];
+
+            panels.forEach(panel => {
+                if (panel) panel.classList.add('hidden');
+            });
+        }
+
+        // Handle filter changes
+        const filters = document.querySelectorAll('[data-filter]');
+        filters.forEach(filter => {
+            filter.addEventListener('change', function() {
+                // In a real application, this would filter the results
+                console.log(`Filter ${this.dataset.filter} changed to ${this.value}`);
+
+                // For demo purposes, highlight the ReCircle result when specific filters are selected
+                const esgFilter = document.querySelector('[data-filter="esg"]');
+                const regionFilter = document.querySelector('[data-filter="region"]');
+                const stageFilter = document.querySelector('[data-filter="stage"]');
+
+                if (esgFilter && regionFilter && stageFilter) {
+                    if (esgFilter.value === 'Circularity' &&
+                        regionFilter.value === 'LATAM' &&
+                        stageFilter.value === 'Series A') {
+                        // Highlight ReCircle
+                        document.querySelectorAll('#vc-lens-results .bg-gray-800').forEach(el => {
+                            el.classList.remove('ring-2', 'ring-blue-500');
+                        });
+                        document.querySelector('#vc-lens-results .bg-gray-800:first-child').classList.add('ring-2', 'ring-blue-500');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

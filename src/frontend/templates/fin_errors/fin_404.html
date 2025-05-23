@@ -1,0 +1,62 @@
+{% extends "finbase.html" %}
+
+{% block title %}404 - Page Not Found - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full text-center">
+        <div class="mb-8">
+            <div class="text-blue-500 text-9xl font-bold mb-4">404</div>
+            <h1 class="text-3xl font-bold mb-2">Page Not Found</h1>
+            <p class="text-gray-400 mb-8">The page you are looking for doesn't exist or has been moved.</p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/" class="btn-primary px-6 py-2 rounded-lg">
+                    Go Home
+                </a>
+                <a href="/vc-lens" class="btn-secondary px-6 py-2 rounded-lg">
+                    VC Lens Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <h2 class="text-lg font-medium mb-4">Looking for something specific?</h2>
+            <div class="flex mb-4">
+                <input type="text" placeholder="Search..." class="flex-1 bg-gray-800 border border-gray-700 rounded-l-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            {% if error_message %}
+                <div class="bg-gray-800 p-4 rounded-lg mb-4 text-left">
+                    <p class="text-gray-400">{{ error_message }}</p>
+                </div>
+            {% endif %}
+
+            <div class="mt-6">
+                <h3 class="text-md font-medium mb-3">Popular Pages</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="/vc-lens" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-search-dollar text-blue-500 mb-1"></i>
+                        <div class="text-sm">VC Lens</div>
+                    </a>
+                    <a href="/vc-lens/trendsense" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-chart-line text-green-500 mb-1"></i>
+                        <div class="text-sm">TrendSense</div>
+                    </a>
+                    <a href="/dashboard" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-tachometer-alt text-purple-500 mb-1"></i>
+                        <div class="text-sm">Dashboard</div>
+                    </a>
+                    <a href="/copilot" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-robot text-yellow-500 mb-1"></i>
+                        <div class="text-sm">AI Copilot</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

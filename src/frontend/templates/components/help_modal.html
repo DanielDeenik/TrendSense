@@ -1,0 +1,320 @@
+<!-- Help Modal Component for TourMode -->
+<div id="tour-help-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+    <!-- Modal panel -->
+    <div class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-100" id="modal-title">
+              Need Help with TourMode?
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-300">
+                Describe the issue you're experiencing or request support. We'll log the details to help resolve your problem.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="mt-4">
+          <form id="tour-help-form">
+            <!-- Issue Type -->
+            <div class="mb-4">
+              <label for="issue-type" class="block text-sm font-medium text-gray-300">Issue Type</label>
+              <select id="issue-type" name="issueType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 bg-gray-700 text-gray-200 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                <option value="tour-navigation">Tour Navigation Problem</option>
+                <option value="content-missing">Content Not Displaying</option>
+                <option value="feature-access">Can't Access Feature</option>
+                <option value="api-error">AI Generation Error</option>
+                <option value="unclear-instructions">Instructions Unclear</option>
+                <option value="other">Other Issue</option>
+              </select>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label for="issue-description" class="block text-sm font-medium text-gray-300">Description</label>
+              <textarea id="issue-description" name="description" rows="3" class="mt-1 block w-full border-gray-600 bg-gray-700 text-gray-200 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" placeholder="Please describe what happened..."></textarea>
+            </div>
+
+            <!-- Expected Behavior -->
+            <div class="mb-4">
+              <label for="expected-behavior" class="block text-sm font-medium text-gray-300">Expected Behavior</label>
+              <textarea id="expected-behavior" name="expectedBehavior" rows="2" class="mt-1 block w-full border-gray-600 bg-gray-700 text-gray-200 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" placeholder="What did you expect to happen?"></textarea>
+            </div>
+
+            <!-- Email (Optional) -->
+            <div class="mb-4">
+              <label for="contact-email" class="block text-sm font-medium text-gray-300">
+                Email (Optional)
+                <span class="text-xs text-gray-400 ml-1">for follow-up</span>
+              </label>
+              <input type="email" id="contact-email" name="email" class="mt-1 block w-full border-gray-600 bg-gray-700 text-gray-200 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" placeholder="your@email.com">
+            </div>
+
+            <!-- Include Debug Info -->
+            <div class="flex items-start mb-4">
+              <div class="flex items-center h-5">
+                <input id="include-debug" name="includeDebug" type="checkbox" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-600 bg-gray-700 rounded">
+              </div>
+              <div class="ml-3 text-sm">
+                <label for="include-debug" class="font-medium text-gray-300">Include debug information</label>
+                <p class="text-gray-400">URL, current step, browser info, and element IDs will be logged</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" id="submit-help" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+          Submit
+        </button>
+        <button type="button" id="cancel-help" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-500 shadow-sm px-4 py-2 bg-gray-800 text-base font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+          Cancel
+        </button>
+        <button type="button" id="ask-copilot" class="mt-3 w-full inline-flex justify-center rounded-md border border-green-500 shadow-sm px-4 py-2 bg-gray-800 text-base font-medium text-green-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+          Ask Co-Pilot
+        </button>
+      </div>
+
+      <!-- Co-Pilot Response (Hidden by default) -->
+      <div id="copilot-response" class="hidden bg-gray-900 px-4 py-3 border-t border-gray-700">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-green-400">Co-Pilot Suggestion</h3>
+            <div class="mt-2 text-sm text-gray-300">
+              <p id="copilot-suggestion">Loading suggestion...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get modal elements
+    const helpModal = document.getElementById('tour-help-modal');
+    const helpForm = document.getElementById('tour-help-form');
+    const submitBtn = document.getElementById('submit-help');
+    const cancelBtn = document.getElementById('cancel-help');
+    const askCopilotBtn = document.getElementById('ask-copilot');
+    const copilotResponse = document.getElementById('copilot-response');
+    const copilotSuggestion = document.getElementById('copilot-suggestion');
+
+    // Open modal function
+    window.openHelpModal = function() {
+      helpModal.classList.remove('hidden');
+      // Pre-fill debug info
+      collectDebugInfo();
+    };
+
+    // Close modal function
+    function closeHelpModal() {
+      helpModal.classList.add('hidden');
+      copilotResponse.classList.add('hidden');
+      helpForm.reset();
+    }
+
+    // Cancel button
+    cancelBtn.addEventListener('click', closeHelpModal);
+
+    // Submit button
+    submitBtn.addEventListener('click', function() {
+      // Get form data
+      const formData = new FormData(helpForm);
+      const issueData = {
+        issueType: formData.get('issueType'),
+        description: formData.get('description'),
+        expectedBehavior: formData.get('expectedBehavior'),
+        email: formData.get('email'),
+        includeDebug: formData.get('includeDebug') === 'on',
+        debugInfo: window.tourDebugInfo || {}
+      };
+
+      // Submit to Firebase or via email
+      submitIssue(issueData);
+
+      // Close modal
+      closeHelpModal();
+    });
+
+    // Ask Co-Pilot button
+    askCopilotBtn.addEventListener('click', function() {
+      // Show Co-Pilot response section
+      copilotResponse.classList.remove('hidden');
+      copilotSuggestion.textContent = "Loading suggestion...";
+
+      // Get form data for context
+      const formData = new FormData(helpForm);
+      const issueType = formData.get('issueType');
+      const description = formData.get('description');
+
+      // Get Co-Pilot suggestion
+      getCopilotSuggestion(issueType, description);
+    });
+
+    // Collect debug information
+    function collectDebugInfo() {
+      window.tourDebugInfo = {
+        url: window.location.href,
+        pathname: window.location.pathname,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+        tourActive: window.tourMode ? window.tourMode.isActive() : false,
+        currentStep: window.tourMode ? window.tourMode.currentStep : -1,
+        tourConfig: window.tourMode ? window.tourMode.tourConfig?.name : 'Unknown',
+        highlightedElement: window.tourMode && window.tourMode.tourSteps && window.tourMode.tourSteps[window.tourMode.currentStep]
+          ? window.tourMode.tourSteps[window.tourMode.currentStep].highlightSelector
+          : 'None'
+      };
+    }
+
+    // Submit issue to Firebase or via email
+    function submitIssue(issueData) {
+      // If Firebase is available
+      if (window.firebase && window.firebase.database) {
+        const issuesRef = window.firebase.database().ref('tourIssues');
+        issuesRef.push(issueData)
+          .then(() => {
+            console.log('Issue submitted to Firebase');
+            showNotification('Issue submitted successfully');
+          })
+          .catch(error => {
+            console.error('Error submitting issue to Firebase:', error);
+            fallbackToEmailSubmission(issueData);
+          });
+      } else {
+        // Fallback to email submission
+        fallbackToEmailSubmission(issueData);
+      }
+    }
+
+    // Fallback to email submission
+    function fallbackToEmailSubmission(issueData) {
+      // Create email body
+      const emailBody = `
+Issue Type: ${issueData.issueType}
+Description: ${issueData.description}
+Expected Behavior: ${issueData.expectedBehavior}
+Email: ${issueData.email || 'Not provided'}
+Debug Info: ${JSON.stringify(issueData.debugInfo, null, 2)}
+      `;
+
+      // Encode email body
+      const encodedBody = encodeURIComponent(emailBody);
+
+      // Create mailto link
+      const mailtoLink = `mailto:support@trendsense.ai?subject=TourMode Issue Report&body=${encodedBody}`;
+
+      // Open email client
+      window.open(mailtoLink);
+
+      showNotification('Email client opened for issue submission');
+    }
+
+    // Get Co-Pilot suggestion
+    function getCopilotSuggestion(issueType, description) {
+      // Common issues and suggestions map
+      const suggestions = {
+        'tour-navigation': [
+          "Try refreshing the page and restarting the tour by adding ?tour=true to the URL.",
+          "Check if you're logged in. Some tour features require authentication.",
+          "Try clicking the 'Previous' button to go back one step, then proceed forward again."
+        ],
+        'content-missing': [
+          "Ensure your browser window is maximized or try a different browser.",
+          "Check your internet connection as some content may be loading dynamically.",
+          "Try disabling browser extensions that might be blocking content."
+        ],
+        'feature-access': [
+          "Verify you have the necessary permissions for this feature.",
+          "Try navigating to the feature directly from the main menu.",
+          "Some features may require completing previous steps in the tour first."
+        ],
+        'api-error': [
+          "The AI generation service might be temporarily unavailable. Try again in a few minutes.",
+          "Check your internet connection as AI generation requires a stable connection.",
+          "Try using a different browser or clearing your browser cache.",
+          "If you're using a Perplexity API key, verify that it's valid and has sufficient quota."
+        ],
+        'unclear-instructions': [
+          "Click the 'Previous' button to review earlier instructions.",
+          "Try hovering over highlighted elements for additional tooltips.",
+          "The Chain of Thought panel explains the AI's reasoning for each step."
+        ],
+        'other': [
+          "Try refreshing the page and restarting the tour.",
+          "Check your browser console for any error messages.",
+          "Consider logging out and back in to reset your session."
+        ]
+      };
+
+      // Get random suggestion based on issue type
+      const typeSuggestions = suggestions[issueType] || suggestions['other'];
+      let suggestion = typeSuggestions[Math.floor(Math.random() * typeSuggestions.length)];
+
+      // If description contains keywords, provide more specific suggestions
+      if (description) {
+        const lowerDesc = description.toLowerCase();
+
+        // Check for API or AI-related errors
+        if (lowerDesc.includes('api') || lowerDesc.includes('ai') || lowerDesc.includes('generat')) {
+          if (lowerDesc.includes('perplexity')) {
+            suggestion = "It looks like there might be an issue with the Perplexity API. Check that your API key is valid and has sufficient quota. You can also try using the mock implementation by removing your API key temporarily.";
+          } else if (lowerDesc.includes('timeout') || lowerDesc.includes('slow')) {
+            suggestion = "The AI service might be experiencing high load or timeouts. Try again in a few minutes, or refresh the page and try a simpler request.";
+          } else if (lowerDesc.includes('error') || lowerDesc.includes('fail')) {
+            suggestion = "AI generation errors can occur due to connectivity issues or service availability. Try refreshing the page or using a different browser. If the issue persists, the service might be temporarily down.";
+          }
+        }
+        // Check for other common issues
+        else if (lowerDesc.includes('stuck') || lowerDesc.includes('freeze')) {
+          suggestion = "It sounds like the tour might be stuck. Try refreshing the page and adding ?tour=true to the URL to restart from the current step.";
+        } else if (lowerDesc.includes('button') || lowerDesc.includes('click')) {
+          suggestion = "If a button isn't responding, try clicking elsewhere on the page first, then try again. Some elements may be in a loading state.";
+        } else if (lowerDesc.includes('understand') || lowerDesc.includes('confus')) {
+          suggestion = "The Chain of Thought panel explains the AI's reasoning. Try focusing on one step at a time and reading the explanation carefully.";
+        }
+      }
+
+      // Display suggestion
+      copilotSuggestion.textContent = suggestion;
+    }
+
+    // Show notification
+    function showNotification(message) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+      notification.textContent = message;
+
+      // Add to document
+      document.body.appendChild(notification);
+
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  });
+</script>

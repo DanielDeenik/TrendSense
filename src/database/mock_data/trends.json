@@ -1,0 +1,257 @@
+[
+  {
+    "_id": "603389ea-e267-4e3d-a9c5-266eba48787e",
+    "name": "Carbon Neutrality",
+    "description": "A significant trend in Technology sustainability.",
+    "category": "Technology",
+    "relevance_score": 0.7451780910615879,
+    "growth_rate": 0.1498989365988969,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "WaterTech",
+      "CircularEconomy",
+      "CleanTech",
+      "GreenBuilding"
+    ],
+    "created_at": "2024-06-26T14:15:32.933253",
+    "updated_at": "2025-04-26T14:15:32.933253"
+  },
+  {
+    "_id": "00ce2e35-2bee-4582-a80a-970533d16ac0",
+    "name": "Circular Business Models",
+    "description": "A significant trend in Governance sustainability.",
+    "category": "Governance",
+    "relevance_score": 0.6894875564249789,
+    "growth_rate": 0.2816048300023143,
+    "maturity_stage": "Emerging",
+    "sectors": [
+      "RenewableEnergy",
+      "ClimateFintech",
+      "BiodiversityTech",
+      "WaterTech"
+    ],
+    "created_at": "2024-06-08T14:15:32.933253",
+    "updated_at": "2025-05-05T14:15:32.933253"
+  },
+  {
+    "_id": "e5257b58-d589-492d-9f43-9460095c1ce7",
+    "name": "Regenerative Agriculture",
+    "description": "A significant trend in Market sustainability.",
+    "category": "Market",
+    "relevance_score": 0.8000616920651746,
+    "growth_rate": 0.29527219173160446,
+    "maturity_stage": "Emerging",
+    "sectors": [
+      "SustainableMobility",
+      "BiodiversityTech",
+      "GreenBuilding",
+      "CleanTech"
+    ],
+    "created_at": "2024-12-20T14:15:32.933253",
+    "updated_at": "2025-04-25T14:15:32.933253"
+  },
+  {
+    "_id": "07847673-287a-4e0f-b792-f04cb619c804",
+    "name": "Green Hydrogen",
+    "description": "A significant trend in Policy sustainability.",
+    "category": "Policy",
+    "relevance_score": 0.621443520473365,
+    "growth_rate": 0.30590550389757737,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "CircularEconomy",
+      "SustainableAgriculture",
+      "GreenBuilding",
+      "SustainableMobility"
+    ],
+    "created_at": "2024-07-21T14:15:32.933253",
+    "updated_at": "2025-04-15T14:15:32.933253"
+  },
+  {
+    "_id": "703ab719-fc3e-431e-95a8-cd32617e21ef",
+    "name": "Sustainable Aviation",
+    "description": "A significant trend in Environmental sustainability.",
+    "category": "Environmental",
+    "relevance_score": 0.8150990410460759,
+    "growth_rate": 0.48409848944328027,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "SustainableAgriculture",
+      "GreenBuilding",
+      "CarbonCapture",
+      "ClimateFintech"
+    ],
+    "created_at": "2025-02-23T14:15:32.933253",
+    "updated_at": "2025-04-20T14:15:32.933253"
+  },
+  {
+    "_id": "3a05498a-02c7-4f76-ab5a-136531980382",
+    "name": "Plant-based Alternatives",
+    "description": "A significant trend in Technology sustainability.",
+    "category": "Technology",
+    "relevance_score": 0.6596189871580209,
+    "growth_rate": 0.19923323678348548,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "WasteManagement",
+      "SustainableMobility",
+      "GreenBuilding",
+      "CleanTech"
+    ],
+    "created_at": "2024-09-12T14:15:32.933253",
+    "updated_at": "2025-05-04T14:15:32.933253"
+  },
+  {
+    "_id": "f3bc0e30-1043-4db8-aafd-b8edf3afd7d8",
+    "name": "Biodiversity Credits",
+    "description": "A significant trend in Policy sustainability.",
+    "category": "Policy",
+    "relevance_score": 0.7099697263697236,
+    "growth_rate": 0.21107468502459212,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "RenewableEnergy",
+      "SustainableMobility",
+      "BiodiversityTech",
+      "SustainableAgriculture"
+    ],
+    "created_at": "2024-06-21T14:15:32.933253",
+    "updated_at": "2025-05-10T14:15:32.933253"
+  },
+  {
+    "_id": "fab44b10-385e-420a-834c-ff2259b4dbb2",
+    "name": "Climate Fintech",
+    "description": "A significant trend in Social sustainability.",
+    "category": "Social",
+    "relevance_score": 0.8821513396758089,
+    "growth_rate": 0.16287066183415372,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "CleanTech",
+      "ClimateFintech",
+      "CarbonCapture",
+      "WaterTech"
+    ],
+    "created_at": "2024-09-20T14:15:32.933253",
+    "updated_at": "2025-05-06T14:15:32.933253"
+  },
+  {
+    "_id": "f3e04c68-2f70-4302-ba2f-3841ad35e662",
+    "name": "ESG Data Analytics",
+    "description": "A significant trend in Governance sustainability.",
+    "category": "Governance",
+    "relevance_score": 0.9667171756406108,
+    "growth_rate": 0.16269079168397038,
+    "maturity_stage": "Mature",
+    "sectors": [
+      "GreenBuilding",
+      "WaterTech",
+      "ClimateFintech",
+      "CarbonCapture"
+    ],
+    "created_at": "2025-01-18T14:15:32.933253",
+    "updated_at": "2025-05-04T14:15:32.933253"
+  },
+  {
+    "_id": "bf4b92fb-19e6-4e87-82ed-c0d736344fcd",
+    "name": "Sustainable Supply Chains",
+    "description": "A significant trend in Social sustainability.",
+    "category": "Social",
+    "relevance_score": 0.5847225895484202,
+    "growth_rate": 0.18050797227026819,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "WaterTech",
+      "EthicalAI",
+      "SustainableAgriculture",
+      "GreenBuilding"
+    ],
+    "created_at": "2025-02-06T14:15:32.933253",
+    "updated_at": "2025-04-27T14:15:32.933253"
+  },
+  {
+    "_id": "eede4e7f-15e4-498d-9f8f-090113d7d125",
+    "name": "Carbon Capture",
+    "description": "A significant trend in Governance sustainability.",
+    "category": "Governance",
+    "relevance_score": 0.6930021026748426,
+    "growth_rate": 0.4023160559624771,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "SustainableMobility",
+      "WasteManagement",
+      "SustainableAgriculture",
+      "RenewableEnergy"
+    ],
+    "created_at": "2024-11-16T14:15:32.933253",
+    "updated_at": "2025-04-23T14:15:32.933253"
+  },
+  {
+    "_id": "29020db0-d16f-4fe6-af5e-bb31326fe37e",
+    "name": "Renewable Energy Storage",
+    "description": "A significant trend in Policy sustainability.",
+    "category": "Policy",
+    "relevance_score": 0.949240556840647,
+    "growth_rate": 0.16878254959012423,
+    "maturity_stage": "Mature",
+    "sectors": [
+      "CarbonCapture",
+      "CircularEconomy",
+      "SustainableAgriculture",
+      "EthicalAI"
+    ],
+    "created_at": "2024-07-01T14:15:32.933253",
+    "updated_at": "2025-04-27T14:15:32.933253"
+  },
+  {
+    "_id": "72c1df67-52ae-48d8-8262-b83fa391191c",
+    "name": "Water Conservation",
+    "description": "A significant trend in Technology sustainability.",
+    "category": "Technology",
+    "relevance_score": 0.5337367591186564,
+    "growth_rate": 0.2885516709388228,
+    "maturity_stage": "Mature",
+    "sectors": [
+      "ClimateFintech",
+      "CarbonCapture",
+      "WasteManagement",
+      "CircularEconomy"
+    ],
+    "created_at": "2024-08-23T14:15:32.933253",
+    "updated_at": "2025-04-25T14:15:32.933253"
+  },
+  {
+    "_id": "972907ed-4c0f-4ac0-adb5-8e365df23d35",
+    "name": "Zero Waste Manufacturing",
+    "description": "A significant trend in Policy sustainability.",
+    "category": "Policy",
+    "relevance_score": 0.8760049828524072,
+    "growth_rate": 0.48497820700819305,
+    "maturity_stage": "Mature",
+    "sectors": [
+      "WaterTech",
+      "CircularEconomy",
+      "SustainableMobility",
+      "RenewableEnergy"
+    ],
+    "created_at": "2024-11-28T14:15:32.933253",
+    "updated_at": "2025-05-09T14:15:32.933253"
+  },
+  {
+    "_id": "aa01471e-e6ad-46c8-b32e-43563d3383cd",
+    "name": "Ethical AI",
+    "description": "A significant trend in Market sustainability.",
+    "category": "Market",
+    "relevance_score": 0.7627951239708736,
+    "growth_rate": 0.1348669854859395,
+    "maturity_stage": "Growing",
+    "sectors": [
+      "RenewableEnergy",
+      "SustainableAgriculture",
+      "ClimateFintech",
+      "CarbonCapture"
+    ],
+    "created_at": "2024-08-29T14:15:32.933253",
+    "updated_at": "2025-05-06T14:15:32.933253"
+  }
+]

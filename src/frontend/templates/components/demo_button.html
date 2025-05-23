@@ -1,0 +1,36 @@
+<!-- Demo Mode Button Component -->
+<div id="demo-button-container" class="fixed top-4 right-4 z-50">
+    <button id="demo-button" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+        <i class="fas fa-video mr-1"></i> Demo Mode
+    </button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get button element
+        const demoButton = document.getElementById('demo-button');
+        
+        // Add click event listener
+        demoButton.addEventListener('click', function() {
+            if (window.demoMode) {
+                // Toggle control panel
+                window.demoMode.toggleControlPanel(true);
+            } else {
+                console.error('Demo Mode Controller not found');
+            }
+        });
+        
+        // Check if demo mode is active from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('demo') === 'true') {
+            // Hide button if demo is active from URL
+            demoButton.classList.add('hidden');
+        }
+        
+        // Check if we're in a development environment
+        // In production, this button should be hidden by default
+        if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+            demoButton.classList.add('hidden');
+        }
+    });
+</script>

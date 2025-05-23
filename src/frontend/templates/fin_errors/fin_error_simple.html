@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ error_code }} - TrendSense™</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex items-center justify-center min-h-screen p-5">
+        <div class="max-w-md w-full bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+            <div class="mb-8">
+                <i class="fas fa-exclamation-triangle text-yellow-500 text-6xl mb-4"></i>
+                <h1 class="text-4xl font-bold mb-2">Error {{ error_code }}</h1>
+                <p class="text-gray-400 text-lg">{{ error_message }}</p>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6 mt-6">
+                <p class="mb-6 text-gray-400">Sorry for the inconvenience. Please try again later or return to the home page.</p>
+                <a href="/" class="btn-primary px-6 py-3 rounded-lg inline-block font-medium">
+                    <i class="fas fa-home mr-2"></i> Return Home
+                </a>
+            </div>
+            
+            <div class="mt-8 text-sm text-gray-500">
+                <p>TrendSense™ - AI-Powered Trend Analysis</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

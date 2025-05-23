@@ -1,0 +1,117 @@
+{% extends "finbase.html" %}
+
+{% block title %}SustainaTrend™ - Sustainability Intelligence Platform{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <div class="flex flex-col items-center justify-center text-center py-12 mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Welcome to <span class="text-green-600 dark:text-green-400">SustainaTrend™</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-8">
+            Your comprehensive AI-powered sustainability intelligence platform for data-driven insights and strategy
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ url_for('main.index') }}" class="btn-primary">
+                <i class="fas fa-tachometer-alt mr-2"></i> Go to Dashboard
+            </a>
+            <a href="{{ url_for('trend.index') }}" class="btn-secondary">
+                <i class="fas fa-chart-line mr-2"></i> View Trends
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Access Grid -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Quick Access</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for item in [
+                {'name': 'Dashboard', 'icon': 'tachometer-alt', 'url': url_for('main.index'), 'color': 'bg-blue-500'},
+                {'name': 'Trends', 'icon': 'chart-line', 'url': url_for('trend.index'), 'color': 'bg-green-500'},
+                {'name': 'Strategy', 'icon': 'chess', 'url': url_for('strategy.index'), 'color': 'bg-purple-500'},
+                {'name': 'Graph', 'icon': 'project-diagram', 'url': url_for('graph.index'), 'color': 'bg-red-500'},
+                {'name': 'Storytelling', 'icon': 'book-open', 'url': url_for('storytelling.index'), 'color': 'bg-yellow-500'},
+                {'name': 'Real Estate', 'icon': 'building', 'url': '#', 'color': 'bg-indigo-500'},
+                {'name': 'Copilot', 'icon': 'robot', 'url': url_for('main.copilot'), 'color': 'bg-pink-500'},
+                {'name': 'Resources', 'icon': 'file-alt', 'url': '#', 'color': 'bg-teal-500'}
+            ] %}
+            <a href="{{ item.url }}" class="flex flex-col items-center justify-center p-6 rounded-lg {{ item.color }} text-white hover:opacity-90 transition-opacity">
+                <i class="fas fa-{{ item.icon }} text-3xl mb-2"></i>
+                <span class="font-medium">{{ item.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Key Features</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="text-blue-500 dark:text-blue-400 mb-4">
+                    <i class="fas fa-chart-pie text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Advanced Analytics</h3>
+                <p class="text-gray-600 dark:text-gray-300">Comprehensive sustainability metrics and performance tracking with AI-powered insights.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="text-green-500 dark:text-green-400 mb-4">
+                    <i class="fas fa-project-diagram text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Graph Intelligence</h3>
+                <p class="text-gray-600 dark:text-gray-300">Visualize complex relationships and dependencies with our MongoDB Graph integration.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="text-purple-500 dark:text-purple-400 mb-4">
+                    <i class="fas fa-robot text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">AI Copilot</h3>
+                <p class="text-gray-600 dark:text-gray-300">Get intelligent recommendations and assistance with our AI-powered sustainability copilot.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Recent Activity</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for activity in [
+                        {'title': 'New sustainability trend detected', 'time': '2 hours ago', 'icon': 'lightbulb', 'color': 'text-yellow-500'},
+                        {'title': 'Performance report updated', 'time': '5 hours ago', 'icon': 'chart-line', 'color': 'text-blue-500'},
+                        {'title': 'New case study published', 'time': '1 day ago', 'icon': 'file-alt', 'color': 'text-green-500'},
+                        {'title': 'System maintenance completed', 'time': '2 days ago', 'icon': 'wrench', 'color': 'text-gray-500'}
+                    ] %}
+                    <li class="py-4 first:pt-0 last:pb-0">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 {{ activity.color }}">
+                                <i class="fas fa-{{ activity.icon }}"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ activity.title }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ activity.time }}</p>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+                <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">View all activity</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('SustainaTrend™ landing page loaded');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,348 @@
+{% extends "finbase.html" %}
+
+{% block title %}Company View - Look Through Engine - SustainaTrend™{% endblock %}
+
+{% block additional_head %}
+<!-- Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('lookthrough.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">{{ company.name }}</h1>
+    </div>
+
+    <!-- Company Overview -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Company Details -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-building mr-2 text-blue-500"></i>
+                Company Details
+            </h2>
+
+            <div class="space-y-4">
+                <div>
+                    <p class="text-gray-400">Sector</p>
+                    <p class="text-xl font-semibold">{{ company.sector|default('N/A') }}</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Stage</p>
+                    <p class="text-xl font-semibold">{{ company.stage|default('N/A') }}</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Sustainability Maturity</p>
+                    <p class="text-xl font-semibold">{{ company.sustainability_maturity|default('N/A') }}</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Projects</p>
+                    <p class="text-xl font-semibold">{{ projects|length }}</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Founding Year</p>
+                    <p class="text-xl font-semibold">{{ company.founding_year|default('N/A') }}</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Headquarters</p>
+                    <p class="text-xl font-semibold">{{ company.headquarters|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Metrics -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-chart-pie mr-2 text-green-500"></i>
+                ESG Metrics
+            </h2>
+
+            <div class="space-y-4">
+                {% set metrics = company.get('sustainability_metrics', {}) %}
+
+                <div>
+                    <p class="text-gray-400">Overall ESG Score</p>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ metrics.esg_score|default(0)|round(0) }}%"></div>
+                        </div>
+                        <span class="text-xl font-semibold">{{ metrics.esg_score|default(0)|round(0) }}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Environmental Score</p>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                            <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ metrics.environmental_score|default(0)|round(0) }}%"></div>
+                        </div>
+                        <span class="text-xl font-semibold">{{ metrics.environmental_score|default(0)|round(0) }}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Social Score</p>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                            <div class="bg-yellow-600 h-2.5 rounded-full" style="width: {{ metrics.social_score|default(0)|round(0) }}%"></div>
+                        </div>
+                        <span class="text-xl font-semibold">{{ metrics.social_score|default(0)|round(0) }}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Governance Score</p>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                            <div class="bg-purple-600 h-2.5 rounded-full" style="width: {{ metrics.governance_score|default(0)|round(0) }}%"></div>
+                        </div>
+                        <span class="text-xl font-semibold">{{ metrics.governance_score|default(0)|round(0) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carbon Metrics -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-leaf mr-2 text-green-500"></i>
+                Carbon Metrics
+            </h2>
+
+            <div class="space-y-4">
+                {% set metrics = company.get('sustainability_metrics', {}) %}
+                {% set carbon_emissions = metrics.get('carbon_emissions', {}) %}
+
+                <div>
+                    <p class="text-gray-400">Scope 1 Emissions</p>
+                    <p class="text-xl font-semibold">{{ carbon_emissions.scope1|default(0)|round(2) }} tCO2e</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Scope 2 Emissions</p>
+                    <p class="text-xl font-semibold">{{ carbon_emissions.scope2|default(0)|round(2) }} tCO2e</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Scope 3 Emissions</p>
+                    <p class="text-xl font-semibold">{{ carbon_emissions.scope3|default(0)|round(2) }} tCO2e</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Renewable Energy Percentage</p>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                            <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ metrics.renewable_energy_percentage|default(0)|round(0) }}%"></div>
+                        </div>
+                        <span class="text-xl font-semibold">{{ metrics.renewable_energy_percentage|default(0)|round(0) }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carbon Emissions Chart -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-chart-bar mr-2 text-blue-500"></i>
+            Carbon Emissions Breakdown
+        </h2>
+
+        <div class="h-80 relative">
+            <canvas id="carbon-emissions-chart"></canvas>
+        </div>
+    </div>
+
+    <!-- Investor Funds -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-landmark mr-2 text-blue-500"></i>
+            Investor Funds
+        </h2>
+
+        {% if funds %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-gray-300">Fund Name</th>
+                        <th class="px-4 py-3 text-left text-gray-300">AUM</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Portfolio Companies</th>
+                        <th class="px-4 py-3 text-left text-gray-300">ESG Score</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fund in funds %}
+                    <tr class="border-t border-gray-700">
+                        <td class="px-4 py-3">{{ fund.name }}</td>
+                        <td class="px-4 py-3">{{ fund.aum|default(0)|round(2) }} {{ fund.currency|default('USD') }}</td>
+                        <td class="px-4 py-3">{{ fund.portfolio_companies|default([])|length }}</td>
+                        <td class="px-4 py-3">
+                            {% set esg_score = fund.get('sustainability_metrics', {}).get('esg_score', 0)|round(0) %}
+                            <div class="flex items-center">
+                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ esg_score }}%"></div>
+                                </div>
+                                <span>{{ esg_score }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="{{ url_for('lookthrough.view_fund', fund_id=fund._id) }}" class="text-blue-400 hover:text-blue-300">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-gray-800 p-4 rounded-lg text-center">
+            <p class="text-gray-400">No investor funds found for this company.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Projects -->
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-project-diagram mr-2 text-blue-500"></i>
+            Projects
+        </h2>
+
+        {% if projects %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-gray-300">Project Name</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Type</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Status</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Budget</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Environmental Score</th>
+                        <th class="px-4 py-3 text-left text-gray-300">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr class="border-t border-gray-700">
+                        <td class="px-4 py-3">{{ project.name }}</td>
+                        <td class="px-4 py-3">{{ project.type|default('N/A') }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs
+                                {% if project.status == 'Completed' %}
+                                    bg-green-800 text-green-200
+                                {% elif project.status == 'In Progress' %}
+                                    bg-blue-800 text-blue-200
+                                {% elif project.status == 'Planned' %}
+                                    bg-yellow-800 text-yellow-200
+                                {% else %}
+                                    bg-gray-700 text-gray-300
+                                {% endif %}
+                            ">
+                                {{ project.status|default('Unknown') }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">{{ project.budget|default(0)|round(2) }} {{ project.currency|default('USD') }}</td>
+                        <td class="px-4 py-3">
+                            {% set env_score = project.get('sustainability_metrics', {}).get('environmental_score', 0)|round(0) %}
+                            <div class="flex items-center">
+                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                    <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ env_score }}%"></div>
+                                </div>
+                                <span>{{ env_score }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="{{ url_for('lookthrough.view_project', project_id=project._id) }}" class="text-blue-400 hover:text-blue-300">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-gray-800 p-4 rounded-lg text-center">
+            <p class="text-gray-400">No projects found for this company.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Render Carbon Emissions Chart
+        const ctx = document.getElementById('carbon-emissions-chart').getContext('2d');
+
+        // Get metrics from the template
+        {% set metrics = company.get('sustainability_metrics', {}) %}
+        {% set carbon_emissions = metrics.get('carbon_emissions', {}) %}
+
+        const emissions = {
+            scope1: {{ carbon_emissions.scope1|default(0)|round(2) }},
+            scope2: {{ carbon_emissions.scope2|default(0)|round(2) }},
+            scope3: {{ carbon_emissions.scope3|default(0)|round(2) }}
+        };
+
+        // Create chart
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Scope 1', 'Scope 2', 'Scope 3'],
+                datasets: [{
+                    data: [
+                        emissions.scope1,
+                        emissions.scope2,
+                        emissions.scope3
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 206, 86)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#e5e7eb'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: ${value} tCO2e`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

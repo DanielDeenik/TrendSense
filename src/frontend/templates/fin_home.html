@@ -1,0 +1,82 @@
+{% extends "finbase.html" %}
+
+{% block title %}TrendSense - Home{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+        <h1 class="text-3xl font-bold text-white mb-4">Welcome to TrendSense™</h1>
+        <p class="text-xl text-gray-300 mb-6">
+            The AI-powered platform for sustainable investment intelligence.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-700 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-3">Our Mission</h2>
+                <p class="text-gray-300">
+                    TrendSense™ helps investors identify, analyze, and capitalize on emerging sustainability trends
+                    using advanced AI and data analytics.
+                </p>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-3">Key Features</h2>
+                <ul class="list-disc list-inside text-gray-300">
+                    <li>AI-driven trend detection and analysis</li>
+                    <li>Comprehensive sustainability metrics</li>
+                    <li>Investment opportunity identification</li>
+                    <li>Risk assessment and monitoring</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <a href="{{ url_for('strategy.index') }}" class="block">
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6 h-full hover:bg-gray-700 transition-colors">
+                <h2 class="text-2xl font-bold text-white mb-3">Strategy Hub</h2>
+                <p class="text-gray-300 mb-4">
+                    Develop and implement comprehensive sustainability strategies using proven frameworks.
+                </p>
+                <div class="text-blue-400 font-semibold">Explore Strategy Hub →</div>
+            </div>
+        </a>
+        <a href="{{ url_for('data_management.index') }}" class="block">
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6 h-full hover:bg-gray-700 transition-colors">
+                <h2 class="text-2xl font-bold text-white mb-3">Data Management</h2>
+                <p class="text-gray-300 mb-4">
+                    Manage and analyze sustainability data for better decision-making.
+                </p>
+                <div class="text-blue-400 font-semibold">Explore Data Management →</div>
+            </div>
+        </a>
+        <a href="{{ url_for('graph_analytics.index') }}" class="block">
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6 h-full hover:bg-gray-700 transition-colors">
+                <h2 class="text-2xl font-bold text-white mb-3">Graph Analytics</h2>
+                <p class="text-gray-300 mb-4">
+                    Visualize and analyze relationships between sustainability metrics and entities.
+                </p>
+                <div class="text-blue-400 font-semibold">Explore Graph Analytics →</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-white mb-4">Latest Insights</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="text-xl font-bold text-white mb-2">The Rise of Sustainable AI</h3>
+                <p class="text-gray-300 mb-2">
+                    How artificial intelligence is driving sustainability innovation across industries.
+                </p>
+                <div class="text-sm text-gray-400">May 3, 2023</div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="text-xl font-bold text-white mb-2">Circular Economy Trends</h3>
+                <p class="text-gray-300 mb-2">
+                    Exploring the growth of circular business models and investment opportunities.
+                </p>
+                <div class="text-sm text-gray-400">April 28, 2023</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

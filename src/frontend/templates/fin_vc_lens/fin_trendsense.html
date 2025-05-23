@@ -1,0 +1,247 @@
+{% extends "finbase.html" %}
+
+{% block title %}TrendSense™ - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">TrendSense™</h1>
+        <div class="flex items-center">
+            <span class="text-gray-400 mr-2">Firebase:</span>
+            {% if firebase_available %}
+                <span class="text-green-500">Connected</span>
+            {% else %}
+                <span class="text-red-500">Disconnected</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Trending Categories -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-fire mr-2 text-orange-500"></i>
+            Trending Categories
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for category in trending_categories[:6] %}
+                <div class="bg-gray-800 rounded-lg p-5 hover:bg-gray-700 transition-colors">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-medium text-lg">{{ category.name }}</h3>
+                        <span class="text-green-500 flex items-center text-sm">
+                            <i class="fas fa-arrow-up mr-1"></i> {{ category.growth }}%
+                        </span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">{{ category.description }}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-xs">Trend Count: {{ category.count }}</span>
+                        <a href="#" class="text-blue-400 hover:text-blue-300 text-sm">Details →</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-span-3 text-center text-gray-400 py-8">
+                    No trending categories available
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Trend Analysis -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+            Trend Analysis
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <canvas id="trendChart" height="300"></canvas>
+            </div>
+            <div class="space-y-4">
+                <h3 class="text-lg font-medium">Top Trends</h3>
+                <div class="space-y-3">
+                    {% for trend in trends[:5] %}
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium">{{ trend.category }}</h4>
+                                <span class="text-sm text-gray-400">Score: {{ trend.score }}</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ trend.score }}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-400">
+                                <span>Growth: {{ trend.growth }}%</span>
+                                <span>Environmental Impact: {{ trend.metrics.environmental_impact if trend.metrics and trend.metrics.environmental_impact is defined else 'N/A' }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-gray-400 py-4">
+                            No trends available
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend Metrics -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-tachometer-alt mr-2 text-purple-500"></i>
+            Trend Metrics
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trend</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Score</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Growth</th>
+                        {% if trends and trends|length > 0 and trends[0].metrics %}
+                            {% for metric_name in trends[0].metrics.keys() %}
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">{{ metric_name|replace('_', ' ')|title }}</th>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for trend in trends %}
+                        <tr class="hover:bg-gray-700">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ trend.category }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ trend.score }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ trend.growth }}%</td>
+                            {% if trend.metrics is defined and trend.metrics %}
+                                {% for metric_name, metric_value in trend.metrics.items() %}
+                                    <td class="px-4 py-3 whitespace-nowrap">{{ metric_value }}</td>
+                                {% endfor %}
+                            {% else %}
+                                {% if trends and trends|length > 0 and trends[0].metrics %}
+                                    {% for _ in trends[0].metrics.keys() %}
+                                        <td class="px-4 py-3 whitespace-nowrap">N/A</td>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="px-4 py-3 text-center text-gray-400">No trends available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Startup Radar -->
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-rocket mr-2 text-green-500"></i>
+            Startup Radar
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {% for startup in startup_radar %}
+                <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition-colors">
+                    <h3 class="font-medium mb-2">{{ startup.name }}</h3>
+                    <div class="text-sm text-gray-400 mb-2">{{ startup.sector }}</div>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-700 rounded-full h-2 mr-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ startup.growth_score }}%"></div>
+                        </div>
+                        <span class="text-xs text-gray-400">{{ startup.growth_score }}</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-span-5 text-center text-gray-400 py-6">
+                    No startups available
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get trend data from the server
+        const trendsData = {{ trends|tojson|default('[]') }};
+
+        if (trendsData && trendsData.length > 0) {
+            // Create trend chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+
+            // Prepare data for chart
+            const labels = [];
+            const datasets = [];
+
+            // Get top 5 trends
+            const topTrends = trendsData.slice(0, 5);
+
+            // Create datasets for each trend
+            topTrends.forEach((trend, index) => {
+                // Generate a color based on index
+                const hue = (index * 137) % 360; // Use golden angle approximation for good distribution
+                const color = `hsl(${hue}, 70%, 60%)`;
+
+                datasets.push({
+                    label: trend.category,
+                    data: trend.trend_values || Array(12).fill(0),
+                    borderColor: color,
+                    backgroundColor: `hsla(${hue}, 70%, 60%, 0.1)`,
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                });
+            });
+
+            // Create labels (months)
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Create chart
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#9ca3af',
+                                boxWidth: 12,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

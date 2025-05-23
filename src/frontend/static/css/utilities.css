@@ -1,0 +1,300 @@
+/* Utility Classes for SustainaTrend™ */
+
+/* Text Colors */
+.text-primary {
+    @apply text-green-600 dark:text-green-400;
+}
+
+.text-secondary {
+    @apply text-blue-600 dark:text-blue-400;
+}
+
+.text-success {
+    @apply text-green-600 dark:text-green-400;
+}
+
+.text-danger {
+    @apply text-red-600 dark:text-red-400;
+}
+
+.text-warning {
+    @apply text-yellow-600 dark:text-yellow-400;
+}
+
+.text-info {
+    @apply text-blue-600 dark:text-blue-400;
+}
+
+.text-muted {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+/* Background Colors */
+.bg-primary {
+    @apply bg-green-600 dark:bg-green-700;
+}
+
+.bg-secondary {
+    @apply bg-blue-600 dark:bg-blue-700;
+}
+
+.bg-success {
+    @apply bg-green-600 dark:bg-green-700;
+}
+
+.bg-danger {
+    @apply bg-red-600 dark:bg-red-700;
+}
+
+.bg-warning {
+    @apply bg-yellow-600 dark:bg-yellow-700;
+}
+
+.bg-info {
+    @apply bg-blue-600 dark:bg-blue-700;
+}
+
+.bg-light {
+    @apply bg-gray-100 dark:bg-gray-800;
+}
+
+.bg-dark {
+    @apply bg-gray-800 dark:bg-gray-900;
+}
+
+/* Borders */
+.border-primary {
+    @apply border-green-600 dark:border-green-500;
+}
+
+.border-secondary {
+    @apply border-blue-600 dark:border-blue-500;
+}
+
+.border-success {
+    @apply border-green-600 dark:border-green-500;
+}
+
+.border-danger {
+    @apply border-red-600 dark:border-red-500;
+}
+
+.border-warning {
+    @apply border-yellow-600 dark:border-yellow-500;
+}
+
+.border-info {
+    @apply border-blue-600 dark:border-blue-500;
+}
+
+/* Spacing Utilities */
+.section-spacing {
+    @apply py-8 md:py-12;
+}
+
+.content-spacing {
+    @apply py-6;
+}
+
+.card-spacing {
+    @apply p-4 md:p-6;
+}
+
+/* Container Utilities */
+.container-narrow {
+    @apply max-w-3xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Flexbox Utilities */
+.flex-center {
+    @apply flex items-center justify-center;
+}
+
+.flex-between {
+    @apply flex items-center justify-between;
+}
+
+.flex-start {
+    @apply flex items-center justify-start;
+}
+
+.flex-end {
+    @apply flex items-center justify-end;
+}
+
+/* Grid Utilities */
+.grid-auto-fit {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+}
+
+.grid-auto-fill {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+}
+
+/* Typography Utilities */
+.heading-1 {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 dark:text-white;
+}
+
+.heading-2 {
+    @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white;
+}
+
+.heading-3 {
+    @apply text-xl md:text-2xl font-bold text-gray-900 dark:text-white;
+}
+
+.heading-4 {
+    @apply text-lg md:text-xl font-bold text-gray-900 dark:text-white;
+}
+
+.paragraph {
+    @apply text-base text-gray-700 dark:text-gray-300;
+}
+
+.small-text {
+    @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+/* Shadow Utilities */
+.shadow-card {
+    @apply shadow-md hover:shadow-lg transition-shadow duration-300;
+}
+
+.shadow-button {
+    @apply shadow hover:shadow-md transition-shadow duration-300;
+}
+
+.shadow-dropdown {
+    @apply shadow-lg;
+}
+
+/* Transition Utilities */
+.transition-fast {
+    @apply transition-all duration-150 ease-in-out;
+}
+
+.transition-medium {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+.transition-slow {
+    @apply transition-all duration-500 ease-in-out;
+}
+
+/* Hover Effects */
+.hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+}
+
+.hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+}
+
+.hover-opacity {
+    @apply transition-opacity duration-300 hover:opacity-80;
+}
+
+/* Focus Utilities */
+.focus-outline {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
+}
+
+.focus-within-outline {
+    @apply focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500;
+}
+
+/* Responsive Utilities */
+.hide-sm {
+    @apply hidden sm:block;
+}
+
+.hide-md {
+    @apply hidden md:block;
+}
+
+.hide-lg {
+    @apply hidden lg:block;
+}
+
+.show-sm {
+    @apply block sm:hidden;
+}
+
+.show-md {
+    @apply block md:hidden;
+}
+
+.show-lg {
+    @apply block lg:hidden;
+}
+
+/* Z-index Utilities */
+.z-dropdown {
+    @apply z-10;
+}
+
+.z-sticky {
+    @apply z-20;
+}
+
+.z-modal {
+    @apply z-30;
+}
+
+.z-popover {
+    @apply z-40;
+}
+
+.z-tooltip {
+    @apply z-50;
+}
+
+/* Accessibility Utilities */
+.sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+.not-sr-only {
+    @apply static w-auto h-auto overflow-visible clip-auto whitespace-normal;
+}
+
+/* Print Utilities */
+.print-only {
+    @apply hidden print:block;
+}
+
+.no-print {
+    @apply print:hidden;
+}
+
+/* Dark Mode Utilities */
+.dark-mode-toggle {
+    @apply cursor-pointer p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700;
+}
+
+/* Animation Utilities */
+.animate-fade-in {
+    @apply animate-[fade-in_0.3s_ease-in-out];
+}
+
+.animate-slide-in {
+    @apply animate-[slide-in_0.3s_ease-in-out];
+}
+
+.animate-bounce-in {
+    @apply animate-[bounce-in_0.3s_ease-in-out];
+}
+
+/* Scrollbar Utilities */
+.scrollbar-thin {
+    @apply scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800;
+}
+
+.scrollbar-none {
+    @apply scrollbar-none;
+}

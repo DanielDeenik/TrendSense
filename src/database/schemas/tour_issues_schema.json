@@ -1,0 +1,224 @@
+{
+  "type": "object",
+  "properties": {
+    "tourIssues": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "issueType": {
+            "type": "string",
+            "enum": ["tour-navigation", "content-missing", "feature-access", "unclear-instructions", "other"],
+            "description": "The type of issue reported by the user"
+          },
+          "description": {
+            "type": "string",
+            "description": "User's description of the issue"
+          },
+          "expectedBehavior": {
+            "type": "string",
+            "description": "What the user expected to happen"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Optional email for follow-up"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the issue was reported"
+          },
+          "resolved": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the issue has been resolved"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Description of how the issue was resolved"
+          },
+          "assignedTo": {
+            "type": "string",
+            "description": "User ID of the person assigned to resolve the issue"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "default": "medium",
+            "description": "Priority level of the issue"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["new", "in-progress", "resolved", "closed", "duplicate"],
+            "default": "new",
+            "description": "Current status of the issue"
+          },
+          "debugInfo": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "URL where the issue occurred"
+              },
+              "pathname": {
+                "type": "string",
+                "description": "Path portion of the URL"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the debug info was collected"
+              },
+              "userAgent": {
+                "type": "string",
+                "description": "User's browser and OS information"
+              },
+              "screenSize": {
+                "type": "string",
+                "description": "User's screen dimensions"
+              },
+              "language": {
+                "type": "string",
+                "description": "User's browser language"
+              },
+              "cookiesEnabled": {
+                "type": "boolean",
+                "description": "Whether cookies are enabled in the user's browser"
+              },
+              "tourActive": {
+                "type": "boolean",
+                "description": "Whether the tour was active when the issue occurred"
+              },
+              "currentStep": {
+                "type": "integer",
+                "description": "Current step in the tour"
+              },
+              "totalSteps": {
+                "type": "integer",
+                "description": "Total number of steps in the tour"
+              },
+              "tourConfig": {
+                "type": "string",
+                "description": "Name of the tour configuration being used"
+              },
+              "currentStepInfo": {
+                "type": "object",
+                "properties": {
+                  "thinking": {
+                    "type": "string",
+                    "description": "Chain of Thought text for the current step"
+                  },
+                  "highlightSelector": {
+                    "type": "string",
+                    "description": "CSS selector for the highlighted element"
+                  },
+                  "elementExists": {
+                    "type": "boolean",
+                    "description": "Whether the highlighted element exists in the DOM"
+                  },
+                  "elementVisible": {
+                    "type": "boolean",
+                    "description": "Whether the highlighted element is visible"
+                  },
+                  "actions": {
+                    "type": "integer",
+                    "description": "Number of actions defined for the current step"
+                  }
+                }
+              },
+              "visibleElements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "selector": {
+                      "type": "string",
+                      "description": "CSS selector for the element"
+                    },
+                    "visible": {
+                      "type": "boolean",
+                      "description": "Whether the element is visible"
+                    },
+                    "rect": {
+                      "type": "object",
+                      "description": "Bounding rectangle of the element"
+                    }
+                  }
+                }
+              },
+              "performance": {
+                "type": "object",
+                "description": "Performance metrics from the browser"
+              },
+              "recentErrors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "Source file where the error occurred"
+                    },
+                    "lineno": {
+                      "type": "integer",
+                      "description": "Line number where the error occurred"
+                    },
+                    "colno": {
+                      "type": "integer",
+                      "description": "Column number where the error occurred"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the error occurred"
+                    }
+                  }
+                }
+              },
+              "userAuthenticated": {
+                "type": "boolean",
+                "description": "Whether the user is authenticated"
+              },
+              "localStorageAvailable": {
+                "type": "boolean",
+                "description": "Whether localStorage is available"
+              },
+              "tourCompletedBefore": {
+                "type": "boolean",
+                "description": "Whether the user has completed the tour before"
+              }
+            }
+          },
+          "copilotSuggestion": {
+            "type": "string",
+            "description": "Suggestion provided by the Co-Pilot"
+          },
+          "copilotHelpful": {
+            "type": "boolean",
+            "description": "Whether the Co-Pilot suggestion was helpful"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags for categorizing the issue"
+          },
+          "relatedIssues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IDs of related issues"
+          }
+        },
+        "required": ["issueType", "description", "timestamp"]
+      }
+    }
+  }
+}

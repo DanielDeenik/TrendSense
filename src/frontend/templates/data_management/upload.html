@@ -1,0 +1,183 @@
+{% extends "finbase.html" %}
+
+{% block title %}Upload Data - Data Management - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('data_management.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Upload Data</h1>
+    </div>
+    
+    <!-- AI Status -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-robot mr-2 text-blue-500"></i>
+            AI Status
+        </h2>
+        <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full {{ 'bg-green-500' if ai_available else 'bg-red-500' }} mr-2"></div>
+            <span>RAG AI Agent: {{ 'Available' if ai_available else 'Not Available' }}</span>
+        </div>
+        {% if not ai_available %}
+        <div class="mt-4 text-yellow-500">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <span>AI services are not available. Data will be processed without AI enrichment.</span>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Upload Form -->
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-file-upload mr-2 text-blue-500"></i>
+            Upload File
+        </h2>
+        <form action="{{ url_for('data_management.upload') }}" method="post" enctype="multipart/form-data" class="space-y-6">
+            <!-- File Input -->
+            <div>
+                <label for="file" class="block text-sm font-medium text-gray-400 mb-1">File</label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-600 border-dashed rounded-md">
+                    <div class="space-y-1 text-center">
+                        <i class="fas fa-file-upload text-4xl text-gray-500"></i>
+                        <div class="flex text-sm text-gray-400">
+                            <label for="file" class="relative cursor-pointer bg-gray-700 rounded-md font-medium text-blue-400 hover:text-blue-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                <span class="px-2 py-1">Browse files</span>
+                                <input id="file" name="file" type="file" class="sr-only" accept=".json,.csv,.xlsx,.xls">
+                            </label>
+                            <p class="pl-1">or drag and drop</p>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            JSON, CSV, Excel files up to 10MB
+                        </p>
+                    </div>
+                </div>
+                <div id="file-name" class="mt-2 text-sm text-gray-400"></div>
+            </div>
+            
+            <!-- Source Type -->
+            <div>
+                <label for="source_type" class="block text-sm font-medium text-gray-400 mb-1">Source Type</label>
+                <select id="source_type" name="source_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Auto-detect from file extension</option>
+                    <option value="json">JSON</option>
+                    <option value="csv">CSV</option>
+                    <option value="excel">Excel</option>
+                </select>
+            </div>
+            
+            <!-- Collection Name -->
+            <div>
+                <label for="collection_name" class="block text-sm font-medium text-gray-400 mb-1">Collection Name</label>
+                <input type="text" id="collection_name" name="collection_name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., companies, funds, projects" required>
+                <p class="mt-1 text-sm text-gray-500">
+                    The name of the collection where the data will be stored.
+                </p>
+            </div>
+            
+            <!-- AI Enrichment -->
+            <div class="flex items-center">
+                <input type="checkbox" id="enrich_with_rag" name="enrich_with_rag" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded" {{ 'checked' if ai_available else 'disabled' }}>
+                <label for="enrich_with_rag" class="ml-2 block text-sm text-gray-400">
+                    Enrich data with RAG AI
+                </label>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                    <i class="fas fa-upload mr-1"></i> Upload and Process
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('file-name');
+        
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                fileNameDisplay.textContent = `Selected file: ${fileName}`;
+                
+                // Auto-select source type based on file extension
+                const extension = fileName.split('.').pop().toLowerCase();
+                const sourceTypeSelect = document.getElementById('source_type');
+                
+                if (extension === 'json') {
+                    sourceTypeSelect.value = 'json';
+                } else if (extension === 'csv') {
+                    sourceTypeSelect.value = 'csv';
+                } else if (extension === 'xlsx' || extension === 'xls') {
+                    sourceTypeSelect.value = 'excel';
+                }
+                
+                // Auto-suggest collection name based on file name
+                const collectionNameInput = document.getElementById('collection_name');
+                if (!collectionNameInput.value) {
+                    // Remove extension and suggest as collection name
+                    let collectionName = fileName.replace(/\.[^/.]+$/, "");
+                    // Convert to lowercase and replace spaces with underscores
+                    collectionName = collectionName.toLowerCase().replace(/\s+/g, '_');
+                    // Remove any special characters
+                    collectionName = collectionName.replace(/[^a-z0-9_]/g, '');
+                    
+                    collectionNameInput.value = collectionName;
+                }
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+        
+        // Drag and drop functionality
+        const dropZone = document.querySelector('.border-dashed');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropZone.classList.add('border-blue-500');
+            dropZone.classList.remove('border-gray-600');
+        }
+        
+        function unhighlight() {
+            dropZone.classList.remove('border-blue-500');
+            dropZone.classList.add('border-gray-600');
+        }
+        
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        }
+    });
+</script>
+{% endblock %}

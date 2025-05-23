@@ -1,0 +1,110 @@
+{% extends "finbase.html" %}
+
+{% block title %}Navigation - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Navigation Map</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
+        This page provides links to all available routes in the SustainaTrend™ platform.
+    </p>
+
+    <!-- Navigation Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for category in navigation.categories %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    <i class="fas fa-{{ category.icon }} mr-2"></i>
+                    {{ category.name }}
+                </h2>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <ul class="space-y-3">
+                    {% for item in navigation.items %}
+                    {% if item.category == category.id %}
+                    <li>
+                        <a href="{{ item.url }}" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-{{ item.icon }} mr-2 w-5 text-center"></i>
+                            <span>{{ item.name }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- API Routes -->
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">API Routes</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    <i class="fas fa-code mr-2"></i>
+                    API Endpoints
+                </h3>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{{ url_for('api.index') }}" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-file-code mr-2 w-5 text-center"></i>
+                            <span>API Documentation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('api.metrics') }}" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-chart-bar mr-2 w-5 text-center"></i>
+                            <span>Metrics API</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('api.trends') }}" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-chart-line mr-2 w-5 text-center"></i>
+                            <span>Trends API</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MongoDB Graph Routes -->
+    <div class="mt-12 mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">MongoDB Graph</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    <i class="fas fa-project-diagram mr-2"></i>
+                    Graph Visualizations
+                </h3>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{{ url_for('graph.index') }}" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-project-diagram mr-2 w-5 text-center"></i>
+                            <span>Graph Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-truck mr-2 w-5 text-center"></i>
+                            <span>Supply Chain Graph</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                            <i class="fas fa-boxes mr-2 w-5 text-center"></i>
+                            <span>Product-Material Graph</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

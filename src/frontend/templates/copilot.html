@@ -1,0 +1,404 @@
+{% extends "finbase.html" %}
+
+{% block title %}AI Copilot - TrendSense™{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">AI Copilot</h1>
+        <div class="flex space-x-2">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-history mr-2"></i>
+                History
+            </button>
+            <button class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-cog mr-2"></i>
+                Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- Copilot Interface -->
+    <div id="copilot-bar" class="bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Ask me anything about trends, companies, or investments</h2>
+        
+        <!-- Query Input -->
+        <div class="mb-6">
+            <div class="flex">
+                <input type="text" id="copilot-input" class="bg-gray-700 text-white rounded-l-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your question here...">
+                <button id="copilot-submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-r-lg">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Example Queries -->
+        <div id="copilot-examples" class="mb-6">
+            <h3 class="text-sm font-medium text-gray-400 mb-2">Example queries:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {% for example in example_queries %}
+                <div class="bg-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-600 transition-colors duration-200">
+                    <p class="text-sm text-white">{{ example.query }}</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ example.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Response Area (Hidden initially) -->
+        <div id="copilot-response" class="hidden">
+            <div class="border-t border-gray-700 pt-4 mt-4">
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <!-- Chain of Thought -->
+                    <div class="mb-4 bg-gray-800 rounded-lg p-3">
+                        <h4 class="text-sm font-medium text-blue-400 mb-2">🧠 Chain of Thought:</h4>
+                        <p id="response-thinking" class="text-sm text-gray-300"></p>
+                    </div>
+                    
+                    <!-- Response Content -->
+                    <div>
+                        <h4 class="text-sm font-medium text-white mb-2">Response:</h4>
+                        <p id="response-content" class="text-sm text-gray-300"></p>
+                    </div>
+                    
+                    <!-- Visualization (if applicable) -->
+                    <div id="response-visualization" class="mt-4 hidden">
+                        <canvas id="response-chart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="mt-4 flex space-x-2">
+                        <button class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-xs flex items-center">
+                            <i class="fas fa-download mr-1"></i>
+                            Export
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-xs flex items-center">
+                            <i class="fas fa-file-powerpoint mr-1"></i>
+                            Create Slides
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-xs flex items-center">
+                            <i class="fas fa-share mr-1"></i>
+                            Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Insights -->
+    <div id="copilot-personalization" class="bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Recent Insights</h2>
+        
+        <div class="space-y-4">
+            {% for insight in recent_insights %}
+            <div class="bg-gray-700 rounded-lg p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-md font-medium text-white">{{ insight.title }}</h3>
+                        <p class="text-sm text-gray-300 mt-1">{{ insight.description }}</p>
+                    </div>
+                    <div class="bg-blue-900 text-blue-300 px-2 py-1 rounded text-xs">
+                        {{ insight.confidence }}% confidence
+                    </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-500">
+                    {{ insight.timestamp }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Copilot Tools -->
+    <div id="copilot-tools" class="bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Available Tools</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gray-700 rounded-lg p-4 flex items-center">
+                <div class="bg-blue-600 rounded-full p-2 mr-3">
+                    <i class="fas fa-chart-bar text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-white">Data Visualization</h3>
+                    <p class="text-xs text-gray-400">Generate charts and graphs</p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4 flex items-center">
+                <div class="bg-green-600 rounded-full p-2 mr-3">
+                    <i class="fas fa-file-excel text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-white">Export to Spreadsheet</h3>
+                    <p class="text-xs text-gray-400">Download data as CSV or Excel</p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4 flex items-center">
+                <div class="bg-purple-600 rounded-full p-2 mr-3">
+                    <i class="fas fa-file-powerpoint text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-white">Presentation Creator</h3>
+                    <p class="text-xs text-gray-400">Generate slides from insights</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Copilot -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const copilotInput = document.getElementById('copilot-input');
+        const copilotSubmit = document.getElementById('copilot-submit');
+        const copilotResponse = document.getElementById('copilot-response');
+        const responseThinking = document.getElementById('response-thinking');
+        const responseContent = document.getElementById('response-content');
+        const responseVisualization = document.getElementById('response-visualization');
+        const responseChart = document.getElementById('response-chart');
+        
+        // Example queries click handler
+        const exampleQueries = document.querySelectorAll('#copilot-examples .bg-gray-700');
+        exampleQueries.forEach(query => {
+            query.addEventListener('click', function() {
+                const queryText = this.querySelector('p').textContent;
+                copilotInput.value = queryText;
+                submitQuery();
+            });
+        });
+        
+        // Submit button click handler
+        copilotSubmit.addEventListener('click', submitQuery);
+        
+        // Enter key handler
+        copilotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitQuery();
+            }
+        });
+        
+        // Submit query function
+        function submitQuery() {
+            const query = copilotInput.value.trim();
+            if (!query) return;
+            
+            // Show loading state
+            copilotResponse.classList.remove('hidden');
+            responseThinking.textContent = 'Thinking...';
+            responseContent.textContent = 'Processing your query...';
+            responseVisualization.classList.add('hidden');
+            
+            // In a real application, this would call an API endpoint
+            // For now, we'll simulate a response
+            setTimeout(() => {
+                const response = processQuery(query);
+                displayResponse(response);
+            }, 1000);
+        }
+        
+        // Process query function (simulated)
+        function processQuery(query) {
+            // Sample responses for different query types
+            const responses = {
+                'compare': {
+                    thinking: 'I need to compare these entities by retrieving their key metrics, normalizing the data, and identifying significant differences.',
+                    response: 'Based on my analysis, Entity A has 42% higher sustainability metrics but 15% lower growth rate compared to Entity B. The most significant difference is in carbon intensity, where Entity A outperforms by 3.2x.',
+                    chartType: 'radar'
+                },
+                'summarize': {
+                    thinking: 'I should extract the key metrics, trends, and insights from the data, focusing on the most statistically significant patterns.',
+                    response: 'The data shows a strong positive correlation (r=0.78) between ESG compliance and investor interest. Companies with >80% CSRD readiness attract 2.3x more funding on average.',
+                    chartType: 'bar'
+                },
+                'predict': {
+                    thinking: 'I need to apply time series forecasting to the historical data, accounting for seasonality and external factors like regulatory changes.',
+                    response: 'Based on current trends and regulatory roadmap, I predict a 35-40% increase in circular economy investments over the next 18 months, with the strongest growth in packaging alternatives and waste reduction platforms.',
+                    chartType: 'line'
+                },
+                'recommend': {
+                    thinking: 'I should identify opportunities that match the investment criteria, ranking them by alignment score and growth potential.',
+                    response: 'I recommend focusing on these three opportunities: 1) GreenCircle (92% ESG alignment, 42% YoY growth), 2) CarbonCapture Inc. (88% ESG alignment, 48% YoY growth), and 3) ReCircle (85% ESG alignment, 38% YoY growth).',
+                    chartType: 'scatter'
+                }
+            };
+            
+            // Determine the query type based on keywords
+            const queryLower = query.toLowerCase();
+            let queryType = 'summarize';  // Default type
+            
+            if (queryLower.includes('compare') || queryLower.includes('versus') || queryLower.includes('vs')) {
+                queryType = 'compare';
+            } else if (queryLower.includes('predict') || queryLower.includes('forecast') || queryLower.includes('future')) {
+                queryType = 'predict';
+            } else if (queryLower.includes('recommend') || queryLower.includes('suggest') || queryLower.includes('best')) {
+                queryType = 'recommend';
+            }
+            
+            return responses[queryType];
+        }
+        
+        // Display response function
+        function displayResponse(response) {
+            // Display thinking process with typewriter effect
+            typeWriter(responseThinking, response.thinking, 30);
+            
+            // Display response content
+            responseContent.textContent = response.response;
+            
+            // Display visualization if applicable
+            if (response.chartType) {
+                responseVisualization.classList.remove('hidden');
+                createChart(responseChart, response.chartType);
+            } else {
+                responseVisualization.classList.add('hidden');
+            }
+        }
+        
+        // Typewriter effect function
+        function typeWriter(element, text, speed) {
+            let i = 0;
+            element.textContent = '';
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, speed);
+        }
+        
+        // Create chart function
+        function createChart(canvas, chartType) {
+            // Destroy existing chart if any
+            if (window.responseChartInstance) {
+                window.responseChartInstance.destroy();
+            }
+            
+            // Sample data for different chart types
+            const data = {
+                radar: {
+                    labels: ['ESG Score', 'Growth Rate', 'Carbon Intensity', 'Reuse Factor', 'CSRD Compliance'],
+                    datasets: [
+                        {
+                            label: 'Entity A',
+                            data: [85, 30, 15, 8.4, 83],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Entity B',
+                            data: [60, 45, 48, 5.2, 65],
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                bar: {
+                    labels: ['<70%', '70-80%', '80-90%', '>90%'],
+                    datasets: [
+                        {
+                            label: 'Funding Multiple (x)',
+                            data: [1.0, 1.5, 2.3, 3.1],
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                line: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Next)', 'Q2 (Next)'],
+                    datasets: [
+                        {
+                            label: 'Investment Growth (%)',
+                            data: [100, 115, 125, 140, 160, 190],
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                scatter: {
+                    datasets: [
+                        {
+                            label: 'Companies',
+                            data: [
+                                { x: 92, y: 42, r: 10, label: 'GreenCircle' },
+                                { x: 88, y: 48, r: 10, label: 'CarbonCapture Inc.' },
+                                { x: 85, y: 38, r: 10, label: 'ReCircle' },
+                                { x: 78, y: 25, r: 8, label: 'EcoTech' },
+                                { x: 72, y: 30, r: 8, label: 'SustainFi' }
+                            ],
+                            backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                }
+            };
+            
+            // Chart configuration
+            const config = {
+                type: chartType === 'scatter' ? 'bubble' : chartType,
+                data: data[chartType],
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: getChartTitle(chartType),
+                            color: 'white'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // Create chart
+            window.responseChartInstance = new Chart(canvas, config);
+        }
+        
+        // Get chart title based on chart type
+        function getChartTitle(chartType) {
+            const titles = {
+                radar: 'Comparative Analysis',
+                bar: 'ESG Compliance vs. Funding Multiple',
+                line: 'Circular Economy Investment Forecast',
+                scatter: 'ESG Alignment vs. Growth Rate'
+            };
+            
+            return titles[chartType] || 'Analysis Results';
+        }
+    });
+</script>
+{% endblock %}

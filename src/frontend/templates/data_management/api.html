@@ -1,0 +1,143 @@
+{% extends "finbase.html" %}
+
+{% block title %}API Data - Data Management - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('data_management.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">API Data</h1>
+    </div>
+    
+    <!-- AI Status -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-robot mr-2 text-blue-500"></i>
+            AI Status
+        </h2>
+        <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full {{ 'bg-green-500' if ai_available else 'bg-red-500' }} mr-2"></div>
+            <span>RAG AI Agent: {{ 'Available' if ai_available else 'Not Available' }}</span>
+        </div>
+        {% if not ai_available %}
+        <div class="mt-4 text-yellow-500">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <span>AI services are not available. Data will be processed without AI enrichment.</span>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- API Form -->
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-cloud mr-2 text-blue-500"></i>
+            API Data Source
+        </h2>
+        <form action="{{ url_for('data_management.api') }}" method="post" class="space-y-6">
+            <!-- API URL -->
+            <div>
+                <label for="api_url" class="block text-sm font-medium text-gray-400 mb-1">API URL</label>
+                <input type="url" id="api_url" name="api_url" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://api.example.com/data" required>
+            </div>
+            
+            <!-- HTTP Method -->
+            <div>
+                <label for="method" class="block text-sm font-medium text-gray-400 mb-1">HTTP Method</label>
+                <select id="method" name="method" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+            
+            <!-- Headers -->
+            <div>
+                <label for="headers" class="block text-sm font-medium text-gray-400 mb-1">Headers (JSON)</label>
+                <textarea id="headers" name="headers" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='{"Content-Type": "application/json", "Authorization": "Bearer token"}'></textarea>
+            </div>
+            
+            <!-- Query Parameters -->
+            <div>
+                <label for="params" class="block text-sm font-medium text-gray-400 mb-1">Query Parameters (JSON)</label>
+                <textarea id="params" name="params" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='{"limit": 100, "offset": 0}'></textarea>
+            </div>
+            
+            <!-- Request Body -->
+            <div>
+                <label for="data" class="block text-sm font-medium text-gray-400 mb-1">Request Body</label>
+                <textarea id="data" name="data" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='{"key": "value"}'></textarea>
+            </div>
+            
+            <!-- Collection Name -->
+            <div>
+                <label for="collection_name" class="block text-sm font-medium text-gray-400 mb-1">Collection Name</label>
+                <input type="text" id="collection_name" name="collection_name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., api_data, external_metrics" required>
+                <p class="mt-1 text-sm text-gray-500">
+                    The name of the collection where the data will be stored.
+                </p>
+            </div>
+            
+            <!-- AI Enrichment -->
+            <div class="flex items-center">
+                <input type="checkbox" id="enrich_with_rag" name="enrich_with_rag" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded" {{ 'checked' if ai_available else 'disabled' }}>
+                <label for="enrich_with_rag" class="ml-2 block text-sm text-gray-400">
+                    Enrich data with RAG AI
+                </label>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                    <i class="fas fa-cloud-download-alt mr-1"></i> Fetch and Process
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format JSON inputs
+        const jsonInputs = document.querySelectorAll('#headers, #params, #data');
+        
+        jsonInputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                try {
+                    // Only format if there's content
+                    if (input.value.trim()) {
+                        const json = JSON.parse(input.value);
+                        input.value = JSON.stringify(json, null, 2);
+                    }
+                } catch (e) {
+                    // If it's not valid JSON, leave it as is
+                    console.warn('Invalid JSON:', e);
+                }
+            });
+        });
+        
+        // Update form based on method
+        const methodSelect = document.getElementById('method');
+        const dataTextarea = document.getElementById('data');
+        const dataContainer = dataTextarea.parentElement;
+        
+        methodSelect.addEventListener('change', function() {
+            const method = methodSelect.value;
+            
+            // Show/hide request body based on method
+            if (method === 'GET' || method === 'DELETE') {
+                dataContainer.classList.add('hidden');
+            } else {
+                dataContainer.classList.remove('hidden');
+            }
+        });
+        
+        // Trigger initial state
+        methodSelect.dispatchEvent(new Event('change'));
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends "finbase.html" %}
+
+{% block title %}{{ strategy.name }} - Strategy Hub - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('strategy.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">{{ strategy.name }}</h1>
+    </div>
+
+    <!-- Strategy Overview -->
+    <div class="card p-6 mb-8">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Strategy Overview</h2>
+                <p class="text-gray-300">{{ strategy.description }}</p>
+            </div>
+            <div class="bg-gray-800 px-4 py-2 rounded-lg">
+                <div class="text-sm text-gray-400">Framework</div>
+                <div class="text-lg font-medium">{{ strategy.framework }}</div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="text-sm text-gray-400">Status</div>
+                <div class="text-lg font-medium">
+                    <span class="px-2 py-1 text-xs rounded-full 
+                        {% if strategy.status == 'In Progress' %}bg-blue-900 text-blue-200
+                        {% elif strategy.status == 'Planning' %}bg-yellow-900 text-yellow-200
+                        {% elif strategy.status == 'Completed' %}bg-green-900 text-green-200
+                        {% else %}bg-gray-700 text-gray-300{% endif %}">
+                        {{ strategy.status }}
+                    </span>
+                </div>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="text-sm text-gray-400">Progress</div>
+                <div class="text-lg font-medium">{{ strategy.progress }}%</div>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ strategy.progress }}%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="text-sm text-gray-400">Last Updated</div>
+                <div class="text-lg font-medium">May 15, 2023</div>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="text-sm text-gray-400">Owner</div>
+                <div class="text-lg font-medium">Sustainability Team</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategy Metrics -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Strategy Metrics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for metric_name, metric_value in strategy.metrics.items() %}
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="text-lg font-medium">{{ metric_name|replace('_', ' ')|title }}</div>
+                    <div class="text-2xl font-bold">{{ metric_value }}%</div>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ metric_value }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Action Plan -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Action Plan</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Action</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Owner</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Due Date</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium">Conduct baseline assessment</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">John Doe</td>
+                        <td class="px-4 py-3 whitespace-nowrap">June 1, 2023</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-900 text-green-200">Completed</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium">Develop implementation roadmap</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">Jane Smith</td>
+                        <td class="px-4 py-3 whitespace-nowrap">June 15, 2023</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-900 text-blue-200">In Progress</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium">Secure stakeholder buy-in</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">Michael Johnson</td>
+                        <td class="px-4 py-3 whitespace-nowrap">July 1, 2023</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-900 text-yellow-200">Pending</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium">Implement pilot program</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">Sarah Williams</td>
+                        <td class="px-4 py-3 whitespace-nowrap">August 1, 2023</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300">Not Started</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Strategy Analysis -->
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4">Strategy Analysis</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-800 p-5 rounded-lg">
+                <h3 class="text-lg font-medium mb-3">Strengths</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">Strong alignment with organizational goals</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">Clear metrics for measuring progress</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">High potential for cost savings</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-gray-800 p-5 rounded-lg">
+                <h3 class="text-lg font-medium mb-3">Challenges</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">Requires significant cross-functional coordination</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">Technology implementation may face resistance</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                        <span class="text-gray-300">Regulatory landscape is evolving rapidly</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Additional JavaScript for the strategy detail page can be added here
+    });
+</script>
+{% endblock %}

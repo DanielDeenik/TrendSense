@@ -1,0 +1,73 @@
+{% extends "finbase.html" %}
+
+{% block title %}Edit {{ strategy.name }} - Strategy Hub - SustainaTrend™{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('strategy.strategy_detail', strategy_id=strategy.id) }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Edit Strategy</h1>
+    </div>
+
+    <!-- Strategy Edit Form -->
+    <div class="card p-6 mb-8">
+        <form action="{{ url_for('strategy.update_strategy', strategy_id=strategy.id) }}" method="post" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="strategy_name" class="block text-sm font-medium text-gray-400 mb-1">Strategy Name</label>
+                    <input type="text" id="strategy_name" name="strategy_name" value="{{ strategy.name }}" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="framework" class="block text-sm font-medium text-gray-400 mb-1">Framework</label>
+                    <select id="framework" name="framework" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {% for framework_id, framework in frameworks.items() %}
+                        <option value="{{ framework.name }}" {% if strategy.framework == framework.name %}selected{% endif %}>{{ framework.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-400 mb-1">Description</label>
+                <textarea id="description" name="description" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">{{ strategy.description }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-400 mb-1">Status</label>
+                    <select id="status" name="status" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="Planning" {% if strategy.status == 'Planning' %}selected{% endif %}>Planning</option>
+                        <option value="In Progress" {% if strategy.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                        <option value="Completed" {% if strategy.status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="progress" class="block text-sm font-medium text-gray-400 mb-1">Progress (%)</label>
+                    <input type="number" id="progress" name="progress" value="{{ strategy.progress }}" min="0" max="100" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <h3 class="text-lg font-medium mt-6 mb-3">Strategy Metrics</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for metric_name, metric_value in strategy.metrics.items() %}
+                <div>
+                    <label for="metric_{{ metric_name }}" class="block text-sm font-medium text-gray-400 mb-1">{{ metric_name|replace('_', ' ')|title }} (%)</label>
+                    <input type="number" id="metric_{{ metric_name }}" name="metric_{{ metric_name }}" value="{{ metric_value }}" min="0" max="100" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-8">
+                <a href="{{ url_for('strategy.strategy_detail', strategy_id=strategy.id) }}" class="btn-secondary px-6 py-2 rounded-lg">
+                    Cancel
+                </a>
+                <button type="submit" class="btn-primary px-6 py-2 rounded-lg">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

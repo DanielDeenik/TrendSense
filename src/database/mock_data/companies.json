@@ -1,0 +1,302 @@
+[
+  {
+    "_id": "4ebb110e-0598-4e62-b205-d619a1a7aa7b",
+    "name": "GreenTech Solutions",
+    "description": "A leading company in BiodiversityTech focused on sustainability.",
+    "sector": "BiodiversityTech",
+    "sub_sectors": [
+      "EthicalAI",
+      "WaterTech",
+      "WasteManagement"
+    ],
+    "founded_year": 2014,
+    "headquarters": "Global",
+    "website": "https://www.greentechsolutions.com",
+    "sustainability_metrics": {
+      "environmental_score": 73.81485754574689,
+      "social_score": 65.24178503374957,
+      "governance_score": 58.67151932349154,
+      "esg_score": 65.90938730099599,
+      "carbon_emissions": {
+        "scope1": 143.64503323167477,
+        "scope2": 4894.131264015978,
+        "scope3": 8059.439397515971,
+        "total": 14674.575402894676
+      },
+      "sustainable_revenue_percentage": 20.62879993365177,
+      "renewable_energy_percentage": 36.93874725836737
+    },
+    "created_at": "2025-03-06T14:15:32.933253",
+    "updated_at": "2025-04-14T14:15:32.933253"
+  },
+  {
+    "_id": "4867ed2a-7c83-4655-9bd5-8a54654bfa25",
+    "name": "EcoInnovate",
+    "description": "A leading company in CarbonCapture focused on sustainability.",
+    "sector": "CarbonCapture",
+    "sub_sectors": [
+      "CarbonCapture",
+      "BiodiversityTech",
+      "EthicalAI"
+    ],
+    "founded_year": 2021,
+    "headquarters": "Global",
+    "website": "https://www.ecoinnovate.com",
+    "sustainability_metrics": {
+      "environmental_score": 91.23204979707329,
+      "social_score": 80.12922037207188,
+      "governance_score": 76.55009349409298,
+      "esg_score": 82.63712122107938,
+      "carbon_emissions": {
+        "scope1": 983.4992991446414,
+        "scope2": 1979.5454944885303,
+        "scope3": 6013.788025136001,
+        "total": 4543.146019100387
+      },
+      "sustainable_revenue_percentage": 59.794181454961205,
+      "renewable_energy_percentage": 39.55360971944209
+    },
+    "created_at": "2024-07-05T14:15:32.933253",
+    "updated_at": "2025-05-08T14:15:32.933253"
+  },
+  {
+    "_id": "d4c28b6b-f501-4029-86f4-5efcc41963af",
+    "name": "SustainableFuture",
+    "description": "A leading company in GreenBuilding focused on sustainability.",
+    "sector": "GreenBuilding",
+    "sub_sectors": [
+      "SustainableAgriculture",
+      "WasteManagement",
+      "BiodiversityTech"
+    ],
+    "founded_year": 2003,
+    "headquarters": "Global",
+    "website": "https://www.sustainablefuture.com",
+    "sustainability_metrics": {
+      "environmental_score": 85.06313118495748,
+      "social_score": 66.09000704106698,
+      "governance_score": 76.11317976613373,
+      "esg_score": 75.7554393307194,
+      "carbon_emissions": {
+        "scope1": 141.57306975623817,
+        "scope2": 4686.680926815698,
+        "scope3": 7917.394694793122,
+        "total": 11795.525552172336
+      },
+      "sustainable_revenue_percentage": 69.35417654623711,
+      "renewable_energy_percentage": 60.12244022477477
+    },
+    "created_at": "2025-03-06T14:15:32.933253",
+    "updated_at": "2025-05-05T14:15:32.933253"
+  },
+  {
+    "_id": "d2e1e7e0-e8b8-4e6d-a45a-27429e7b4678",
+    "name": "CleanEnergy Systems",
+    "description": "A leading company in ClimateFintech focused on sustainability.",
+    "sector": "ClimateFintech",
+    "sub_sectors": [
+      "EthicalAI",
+      "SustainableAgriculture",
+      "SustainableMobility"
+    ],
+    "founded_year": 2021,
+    "headquarters": "Global",
+    "website": "https://www.cleanenergysystems.com",
+    "sustainability_metrics": {
+      "environmental_score": 58.434159565105844,
+      "social_score": 74.59943856661916,
+      "governance_score": 88.95926268886402,
+      "esg_score": 73.99762027352968,
+      "carbon_emissions": {
+        "scope1": 115.95089539384304,
+        "scope2": 2603.6621228069303,
+        "scope3": 2037.4483672496501,
+        "total": 14137.258307099215
+      },
+      "sustainable_revenue_percentage": 30.41360525187525,
+      "renewable_energy_percentage": 83.26389194851275
+    },
+    "created_at": "2024-12-29T14:15:32.933253",
+    "updated_at": "2025-04-24T14:15:32.933253"
+  },
+  {
+    "_id": "fc117599-e9ff-4fad-93ab-04bb41cdb783",
+    "name": "CircularEconomy",
+    "description": "A leading company in EthicalAI focused on sustainability.",
+    "sector": "EthicalAI",
+    "sub_sectors": [
+      "SustainableMobility",
+      "EthicalAI",
+      "WasteManagement"
+    ],
+    "founded_year": 2014,
+    "headquarters": "Global",
+    "website": "https://www.circulareconomy.com",
+    "sustainability_metrics": {
+      "environmental_score": 70.34749887797702,
+      "social_score": 52.18557941398146,
+      "governance_score": 82.88202178305798,
+      "esg_score": 68.47170002500549,
+      "carbon_emissions": {
+        "scope1": 247.59637449242277,
+        "scope2": 3961.325666741882,
+        "scope3": 2089.9075086742514,
+        "total": 11792.725833172866
+      },
+      "sustainable_revenue_percentage": 48.348990019471664,
+      "renewable_energy_percentage": 42.57740482561907
+    },
+    "created_at": "2024-06-09T14:15:32.933253",
+    "updated_at": "2025-04-29T14:15:32.933253"
+  },
+  {
+    "_id": "4850b3ea-cfae-485f-a3d0-be81f2918866",
+    "name": "EthicalAI",
+    "description": "A leading company in CleanTech focused on sustainability.",
+    "sector": "CleanTech",
+    "sub_sectors": [
+      "CleanTech",
+      "SustainableAgriculture",
+      "WasteManagement"
+    ],
+    "founded_year": 2012,
+    "headquarters": "Global",
+    "website": "https://www.ethicalai.com",
+    "sustainability_metrics": {
+      "environmental_score": 59.02891840832379,
+      "social_score": 73.64316031422827,
+      "governance_score": 57.2458048332029,
+      "esg_score": 63.30596118525165,
+      "carbon_emissions": {
+        "scope1": 151.27259194958663,
+        "scope2": 3225.0593438547307,
+        "scope3": 8711.748771923656,
+        "total": 7913.999388436975
+      },
+      "sustainable_revenue_percentage": 24.53029007905496,
+      "renewable_energy_percentage": 20.11524836993016
+    },
+    "created_at": "2024-06-17T14:15:32.933253",
+    "updated_at": "2025-05-10T14:15:32.933253"
+  },
+  {
+    "_id": "1338cd72-0e8c-4ef9-987e-f8ef03099d88",
+    "name": "BiodiversityTech",
+    "description": "A leading company in SustainableMobility focused on sustainability.",
+    "sector": "SustainableMobility",
+    "sub_sectors": [
+      "ClimateFintech",
+      "CarbonCapture",
+      "RenewableEnergy"
+    ],
+    "founded_year": 2018,
+    "headquarters": "Global",
+    "website": "https://www.biodiversitytech.com",
+    "sustainability_metrics": {
+      "environmental_score": 83.0412696418355,
+      "social_score": 68.74975968854613,
+      "governance_score": 78.29043551771032,
+      "esg_score": 76.69382161603066,
+      "carbon_emissions": {
+        "scope1": 763.8145407444872,
+        "scope2": 2723.5936654525813,
+        "scope3": 2340.087551062652,
+        "total": 11297.434520913157
+      },
+      "sustainable_revenue_percentage": 58.3043595916965,
+      "renewable_energy_percentage": 65.76553537828138
+    },
+    "created_at": "2025-03-02T14:15:32.933253",
+    "updated_at": "2025-04-27T14:15:32.933253"
+  },
+  {
+    "_id": "1adfa3b4-eef3-46ad-ae74-f79e3b0135e8",
+    "name": "CarbonCapture Inc",
+    "description": "A leading company in GreenBuilding focused on sustainability.",
+    "sector": "GreenBuilding",
+    "sub_sectors": [
+      "WasteManagement",
+      "SustainableAgriculture",
+      "EthicalAI"
+    ],
+    "founded_year": 2015,
+    "headquarters": "Global",
+    "website": "https://www.carboncaptureinc.com",
+    "sustainability_metrics": {
+      "environmental_score": 54.38720531099881,
+      "social_score": 55.5000188977137,
+      "governance_score": 87.19466702019585,
+      "esg_score": 65.69396374296946,
+      "carbon_emissions": {
+        "scope1": 488.3388612909033,
+        "scope2": 2688.3418502563936,
+        "scope3": 9276.982662028244,
+        "total": 13564.480134718486
+      },
+      "sustainable_revenue_percentage": 51.236274024788514,
+      "renewable_energy_percentage": 68.23421007882732
+    },
+    "created_at": "2025-04-02T14:15:32.933253",
+    "updated_at": "2025-05-05T14:15:32.933253"
+  },
+  {
+    "_id": "e0ce51fe-d627-4ea0-ba8a-a13c08e1ceae",
+    "name": "RenewableVentures",
+    "description": "A leading company in SustainableAgriculture focused on sustainability.",
+    "sector": "SustainableAgriculture",
+    "sub_sectors": [
+      "CleanTech",
+      "RenewableEnergy",
+      "WasteManagement"
+    ],
+    "founded_year": 2007,
+    "headquarters": "Global",
+    "website": "https://www.renewableventures.com",
+    "sustainability_metrics": {
+      "environmental_score": 93.2838425069508,
+      "social_score": 63.857262990855375,
+      "governance_score": 57.04532021131311,
+      "esg_score": 71.39547523637309,
+      "carbon_emissions": {
+        "scope1": 499.0566074732543,
+        "scope2": 597.1334784334666,
+        "scope3": 7021.703340414751,
+        "total": 12904.096771862536
+      },
+      "sustainable_revenue_percentage": 22.395179332376255,
+      "renewable_energy_percentage": 87.90772712321233
+    },
+    "created_at": "2024-10-23T14:15:32.933253",
+    "updated_at": "2025-05-02T14:15:32.933253"
+  },
+  {
+    "_id": "94c28ddd-4b8a-4a02-ada2-093f08aa0608",
+    "name": "OceanCleanup Technologies",
+    "description": "A leading company in BiodiversityTech focused on sustainability.",
+    "sector": "BiodiversityTech",
+    "sub_sectors": [
+      "CarbonCapture",
+      "ClimateFintech",
+      "WasteManagement"
+    ],
+    "founded_year": 2021,
+    "headquarters": "Global",
+    "website": "https://www.oceancleanuptechnologies.com",
+    "sustainability_metrics": {
+      "environmental_score": 69.03913385501792,
+      "social_score": 90.28118142042553,
+      "governance_score": 74.99838707267651,
+      "esg_score": 78.10623411603999,
+      "carbon_emissions": {
+        "scope1": 216.1882466987651,
+        "scope2": 1778.4108736706837,
+        "scope3": 9989.53530061804,
+        "total": 7265.65268020786
+      },
+      "sustainable_revenue_percentage": 34.60826818448267,
+      "renewable_energy_percentage": 67.84285941569959
+    },
+    "created_at": "2024-08-08T14:15:32.933253",
+    "updated_at": "2025-05-06T14:15:32.933253"
+  }
+]

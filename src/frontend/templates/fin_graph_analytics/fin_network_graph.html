@@ -1,0 +1,1013 @@
+{% extends "finbase.html" %}
+
+{% block title %}Network Graph | Graph Analytics | SustainaTrend{% endblock %}
+
+{% block additional_head %}
+{{ super() }}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/force-graph"></script>
+{% endblock %}
+
+{% block additional_styles %}
+/* Network Graph Styles */
+#graphContainer {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    height: 600px;
+}
+
+.control-panel {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.node-details {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+/* Breadcrumb styles */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin-bottom: 1rem;
+    list-style: none;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+    padding-left: 0.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    padding-right: 0.5rem;
+    color: #6c757d;
+    content: "/";
+}
+
+.breadcrumb-item.active {
+    color: #9ca3af;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/graph-analytics" class="text-blue-500 hover:text-blue-400">Graph Analytics</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Network Graph</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-2xl font-bold mb-2">Network Graph</h1>
+            <p class="text-gray-400">Visualize the complete network of companies, projects, and sustainability initiatives.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Panel: Controls -->
+        <div class="col-lg-3">
+            <!-- Graph Controls -->
+            <div class="control-panel mb-4">
+                <h2 class="text-xl font-semibold mb-3">Graph Controls</h2>
+
+                <div class="mb-3">
+                    <label for="nodeTypeFilter" class="block text-sm font-medium text-gray-400 mb-2">Node Type</label>
+                    <select id="nodeTypeFilter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-gray-300">
+                        <option value="all">All Types</option>
+                        <option value="company">Companies</option>
+                        <option value="project">Projects</option>
+                        <option value="initiative">Initiatives</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="relationshipFilter" class="block text-sm font-medium text-gray-400 mb-2">Relationship Type</label>
+                    <select id="relationshipFilter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-gray-300">
+                        <option value="all">All Relationships</option>
+                        <option value="investment">Investment</option>
+                        <option value="partnership">Partnership</option>
+                        <option value="supplier">Supplier</option>
+                        <option value="impact">Impact</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="searchNode" class="block text-sm font-medium text-gray-400 mb-2">Search Node</label>
+                    <input type="text" id="searchNode" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-gray-300" placeholder="Enter node name...">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Layout</label>
+                    <div class="flex space-x-2">
+                        <button id="forceLayout" class="btn btn-sm btn-primary">Force</button>
+                        <button id="radialLayout" class="btn btn-sm btn-secondary">Radial</button>
+                        <button id="hierarchicalLayout" class="btn btn-sm btn-secondary">Hierarchical</button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button id="resetGraph" class="btn btn-secondary w-full">Reset Graph</button>
+                </div>
+            </div>
+
+            <!-- Node Details -->
+            <div class="node-details">
+                <h2 class="text-xl font-semibold mb-3">Node Details</h2>
+
+                <div id="noNodeSelected" class="text-center text-gray-500 py-4">
+                    <i class="fas fa-info-circle mb-2 text-2xl"></i>
+                    <p>Click on a node to view details</p>
+                </div>
+
+                <div id="nodeDetails" class="hidden">
+                    <h3 id="nodeName" class="text-lg font-medium mb-2">Node Name</h3>
+
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-400">Type</p>
+                        <p id="nodeType" class="font-medium">Company</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-400">Connections</p>
+                        <p id="nodeConnections" class="font-medium">12</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-400">Centrality</p>
+                        <p id="nodeCentrality" class="font-medium">0.75</p>
+                    </div>
+
+                    <!-- Sustainability Metrics (for companies) -->
+                    <div id="sustainabilityMetrics" class="mb-3 hidden">
+                        <p class="text-sm text-gray-400 font-semibold">Sustainability Metrics</p>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Environmental</p>
+                                <p id="envScore" class="font-medium text-green-400">85</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Social</p>
+                                <p id="socialScore" class="font-medium text-blue-400">78</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Governance</p>
+                                <p id="govScore" class="font-medium text-purple-400">82</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">ESG Score</p>
+                                <p id="esgScore" class="font-medium text-yellow-400">81.7</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trend Metrics (for trends) -->
+                    <div id="trendMetrics" class="mb-3 hidden">
+                        <p class="text-sm text-gray-400 font-semibold">Trend Metrics</p>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Relevance</p>
+                                <p id="relevanceScore" class="font-medium text-blue-400">0.85</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Growth Rate</p>
+                                <p id="growthRate" class="font-medium text-green-400">0.32</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Maturity</p>
+                                <p id="maturityStage" class="font-medium text-yellow-400">Growing</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Category</p>
+                                <p id="trendCategory" class="font-medium text-purple-400">Environmental</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Metrics (for projects) -->
+                    <div id="projectMetrics" class="mb-3 hidden">
+                        <p class="text-sm text-gray-400 font-semibold">Project Metrics</p>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Status</p>
+                                <p id="projectStatus" class="font-medium text-blue-400">In Progress</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Budget</p>
+                                <p id="projectBudget" class="font-medium text-green-400">$1.2M</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">Carbon Impact</p>
+                                <p id="carbonImpact" class="font-medium text-green-400">-5,200 tCO2e</p>
+                            </div>
+                            <div class="bg-gray-900 rounded p-2">
+                                <p class="text-xs text-gray-400">SDG Alignment</p>
+                                <p id="sdgAlignment" class="font-medium text-yellow-400">7, 13</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Nodes -->
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-400 font-semibold">Related Nodes</p>
+                        <div id="relatedNodes" class="mt-2 max-h-32 overflow-y-auto bg-gray-900 border border-gray-700 rounded-lg p-2">
+                            <p class="text-gray-500 text-sm italic">Select a node to see relationships</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-400 font-semibold">Properties</p>
+                        <div id="nodeProperties" class="bg-gray-900 border border-gray-700 rounded-lg p-2 text-sm font-mono max-h-40 overflow-y-auto">
+                            {
+                                "id": "node1",
+                                "sector": "Technology",
+                                "sustainability_score": 0.85
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button id="focusNode" class="btn btn-primary btn-sm">Focus on Node</button>
+                        <button id="analyzeNode" class="btn btn-success btn-sm">Analyze Impact</button>
+                        <button id="addToStory" class="btn btn-info btn-sm">Add to Story</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Graph Visualization -->
+        <div class="col-lg-9">
+            <div class="card bg-gray-800 border border-gray-700 rounded-lg shadow-lg">
+                <div class="card-header bg-gray-800 border-b border-gray-700 p-4 d-flex justify-content-between align-items-center">
+                    <h2 class="text-xl font-semibold">Network Visualization</h2>
+                    <div class="flex space-x-2">
+                        <button id="zoomIn" class="btn btn-sm btn-secondary"><i class="fas fa-search-plus"></i></button>
+                        <button id="zoomOut" class="btn btn-sm btn-secondary"><i class="fas fa-search-minus"></i></button>
+                        <button id="centerGraph" class="btn btn-sm btn-secondary"><i class="fas fa-compress-arrows-alt"></i></button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="graphContainer"></div>
+                </div>
+                <div class="card-footer bg-gray-800 border-t border-gray-700 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-sm text-gray-400">
+                            <span id="nodeCount">0</span> nodes, <span id="linkCount">0</span> links
+                        </div>
+                        <div class="flex space-x-4">
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
+                                <span class="text-sm text-gray-400">Companies</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                                <span class="text-sm text-gray-400">Projects</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                                <span class="text-sm text-gray-400">Initiatives</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/graph_data.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM elements
+        const graphContainer = document.getElementById('graphContainer');
+        const nodeTypeFilter = document.getElementById('nodeTypeFilter');
+        const relationshipFilter = document.getElementById('relationshipFilter');
+        const searchNode = document.getElementById('searchNode');
+        const forceLayout = document.getElementById('forceLayout');
+        const radialLayout = document.getElementById('radialLayout');
+        const hierarchicalLayout = document.getElementById('hierarchicalLayout');
+        const resetGraph = document.getElementById('resetGraph');
+        const zoomIn = document.getElementById('zoomIn');
+        const zoomOut = document.getElementById('zoomOut');
+        const centerGraph = document.getElementById('centerGraph');
+        const nodeCount = document.getElementById('nodeCount');
+        const linkCount = document.getElementById('linkCount');
+        const noNodeSelected = document.getElementById('noNodeSelected');
+        const nodeDetails = document.getElementById('nodeDetails');
+        const nodeName = document.getElementById('nodeName');
+        const nodeType = document.getElementById('nodeType');
+        const nodeConnections = document.getElementById('nodeConnections');
+        const nodeCentrality = document.getElementById('nodeCentrality');
+        const nodeProperties = document.getElementById('nodeProperties');
+        const focusNode = document.getElementById('focusNode');
+
+        let graph = null;
+        let graphData = { nodes: [], links: [] };
+        let selectedNode = null;
+
+        // Initialize graph
+        initGraph();
+
+        // Load graph data
+        loadGraphData();
+
+        // Initialize graph
+        function initGraph() {
+            graph = ForceGraph()(graphContainer)
+                .backgroundColor('#1f2937')
+                .nodeColor(node => {
+                    if (node.type === 'company') return '#3b82f6';
+                    if (node.type === 'project') return '#10b981';
+                    if (node.type === 'initiative') return '#f59e0b';
+                    return '#9ca3af';
+                })
+                .nodeLabel(node => `${node.name} (${node.type})`)
+                .linkColor(link => {
+                    if (link.type === 'investment') return '#3b82f6';
+                    if (link.type === 'partnership') return '#10b981';
+                    if (link.type === 'supplier') return '#f59e0b';
+                    if (link.type === 'impact') return '#ef4444';
+                    return '#9ca3af';
+                })
+                .linkDirectionalArrowLength(6)
+                .linkDirectionalArrowRelPos(1)
+                .linkWidth(link => link.weight ? link.weight * 2 : 1)
+                .onNodeClick(node => {
+                    selectedNode = node;
+                    showNodeDetails(node);
+                })
+                .onBackgroundClick(() => {
+                    selectedNode = null;
+                    hideNodeDetails();
+                });
+        }
+
+        // Load graph data
+        function loadGraphData() {
+            fetch('/graph-analytics/api/network/graph-data')
+                .then(response => response.json())
+                .then(data => {
+                    graphData = data;
+                    updateGraph();
+                    updateCounts();
+                })
+                .catch(error => {
+                    console.error('Error loading graph data:', error);
+                    console.warn('Using static graph data due to API error');
+
+                    // Load static graph data from graph_data.js
+                    fetch('/static/js/graph_data.js')
+                        .then(response => response.text())
+                        .then(jsContent => {
+                            try {
+                                // Extract nodes and edges from the JS file
+                                const nodesMatch = jsContent.match(/const graphNodes = (\[[\s\S]*?\]);/);
+                                const edgesMatch = jsContent.match(/const graphEdges = (\[[\s\S]*?\]);/);
+
+                                if (nodesMatch && edgesMatch) {
+                                    const nodes = JSON.parse(nodesMatch[1]);
+                                    const links = JSON.parse(edgesMatch[1]);
+
+                                    // Format edges to match expected format
+                                    links.forEach(link => {
+                                        link.source = link.source || link.source_id;
+                                        link.target = link.target || link.target_id;
+                                        link.weight = link.strength || 1;
+                                    });
+
+                                    graphData = { nodes, links };
+                                    updateGraph();
+                                    updateCounts();
+                                } else {
+                                    throw new Error('Could not parse graph data from JS file');
+                                }
+                            } catch (e) {
+                                console.error('Error parsing static graph data:', e);
+
+                                // Fallback to hardcoded sample data
+                                graphData = {
+                                    nodes: [
+                                        { id: 'company1', name: 'GreenTech Solutions', type: 'company' },
+                                        { id: 'company2', name: 'EcoInnovate', type: 'company' },
+                                        { id: 'trend1', name: 'Carbon Neutrality', type: 'trend' },
+                                        { id: 'project1', name: 'Product Development Project', type: 'project' }
+                                    ],
+                                    links: [
+                                        { source: 'trend1', target: 'company1', type: 'influences', weight: 0.8 },
+                                        { source: 'company1', target: 'project1', type: 'owns', weight: 1.0 },
+                                        { source: 'company1', target: 'company2', type: 'partners', weight: 0.6 }
+                                    ]
+                                };
+                                updateGraph();
+                                updateCounts();
+                            }
+                        })
+                        .catch(e => {
+                            console.error('Error fetching static graph data:', e);
+                            // Fallback to empty graph
+                            graphData = { nodes: [], links: [] };
+                            updateGraph();
+                            updateCounts();
+                        });
+                });
+        }
+
+        // Update graph with filtered data
+        function updateGraph() {
+            const nodeType = nodeTypeFilter.value;
+            const relationshipType = relationshipFilter.value;
+            const searchTerm = searchNode.value.toLowerCase();
+
+            // Filter nodes
+            let filteredNodes = graphData.nodes;
+            if (nodeType !== 'all') {
+                filteredNodes = filteredNodes.filter(node => node.type === nodeType);
+            }
+            if (searchTerm) {
+                filteredNodes = filteredNodes.filter(node =>
+                    node.name.toLowerCase().includes(searchTerm) ||
+                    (node.id && node.id.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Get node IDs for filtering links
+            const nodeIds = filteredNodes.map(node => node.id);
+
+            // Filter links
+            let filteredLinks = graphData.links.filter(link =>
+                nodeIds.includes(link.source) && nodeIds.includes(link.target)
+            );
+
+            if (relationshipType !== 'all') {
+                filteredLinks = filteredLinks.filter(link => link.type === relationshipType);
+            }
+
+            // Update graph
+            graph.graphData({
+                nodes: filteredNodes,
+                links: filteredLinks
+            });
+
+            // Update counts
+            nodeCount.textContent = filteredNodes.length;
+            linkCount.textContent = filteredLinks.length;
+        }
+
+        // Show node details
+        function showNodeDetails(node) {
+            noNodeSelected.classList.add('hidden');
+            nodeDetails.classList.remove('hidden');
+
+            nodeName.textContent = node.name || node.id;
+            nodeType.textContent = node.type || 'Unknown';
+
+            // Count connections
+            const connections = graphData.links.filter(link =>
+                (typeof link.source === 'object' ? link.source.id : link.source) === node.id ||
+                (typeof link.target === 'object' ? link.target.id : link.target) === node.id
+            ).length;
+            nodeConnections.textContent = connections;
+
+            // Calculate centrality (simplified)
+            const centrality = connections / graphData.nodes.length;
+            nodeCentrality.textContent = centrality.toFixed(2);
+
+            // Hide all type-specific metrics sections
+            document.getElementById('sustainabilityMetrics').classList.add('hidden');
+            document.getElementById('trendMetrics').classList.add('hidden');
+            document.getElementById('projectMetrics').classList.add('hidden');
+
+            // Show type-specific metrics based on node type
+            if (node.type === 'company') {
+                const sustainabilityMetrics = document.getElementById('sustainabilityMetrics');
+                sustainabilityMetrics.classList.remove('hidden');
+
+                // Set sustainability metrics if available
+                if (node.sustainability_metrics) {
+                    document.getElementById('envScore').textContent =
+                        node.sustainability_metrics.environmental_score?.toFixed(1) || 'N/A';
+                    document.getElementById('socialScore').textContent =
+                        node.sustainability_metrics.social_score?.toFixed(1) || 'N/A';
+                    document.getElementById('govScore').textContent =
+                        node.sustainability_metrics.governance_score?.toFixed(1) || 'N/A';
+                    document.getElementById('esgScore').textContent =
+                        node.sustainability_metrics.esg_score?.toFixed(1) || 'N/A';
+                }
+            }
+            else if (node.type === 'trend') {
+                const trendMetrics = document.getElementById('trendMetrics');
+                trendMetrics.classList.remove('hidden');
+
+                // Set trend metrics if available
+                document.getElementById('relevanceScore').textContent =
+                    node.relevance_score?.toFixed(2) || node.relevance?.toFixed(2) || 'N/A';
+                document.getElementById('growthRate').textContent =
+                    node.growth_rate?.toFixed(2) || 'N/A';
+                document.getElementById('maturityStage').textContent =
+                    node.maturity_stage || 'N/A';
+                document.getElementById('trendCategory').textContent =
+                    node.category || 'N/A';
+            }
+            else if (node.type === 'project') {
+                const projectMetrics = document.getElementById('projectMetrics');
+                projectMetrics.classList.remove('hidden');
+
+                // Set project metrics if available
+                document.getElementById('projectStatus').textContent =
+                    node.status || 'N/A';
+                document.getElementById('projectBudget').textContent =
+                    node.budget ? '$' + (node.budget / 1000000).toFixed(1) + 'M' : 'N/A';
+
+                if (node.sustainability_metrics) {
+                    document.getElementById('carbonImpact').textContent =
+                        node.sustainability_metrics.carbon_impact ?
+                        node.sustainability_metrics.carbon_impact.toLocaleString() + ' tCO2e' : 'N/A';
+
+                    document.getElementById('sdgAlignment').textContent =
+                        node.sustainability_metrics.sdg_alignment ?
+                        node.sustainability_metrics.sdg_alignment.join(', ') : 'N/A';
+                }
+            }
+
+            // Show related nodes
+            const relatedNodesContainer = document.getElementById('relatedNodes');
+            const relatedLinks = graphData.links.filter(link =>
+                (typeof link.source === 'object' ? link.source.id : link.source) === node.id ||
+                (typeof link.target === 'object' ? link.target.id : link.target) === node.id
+            );
+
+            if (relatedLinks.length > 0) {
+                let relatedNodesHTML = '';
+
+                relatedLinks.forEach(link => {
+                    const isSource = (typeof link.source === 'object' ? link.source.id : link.source) === node.id;
+                    const relatedNodeId = isSource ?
+                        (typeof link.target === 'object' ? link.target.id : link.target) :
+                        (typeof link.source === 'object' ? link.source.id : link.source);
+
+                    const relatedNode = graphData.nodes.find(n => n.id === relatedNodeId);
+                    if (relatedNode) {
+                        const relationshipType = link.type || 'connected to';
+                        const direction = isSource ? 'to' : 'from';
+
+                        relatedNodesHTML += `
+                            <div class="text-sm mb-1 pb-1 border-b border-gray-700">
+                                <span class="text-${getTypeColor(relatedNode.type)}">${relatedNode.name || relatedNode.id}</span>
+                                <span class="text-gray-400"> (${relationshipType} ${direction})</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                relatedNodesContainer.innerHTML = relatedNodesHTML;
+            } else {
+                relatedNodesContainer.innerHTML = '<p class="text-gray-500 text-sm italic">No relationships found</p>';
+            }
+
+            // Display properties
+            const properties = { ...node };
+            delete properties.x;
+            delete properties.y;
+            delete properties.vx;
+            delete properties.vy;
+            delete properties.index;
+
+            nodeProperties.textContent = JSON.stringify(properties, null, 2);
+        }
+
+        // Helper function to get color class based on node type
+        function getTypeColor(type) {
+            switch(type) {
+                case 'company': return 'blue-400';
+                case 'trend': return 'green-400';
+                case 'project': return 'yellow-400';
+                default: return 'gray-400';
+            }
+        }
+
+        // Hide node details
+        function hideNodeDetails() {
+            noNodeSelected.classList.remove('hidden');
+            nodeDetails.classList.add('hidden');
+        }
+
+        // Update node and link counts
+        function updateCounts() {
+            nodeCount.textContent = graphData.nodes.length;
+            linkCount.textContent = graphData.links.length;
+        }
+
+        // Event listeners
+        nodeTypeFilter.addEventListener('change', updateGraph);
+        relationshipFilter.addEventListener('change', updateGraph);
+        searchNode.addEventListener('input', updateGraph);
+
+        forceLayout.addEventListener('click', function() {
+            graph.d3Force('charge').strength(-100);
+            graph.d3Force('link').distance(50);
+            graph.d3Force('center', d3.forceCenter());
+
+            forceLayout.classList.remove('btn-secondary');
+            forceLayout.classList.add('btn-primary');
+            radialLayout.classList.remove('btn-primary');
+            radialLayout.classList.add('btn-secondary');
+            hierarchicalLayout.classList.remove('btn-primary');
+            hierarchicalLayout.classList.add('btn-secondary');
+        });
+
+        radialLayout.addEventListener('click', function() {
+            // Implement radial layout
+            forceLayout.classList.remove('btn-primary');
+            forceLayout.classList.add('btn-secondary');
+            radialLayout.classList.remove('btn-secondary');
+            radialLayout.classList.add('btn-primary');
+            hierarchicalLayout.classList.remove('btn-primary');
+            hierarchicalLayout.classList.add('btn-secondary');
+        });
+
+        hierarchicalLayout.addEventListener('click', function() {
+            // Implement hierarchical layout
+            forceLayout.classList.remove('btn-primary');
+            forceLayout.classList.add('btn-secondary');
+            radialLayout.classList.remove('btn-primary');
+            radialLayout.classList.add('btn-secondary');
+            hierarchicalLayout.classList.remove('btn-secondary');
+            hierarchicalLayout.classList.add('btn-primary');
+        });
+
+        resetGraph.addEventListener('click', function() {
+            nodeTypeFilter.value = 'all';
+            relationshipFilter.value = 'all';
+            searchNode.value = '';
+            updateGraph();
+        });
+
+        zoomIn.addEventListener('click', function() {
+            const currentZoom = graph.zoom();
+            graph.zoom(currentZoom * 1.2);
+        });
+
+        zoomOut.addEventListener('click', function() {
+            const currentZoom = graph.zoom();
+            graph.zoom(currentZoom / 1.2);
+        });
+
+        centerGraph.addEventListener('click', function() {
+            graph.zoomToFit(400);
+        });
+
+        focusNode.addEventListener('click', function() {
+            if (selectedNode) {
+                const distance = 40;
+                const distRatio = 1 + distance/Math.hypot(selectedNode.x, selectedNode.y, selectedNode.z || 0);
+
+                graph.cameraPosition(
+                    { x: selectedNode.x * distRatio, y: selectedNode.y * distRatio, z: (selectedNode.z || 0) * distRatio },
+                    selectedNode,
+                    1000
+                );
+            }
+        });
+
+        // Analyze Impact button
+        document.getElementById('analyzeNode').addEventListener('click', function() {
+            if (selectedNode) {
+                // Create modal for impact analysis
+                const modalHTML = `
+                    <div id="impactAnalysisModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-white">Impact Analysis: ${selectedNode.name || selectedNode.id}</h3>
+                                <button id="closeImpactModal" class="text-gray-400 hover:text-white">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="text-lg font-semibold text-white mb-2">Strategic Impact</h4>
+                                <div class="bg-gray-900 rounded-lg p-4">
+                                    ${getStrategicImpactHTML(selectedNode)}
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="text-lg font-semibold text-white mb-2">Sustainability Impact</h4>
+                                <div class="bg-gray-900 rounded-lg p-4">
+                                    ${getSustainabilityImpactHTML(selectedNode)}
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="text-lg font-semibold text-white mb-2">Network Impact</h4>
+                                <div class="bg-gray-900 rounded-lg p-4">
+                                    ${getNetworkImpactHTML(selectedNode)}
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button id="exportAnalysisBtn" class="btn btn-primary">Export Analysis</button>
+                                <button id="addToStrategyBtn" class="btn btn-success ml-2">Add to Strategy</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add modal to the DOM
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add event listeners
+                document.getElementById('closeImpactModal').addEventListener('click', function() {
+                    document.getElementById('impactAnalysisModal').remove();
+                });
+
+                document.getElementById('exportAnalysisBtn').addEventListener('click', function() {
+                    alert('Analysis exported to PDF');
+                    // In a real implementation, this would generate a PDF with the analysis
+                });
+
+                document.getElementById('addToStrategyBtn').addEventListener('click', function() {
+                    alert('Added to strategy dashboard');
+                    // In a real implementation, this would add the node to a strategy dashboard
+                    document.getElementById('impactAnalysisModal').remove();
+                    window.location.href = '/strategy';
+                });
+            }
+        });
+
+        // Add to Story button
+        document.getElementById('addToStory').addEventListener('click', function() {
+            if (selectedNode) {
+                // Create modal for adding to story
+                const modalHTML = `
+                    <div id="addToStoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl w-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-white">Add to Story: ${selectedNode.name || selectedNode.id}</h3>
+                                <button id="closeStoryModal" class="text-gray-400 hover:text-white">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="mb-4">
+                                <label for="storyTitle" class="block text-sm font-medium text-gray-400 mb-2">Story Title</label>
+                                <input type="text" id="storyTitle" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white" placeholder="Enter story title...">
+                            </div>
+                            <div class="mb-4">
+                                <label for="storyDescription" class="block text-sm font-medium text-gray-400 mb-2">Description</label>
+                                <textarea id="storyDescription" rows="4" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white" placeholder="Enter story description..."></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-400 mb-2">Story Elements</label>
+                                <div class="bg-gray-900 border border-gray-700 rounded-lg p-3">
+                                    <div class="flex items-center mb-2">
+                                        <span class="inline-block w-3 h-3 rounded-full bg-${getTypeColor(selectedNode.type)} mr-2"></span>
+                                        <span class="text-white">${selectedNode.name || selectedNode.id}</span>
+                                    </div>
+                                    <div class="text-gray-400 text-sm">
+                                        <p>Type: ${selectedNode.type || 'Unknown'}</p>
+                                        <p>Connections: ${graphData.links.filter(link =>
+                                            (typeof link.source === 'object' ? link.source.id : link.source) === selectedNode.id ||
+                                            (typeof link.target === 'object' ? link.target.id : link.target) === selectedNode.id
+                                        ).length}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button id="cancelStoryBtn" class="btn btn-secondary">Cancel</button>
+                                <button id="createStoryBtn" class="btn btn-primary ml-2">Create Story</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add modal to the DOM
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add event listeners
+                document.getElementById('closeStoryModal').addEventListener('click', function() {
+                    document.getElementById('addToStoryModal').remove();
+                });
+
+                document.getElementById('cancelStoryBtn').addEventListener('click', function() {
+                    document.getElementById('addToStoryModal').remove();
+                });
+
+                document.getElementById('createStoryBtn').addEventListener('click', function() {
+                    const title = document.getElementById('storyTitle').value;
+                    const description = document.getElementById('storyDescription').value;
+
+                    if (!title) {
+                        alert('Please enter a story title');
+                        return;
+                    }
+
+                    alert(`Story "${title}" created successfully!`);
+                    document.getElementById('addToStoryModal').remove();
+
+                    // In a real implementation, this would create a story and redirect to the storytelling page
+                    // window.location.href = '/storytelling';
+                });
+            }
+        });
+
+        // Helper functions for impact analysis
+        function getStrategicImpactHTML(node) {
+            let html = '<div class="text-white">';
+
+            if (node.type === 'company') {
+                html += `
+                    <p class="mb-2">Strategic positioning analysis for ${node.name || node.id}:</p>
+                    <ul class="list-disc pl-5 mb-3">
+                        <li>Market position: <span class="text-blue-400">Strong</span></li>
+                        <li>Growth potential: <span class="text-green-400">High</span></li>
+                        <li>Competitive advantage: <span class="text-yellow-400">Moderate</span></li>
+                    </ul>
+                    <p>This company shows strong alignment with sustainability trends and has potential for significant impact in its sector.</p>
+                `;
+            } else if (node.type === 'trend') {
+                html += `
+                    <p class="mb-2">Strategic importance of ${node.name || node.id}:</p>
+                    <ul class="list-disc pl-5 mb-3">
+                        <li>Market relevance: <span class="text-blue-400">High</span></li>
+                        <li>Growth trajectory: <span class="text-green-400">Accelerating</span></li>
+                        <li>Investment opportunity: <span class="text-yellow-400">Significant</span></li>
+                    </ul>
+                    <p>This trend represents a key strategic opportunity with growing relevance across multiple sectors.</p>
+                `;
+            } else if (node.type === 'project') {
+                html += `
+                    <p class="mb-2">Strategic value of ${node.name || node.id}:</p>
+                    <ul class="list-disc pl-5 mb-3">
+                        <li>ROI potential: <span class="text-blue-400">Medium-High</span></li>
+                        <li>Strategic alignment: <span class="text-green-400">Strong</span></li>
+                        <li>Risk profile: <span class="text-yellow-400">Moderate</span></li>
+                    </ul>
+                    <p>This project demonstrates strong alignment with strategic objectives and has potential for significant returns.</p>
+                `;
+            } else {
+                html += '<p>No strategic impact data available for this node type.</p>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function getSustainabilityImpactHTML(node) {
+            let html = '<div class="text-white">';
+
+            if (node.type === 'company') {
+                const metrics = node.sustainability_metrics || {};
+                html += `
+                    <p class="mb-2">Sustainability impact assessment for ${node.name || node.id}:</p>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Environmental</p>
+                            <p class="text-xl font-bold text-green-400">${metrics.environmental_score?.toFixed(1) || 'N/A'}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Social</p>
+                            <p class="text-xl font-bold text-blue-400">${metrics.social_score?.toFixed(1) || 'N/A'}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Governance</p>
+                            <p class="text-xl font-bold text-purple-400">${metrics.governance_score?.toFixed(1) || 'N/A'}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Overall ESG</p>
+                            <p class="text-xl font-bold text-yellow-400">${metrics.esg_score?.toFixed(1) || 'N/A'}</p>
+                        </div>
+                    </div>
+                    <p>This company demonstrates ${metrics.esg_score > 80 ? 'excellent' : metrics.esg_score > 70 ? 'good' : 'moderate'} sustainability performance across key metrics.</p>
+                `;
+            } else if (node.type === 'trend') {
+                html += `
+                    <p class="mb-2">Sustainability relevance of ${node.name || node.id}:</p>
+                    <div class="mb-3">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-400 w-40">Environmental Impact:</span>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <span class="ml-2 text-green-400">High</span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-400 w-40">Social Impact:</span>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                            <span class="ml-2 text-blue-400">Medium</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-400 w-40">Governance Impact:</span>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <span class="ml-2 text-purple-400">Low-Medium</span>
+                        </div>
+                    </div>
+                    <p>This trend has significant implications for sustainability, particularly in environmental dimensions.</p>
+                `;
+            } else if (node.type === 'project') {
+                const metrics = node.sustainability_metrics || {};
+                html += `
+                    <p class="mb-2">Sustainability impact of ${node.name || node.id}:</p>
+                    <ul class="list-disc pl-5 mb-3">
+                        <li>Carbon impact: <span class="text-green-400">${metrics.carbon_impact ? metrics.carbon_impact.toLocaleString() + ' tCO2e' : 'N/A'}</span></li>
+                        <li>SDG alignment: <span class="text-blue-400">${metrics.sdg_alignment ? metrics.sdg_alignment.join(', ') : 'N/A'}</span></li>
+                        <li>Social benefit score: <span class="text-purple-400">${metrics.social_score?.toFixed(1) || 'N/A'}</span></li>
+                    </ul>
+                    <p>This project contributes to sustainability goals through ${metrics.carbon_impact < 0 ? 'carbon reduction' : 'resource efficiency'} and alignment with SDGs.</p>
+                `;
+            } else {
+                html += '<p>No sustainability impact data available for this node type.</p>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function getNetworkImpactHTML(node) {
+            // Count connections
+            const connections = graphData.links.filter(link =>
+                (typeof link.source === 'object' ? link.source.id : link.source) === node.id ||
+                (typeof link.target === 'object' ? link.target.id : link.target) === node.id
+            );
+
+            // Calculate centrality (simplified)
+            const centrality = connections.length / graphData.nodes.length;
+
+            // Get connected nodes
+            const connectedNodeIds = connections.map(link => {
+                const isSource = (typeof link.source === 'object' ? link.source.id : link.source) === node.id;
+                return isSource ?
+                    (typeof link.target === 'object' ? link.target.id : link.target) :
+                    (typeof link.source === 'object' ? link.source.id : link.source);
+            });
+
+            const connectedNodes = graphData.nodes.filter(n => connectedNodeIds.includes(n.id));
+
+            // Count node types
+            const connectedCompanies = connectedNodes.filter(n => n.type === 'company').length;
+            const connectedTrends = connectedNodes.filter(n => n.type === 'trend').length;
+            const connectedProjects = connectedNodes.filter(n => n.type === 'project').length;
+
+            let html = `
+                <div class="text-white">
+                    <p class="mb-2">Network position analysis for ${node.name || node.id}:</p>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Connections</p>
+                            <p class="text-xl font-bold text-blue-400">${connections.length}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Centrality</p>
+                            <p class="text-xl font-bold text-green-400">${centrality.toFixed(2)}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Network Influence</p>
+                            <p class="text-xl font-bold text-yellow-400">${centrality > 0.3 ? 'High' : centrality > 0.1 ? 'Medium' : 'Low'}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <p class="text-sm text-gray-400">Relationship Types</p>
+                            <p class="text-xl font-bold text-purple-400">${new Set(connections.map(c => c.type)).size}</p>
+                        </div>
+                    </div>
+
+                    <p class="mb-2">Connected to:</p>
+                    <div class="flex space-x-3 mb-3">
+                        <div class="bg-gray-800 p-2 rounded flex-1 text-center">
+                            <p class="text-sm text-gray-400">Companies</p>
+                            <p class="text-lg font-bold text-blue-400">${connectedCompanies}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded flex-1 text-center">
+                            <p class="text-sm text-gray-400">Trends</p>
+                            <p class="text-lg font-bold text-green-400">${connectedTrends}</p>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded flex-1 text-center">
+                            <p class="text-sm text-gray-400">Projects</p>
+                            <p class="text-lg font-bold text-yellow-400">${connectedProjects}</p>
+                        </div>
+                    </div>
+
+                    <p>This ${node.type} has a ${centrality > 0.3 ? 'significant' : centrality > 0.1 ? 'moderate' : 'limited'} position in the network, connecting with ${connections.length} other nodes across ${new Set(connections.map(c => c.type)).size} relationship types.</p>
+                </div>
+            `;
+
+            return html;
+        }
+    });
+</script>
+{% endblock %}

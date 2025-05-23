@@ -1,0 +1,465 @@
+{% extends "finbase.html" %}
+
+{% block title %}Shared Strategic Narrative - Strategy Hub - SustainaTrend™{% endblock %}
+
+{% block additional_head %}
+<!-- Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<!-- D3.js for advanced visualizations -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('strategy.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Shared Strategic Narrative</h1>
+    </div>
+
+    <!-- Loading Indicator (initially shown) -->
+    <div id="loading-indicator" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+
+    <!-- Error Message (initially hidden) -->
+    <div id="error-message" class="hidden">
+        <div class="card p-6">
+            <div class="text-red-500 text-center">
+                <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                <h2 class="text-xl font-semibold mb-2">Story Not Found</h2>
+                <p>The shared story you're looking for could not be found. It may have expired or been removed.</p>
+                <div class="mt-6">
+                    <a href="{{ url_for('strategy.strategy_storytelling') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                        Create Your Own Story
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section (initially hidden) -->
+    <div id="results-section" class="hidden">
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-book mr-2 text-green-500"></i>
+                <span id="results-title">Strategic Narrative</span>
+            </h2>
+            
+            <!-- Results Content -->
+            <div id="results-content">
+                <!-- Narrative Content -->
+                <div class="bg-gray-800 p-6 rounded-lg mb-6">
+                    <div id="narrative-content" class="text-gray-300"></div>
+                    <div id="audience-considerations" class="mt-4 text-gray-300 border-t border-gray-700 pt-4"></div>
+                </div>
+                
+                <!-- Contagious Framework Analysis -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-virus mr-2 text-purple-500"></i>
+                        Viral Potential Analysis
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Radar Chart -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Contagious Framework Scores</h4>
+                            <div class="h-80 relative">
+                                <canvas id="contagious-chart"></canvas>
+                            </div>
+                            <div class="text-sm text-gray-400 mt-2">
+                                Comparison with industry benchmarks across all six elements of the Contagious Framework.
+                            </div>
+                        </div>
+                        
+                        <!-- Viral Potential Metrics -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Viral Potential Breakdown</h4>
+                            <div id="viral-metrics" class="space-y-4"></div>
+                            <div class="mt-4 pt-4 border-t border-gray-700">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-300">Overall Viral Potential:</span>
+                                    <div class="flex items-center">
+                                        <span id="overall-score" class="text-2xl font-bold mr-2">0</span>
+                                        <span class="text-gray-400">/100</span>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2">
+                                    <div id="overall-score-bar" class="bg-purple-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benchmarking Analysis -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-2 text-blue-500"></i>
+                        Industry Benchmarking
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Benchmark Chart -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Overall Score Comparison</h4>
+                            <div class="h-80 relative">
+                                <canvas id="benchmark-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Benchmark Insights -->
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h4 class="text-md font-medium mb-3">Benchmark Insights</h4>
+                            <ul id="benchmark-insights" class="space-y-3 text-gray-300"></ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Narrative Arc Visualization -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+                        Narrative Arc Visualization
+                    </h3>
+                    
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <div class="h-80 relative">
+                            <canvas id="story-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400 mt-2">
+                        This chart visualizes how the narrative unfolds over time, showing the progression of key metrics and highlighting dramatic moments.
+                    </div>
+                </div>
+                
+                <!-- Storytelling Recommendations -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                        Storytelling Recommendations
+                    </h3>
+                    
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-300 mb-4">Based on the Contagious Framework analysis, here are recommendations to improve the viral potential of this narrative:</p>
+                        <ul id="recommendations-list" class="space-y-3 text-gray-300"></ul>
+                    </div>
+                </div>
+                
+                <!-- Create Your Own Story -->
+                <div class="card p-6 text-center">
+                    <h3 class="text-lg font-semibold mb-4">Create Your Own Strategic Narrative</h3>
+                    <p class="text-gray-300 mb-6">Want to create your own strategic narrative with viral potential analysis?</p>
+                    <a href="{{ url_for('strategy.strategy_storytelling') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors inline-block">
+                        <i class="fas fa-magic mr-1"></i> Create Story
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const storyId = '{{ story_id }}';
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const resultsSection = document.getElementById('results-section');
+        
+        // Try to load the story data from localStorage
+        try {
+            const storyData = localStorage.getItem(`story_${storyId}`);
+            
+            if (storyData) {
+                const data = JSON.parse(storyData);
+                
+                // Hide loading indicator and show results
+                loadingIndicator.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                
+                // Update results title
+                const resultsTitle = document.getElementById('results-title');
+                resultsTitle.textContent = `Strategic Narrative: ${data.strategy}`;
+                
+                // Update narrative content
+                const narrativeContent = document.getElementById('narrative-content');
+                narrativeContent.innerHTML = data.narrative.content;
+                
+                // Update audience considerations
+                const audienceConsiderations = document.getElementById('audience-considerations');
+                audienceConsiderations.innerHTML = data.narrative.audience_considerations;
+                
+                // Update viral metrics
+                const viralMetrics = document.getElementById('viral-metrics');
+                viralMetrics.innerHTML = '';
+                
+                for (const [key, value] of Object.entries(data.viral_potential.elements)) {
+                    const metricElement = document.createElement('div');
+                    metricElement.innerHTML = `
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-300">${key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            <span class="text-gray-300">${value.score}/100</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${value.score}%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">${value.description}</div>
+                    `;
+                    viralMetrics.appendChild(metricElement);
+                }
+                
+                // Update overall score
+                const overallScore = document.getElementById('overall-score');
+                const overallScoreBar = document.getElementById('overall-score-bar');
+                const score = Math.round(data.viral_potential.overall_score);
+                overallScore.textContent = score;
+                overallScoreBar.style.width = `${score}%`;
+                
+                // Update recommendations
+                const recommendationsList = document.getElementById('recommendations-list');
+                recommendationsList.innerHTML = '';
+                
+                data.recommendations.forEach(recommendation => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>${recommendation}</span>
+                    `;
+                    recommendationsList.appendChild(li);
+                });
+                
+                // Update benchmark insights
+                const benchmarkInsightsList = document.getElementById('benchmark-insights');
+                benchmarkInsightsList.innerHTML = '';
+                
+                data.benchmarks.insights.forEach(insight => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `
+                        <i class="fas fa-chart-line text-blue-500 mt-1 mr-2"></i>
+                        <span>${insight}</span>
+                    `;
+                    benchmarkInsightsList.appendChild(li);
+                });
+                
+                // Render contagious framework chart
+                renderRadarChart('contagious-chart', data.contagious_chart);
+                
+                // Render benchmark comparison chart
+                renderBarChart('benchmark-chart', {
+                    labels: ['Your Narrative', 'Sustainability', 'Finance', 'Technology', 'Top Performers'],
+                    datasets: [{
+                        label: 'Overall Viral Potential',
+                        data: [
+                            data.benchmarks.data.your_score,
+                            data.benchmarks.data.benchmarks.sustainability,
+                            data.benchmarks.data.benchmarks.finance,
+                            data.benchmarks.data.benchmarks.technology,
+                            data.benchmarks.data.benchmarks.top_performers
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                });
+                
+                // Render story chart
+                renderLineChart('story-chart', data.story_chart);
+            } else {
+                // Story not found
+                loadingIndicator.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Error loading story data:', error);
+            loadingIndicator.classList.add('hidden');
+            errorMessage.classList.remove('hidden');
+        }
+        
+        // Function to render radar chart
+        function renderRadarChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Create chart configuration
+            const chartConfig = {
+                type: 'radar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            pointLabels: {
+                                color: '#9ca3af'
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                backdropColor: 'transparent',
+                                stepSize: 20
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e5e7eb'
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // Create the chart
+            new Chart(ctx, chartConfig);
+        }
+        
+        // Function to render line chart
+        function renderLineChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Create chart configuration
+            const chartConfig = {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            };
+            
+            // Create the chart
+            new Chart(ctx, chartConfig);
+        }
+        
+        // Function to render bar chart
+        function renderBarChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Create chart configuration
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(75, 85, 99, 0.2)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // Create the chart
+            new Chart(ctx, chartConfig);
+        }
+    });
+</script>
+{% endblock %}

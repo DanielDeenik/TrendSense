@@ -1,0 +1,61 @@
+<!-- TourMode Toggle Button Component -->
+<div class="fixed top-6 right-6 z-40">
+    <button id="toggle-tour-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
+        <i class="fas fa-robot mr-2"></i>
+        <span>AI-Guided Tour</span>
+    </button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleTourBtn = document.getElementById('toggle-tour-btn');
+        if (toggleTourBtn) {
+            // Check if tour is completed and not manually enabled
+            const tourCompleted = localStorage.getItem('tourCompleted') === 'true';
+            const manuallyEnabled = localStorage.getItem('tourManuallyEnabled') === 'true';
+
+            // Hide button if tour is completed and not manually enabled
+            if (tourCompleted && !manuallyEnabled) {
+                toggleTourBtn.classList.add('hidden');
+            }
+
+            // Check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourParam = urlParams.get('tour');
+
+            // Show button if tour parameter is present
+            if (tourParam === 'true') {
+                toggleTourBtn.classList.remove('hidden');
+            }
+
+            // Add click event listener
+            toggleTourBtn.addEventListener('click', function() {
+                if (window.tourMode) {
+                    // Toggle the tour mode
+                    if (window.tourMode.isActive()) {
+                        window.tourMode.endTour();
+                        // Update button appearance to inactive state
+                        toggleTourBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        toggleTourBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        toggleTourBtn.querySelector('span').textContent = 'AI-Guided Tour';
+                        // Mark as not manually enabled
+                        localStorage.removeItem('tourManuallyEnabled');
+                    } else {
+                        // Mark as manually enabled when user clicks the button
+                        localStorage.setItem('tourManuallyEnabled', 'true');
+                        // Make sure button is visible
+                        toggleTourBtn.classList.remove('hidden');
+                        // Start tour
+                        window.tourMode.startTour();
+                        // Update button appearance to active state
+                        toggleTourBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        toggleTourBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                        toggleTourBtn.querySelector('span').textContent = 'Exit AI Tour';
+                    }
+                } else {
+                    console.error('TourMode not initialized');
+                }
+            });
+        }
+    });
+</script>
