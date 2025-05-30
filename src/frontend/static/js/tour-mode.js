@@ -4,6 +4,8 @@
  * This component provides an AI-guided tour experience using Chain of Thought (CoT)
  * reasoning instead of static prompts. It makes the tour feel more intuitive,
  * AI-native, and contextual rather than scripted.
+ *
+ * Optimized for performance with lazy-loading of UI components and improved error handling.
  */
 
 class TourMode {
@@ -18,6 +20,9 @@ class TourMode {
         this.typingTimer = null;
         this.initialized = false;
         this.toggleButton = null;
+        this.tourControlsCreated = false;
+        this.elementsInitialized = false;
+        this.debug = false; // Set to true to enable debug logging
     }
 
     /**
@@ -29,30 +34,37 @@ class TourMode {
     }
 
     /**
+     * Log debug messages if debug mode is enabled
+     * @param {string} message - The message to log
+     * @param {*} data - Optional data to log
+     */
+    log(message, data = null) {
+        if (this.debug) {
+            if (data) {
+                console.log(`[TourMode] ${message}`, data);
+            } else {
+                console.log(`[TourMode] ${message}`);
+            }
+        }
+    }
+
+    /**
      * Initialize the TourMode system
+     * Optimized to only create DOM elements when needed
      */
     init() {
         if (this.initialized) return;
 
-        // Create CoT tooltip container
-        this.cotTooltipContainer = document.createElement('div');
-        this.cotTooltipContainer.id = 'copilot-cot-tooltip';
-        this.cotTooltipContainer.className = 'fixed bottom-6 right-6 bg-gray-900 text-sm shadow-xl rounded-xl px-4 py-3 w-96 z-50 hidden';
-        document.body.appendChild(this.cotTooltipContainer);
+        this.log('Initializing TourMode');
 
-        // Create highlight overlay
-        this.highlightOverlay = document.createElement('div');
-        this.highlightOverlay.className = 'fixed inset-0 pointer-events-none z-40 hidden';
-        document.body.appendChild(this.highlightOverlay);
-
-        // Add tour controls
-        this.createTourControls();
+        // Store reference to toggle button - do this first as it's needed for visibility control
+        this.toggleButton = document.getElementById('toggle-tour-btn');
+        if (!this.toggleButton) {
+            this.log('Warning: Tour button not found in DOM');
+        }
 
         // Load tour configuration
         this.loadTourConfig();
-
-        // Store reference to toggle button
-        this.toggleButton = document.getElementById('toggle-tour-btn');
 
         // Check URL parameters for tour activation
         this.checkUrlForTourActivation();
@@ -61,6 +73,36 @@ class TourMode {
         this.checkUserCompletionStatus();
 
         this.initialized = true;
+    }
+
+    /**
+     * Initialize UI elements only when needed
+     * This lazy-loading approach improves performance
+     */
+    initializeElements() {
+        if (this.elementsInitialized) return;
+
+        this.log('Initializing UI elements');
+
+        try {
+            // Create CoT tooltip container
+            this.cotTooltipContainer = document.createElement('div');
+            this.cotTooltipContainer.id = 'copilot-cot-tooltip';
+            this.cotTooltipContainer.className = 'fixed bottom-6 right-6 bg-gray-900 text-sm shadow-xl rounded-xl px-4 py-3 w-96 z-50 hidden';
+            this.cotTooltipContainer.setAttribute('role', 'status');
+            this.cotTooltipContainer.setAttribute('aria-live', 'polite');
+            document.body.appendChild(this.cotTooltipContainer);
+
+            // Create highlight overlay
+            this.highlightOverlay = document.createElement('div');
+            this.highlightOverlay.className = 'fixed inset-0 pointer-events-none z-40 hidden';
+            this.highlightOverlay.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(this.highlightOverlay);
+
+            this.elementsInitialized = true;
+        } catch (error) {
+            console.error('Error initializing TourMode elements:', error);
+        }
     }
 
     /**
@@ -135,30 +177,55 @@ class TourMode {
 
     /**
      * Create tour control buttons
+     * Lazy-loaded only when needed
      */
     createTourControls() {
-        const tourControls = document.createElement('div');
-        tourControls.id = 'tour-controls';
-        tourControls.className = 'fixed bottom-6 left-6 flex space-x-2 z-50 hidden';
+        if (this.tourControlsCreated) return;
 
-        tourControls.innerHTML = `
-            <button id="tour-prev" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
-                <i class="fas fa-chevron-left mr-1"></i> Previous
-            </button>
-            <button id="tour-next" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
-                Next <i class="fas fa-chevron-right ml-1"></i>
-            </button>
-            <button id="tour-exit" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2">
-                <i class="fas fa-times mr-1"></i> Exit Tour
-            </button>
-        `;
+        this.log('Creating tour controls');
 
-        document.body.appendChild(tourControls);
+        try {
+            const tourControls = document.createElement('div');
+            tourControls.id = 'tour-controls';
+            tourControls.className = 'fixed bottom-6 left-6 flex space-x-2 z-50 hidden';
+            tourControls.setAttribute('role', 'navigation');
+            tourControls.setAttribute('aria-label', 'Tour navigation');
 
-        // Add event listeners
-        document.getElementById('tour-prev').addEventListener('click', () => this.prevStep());
-        document.getElementById('tour-next').addEventListener('click', () => this.nextStep());
-        document.getElementById('tour-exit').addEventListener('click', () => this.endTour());
+            tourControls.innerHTML = `
+                <button id="tour-prev" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center" aria-label="Previous step">
+                    <i class="fas fa-chevron-left mr-1"></i> Previous
+                </button>
+                <button id="tour-next" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center" aria-label="Next step">
+                    Next <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+                <button id="tour-exit" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center ml-2" aria-label="Exit tour">
+                    <i class="fas fa-times mr-1"></i> Exit Tour
+                </button>
+            `;
+
+            document.body.appendChild(tourControls);
+
+            // Add event listeners with error handling
+            const prevButton = document.getElementById('tour-prev');
+            const nextButton = document.getElementById('tour-next');
+            const exitButton = document.getElementById('tour-exit');
+
+            if (prevButton) {
+                prevButton.addEventListener('click', () => this.prevStep());
+            }
+
+            if (nextButton) {
+                nextButton.addEventListener('click', () => this.nextStep());
+            }
+
+            if (exitButton) {
+                exitButton.addEventListener('click', () => this.endTour());
+            }
+
+            this.tourControlsCreated = true;
+        } catch (error) {
+            console.error('Error creating tour controls:', error);
+        }
     }
 
     /**
@@ -184,38 +251,62 @@ class TourMode {
 
     /**
      * Start the tour
+     * Lazy-loads UI elements when needed
      */
     startTour() {
         if (!this.initialized) this.init();
         if (this.tourActive) return;
 
+        this.log('Starting tour');
+
+        // Initialize UI elements if not already done
+        this.initializeElements();
+
+        // Create tour controls if not already done
+        if (!this.tourControlsCreated) {
+            this.createTourControls();
+        }
+
         this.tourActive = true;
         this.currentStep = 0;
         this.tourSteps = this.tourConfig.steps;
 
-        // Show tour controls
-        document.getElementById('tour-controls').classList.remove('hidden');
+        try {
+            // Show tour controls
+            const tourControls = document.getElementById('tour-controls');
+            if (tourControls) {
+                tourControls.classList.remove('hidden');
+            } else {
+                this.log('Warning: Tour controls not found in DOM');
+            }
 
-        // Show tour navigation if it exists
-        const tourNav = document.querySelector('.tour-navigation');
-        if (tourNav) {
-            tourNav.classList.remove('hidden');
+            // Show tour navigation if it exists
+            const tourNav = document.querySelector('.tour-navigation');
+            if (tourNav) {
+                tourNav.classList.remove('hidden');
+            }
+
+            // Update toggle button appearance
+            if (this.toggleButton) {
+                this.toggleButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                this.toggleButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                const spanElement = this.toggleButton.querySelector('span');
+                if (spanElement) {
+                    spanElement.textContent = 'Exit AI Tour';
+                }
+            }
+
+            // Initialize help components
+            if (typeof loadHelpComponents === 'function') {
+                loadHelpComponents();
+            }
+
+            // Start first step
+            this.showStep(this.currentStep);
+        } catch (error) {
+            console.error('Error starting tour:', error);
+            this.tourActive = false;
         }
-
-        // Update toggle button appearance
-        if (this.toggleButton) {
-            this.toggleButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-            this.toggleButton.classList.add('bg-green-600', 'hover:bg-green-700');
-            this.toggleButton.querySelector('span').textContent = 'Exit AI Tour';
-        }
-
-        // Initialize help components
-        if (typeof loadHelpComponents === 'function') {
-            loadHelpComponents();
-        }
-
-        // Start first step
-        this.showStep(this.currentStep);
     }
 
     /**

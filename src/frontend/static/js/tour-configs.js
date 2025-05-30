@@ -2,27 +2,27 @@
  * Tour Configurations
  *
  * This file contains the Chain of Thought (CoT) tour configurations for different
- * sections of the TrendSense application.
+ * sections of the LensIQ application.
  */
 
 const tourConfigs = {
     // Default tour configuration
     default: {
-        name: "TrendSense Overview",
-        description: "Explore the key features of TrendSense",
+        name: "LensIQ Overview",
+        description: "Explore the key features of LensIQ",
         steps: [
             {
-                thinking: "Welcome to TrendSense! I'm your AI guide to understanding sustainability trends and investment opportunities. Let me show you around the platform.",
+                thinking: "Welcome to LensIQ! I'm your AI guide to understanding sustainability trends and investment opportunities. Let me show you around the platform.",
                 highlightSelector: null,
                 actions: []
             },
             {
-                thinking: "The navigation menu on the left provides access to all the key features of TrendSense. Let's explore what each section offers.",
+                thinking: "The navigation menu on the left provides access to all the key features of LensIQ. Let's explore what each section offers.",
                 highlightSelector: "#sidebar",
                 actions: []
             },
             {
-                thinking: "TrendSense helps you identify, analyze, and capitalize on emerging sustainability trends using advanced AI and data analytics.",
+                thinking: "LensIQ helps you identify, analyze, and capitalize on emerging sustainability trends using advanced AI and data analytics.",
                 highlightSelector: null,
                 actions: []
             }

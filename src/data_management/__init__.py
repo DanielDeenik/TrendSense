@@ -13,7 +13,7 @@ It includes:
 
 from .rag_data_manager import RAGDataManager, get_rag_data_manager
 from .data_source_connector import (
-    DataSourceConnector, JSONConnector, CSVConnector, 
+    DataSourceConnector, JSONConnector, CSVConnector,
     ExcelConnector, APIConnector, DatabaseConnector,
     get_data_source_connector
 )
@@ -28,6 +28,13 @@ from .ai_connector import (
     AIConnector, OpenAIConnector, HuggingFaceConnector,
     MockAIConnector, get_ai_connector
 )
+from .premium_data_connectors import (
+    ESGDataProvider, RefinitivESGConnector, BloombergESGConnector,
+    MSCIESGConnector, SustainalyticsConnector, get_premium_data_connector
+)
+from .data_quality_validator import (
+    DataQualityValidator, ESGDataValidator, get_data_quality_validator
+)
 
 __all__ = [
     'RAGDataManager', 'get_rag_data_manager',
@@ -40,5 +47,8 @@ __all__ = [
     'DataStorage', 'get_data_storage',
     'DataRetrieval', 'get_data_retrieval',
     'AIConnector', 'OpenAIConnector', 'HuggingFaceConnector',
-    'MockAIConnector', 'get_ai_connector'
+    'MockAIConnector', 'get_ai_connector',
+    'ESGDataProvider', 'RefinitivESGConnector', 'BloombergESGConnector',
+    'MSCIESGConnector', 'SustainalyticsConnector', 'get_premium_data_connector',
+    'DataQualityValidator', 'ESGDataValidator', 'get_data_quality_validator'
 ]

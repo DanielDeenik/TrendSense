@@ -20,73 +20,84 @@ from .data_providers import (
 )
 from .strategy_simulation import get_strategy_frameworks
 
-# Define navigation items
+# Define navigation items - aligned with registered blueprints in app.py
 NAVIGATION_ITEMS = [
     {
-        "name": "Dashboard",
+        "name": "Home",
         "url": "/",
-        "icon": "dashboard",
-        "roles": ["admin", "user", "vc"]
+        "icon": "home",
+        "roles": ["admin", "user", "vc"],
+        "description": "TrendSense Dashboard"
     },
     {
-        "name": "Analytics",
-        "url": "/analytics",
-        "icon": "analytics",
-        "roles": ["admin", "user", "vc"]
+        "name": "VC Lens",
+        "url": "/vc-lens",
+        "icon": "chart-line",
+        "roles": ["admin", "user", "vc"],
+        "description": "Private Equity Analytics"
     },
     {
-        "name": "Trends",
-        "url": "/trends",
-        "icon": "trending_up",
-        "roles": ["admin", "user", "vc"]
+        "name": "TrendSense",
+        "url": "/trendsense",
+        "icon": "brain",
+        "roles": ["admin", "user", "vc"],
+        "description": "AI-Powered Trend Analysis"
     },
     {
-        "name": "Graph",
-        "url": "/graph",
-        "icon": "share",
-        "roles": ["admin", "user", "vc"]
-    },
-    {
-        "name": "Companies",
-        "url": "/companies",
-        "icon": "business",
-        "roles": ["admin", "user", "vc"]
-    },
-    {
-        "name": "Models",
-        "url": "/models",
-        "icon": "model_training",
-        "roles": ["admin", "user"]
-    },
-    {
-        "name": "Insights",
-        "url": "/insights",
-        "icon": "lightbulb",
-        "roles": ["admin", "user", "vc"]
-    },
-    {
-        "name": "Profile",
-        "url": "/profile",
-        "icon": "person",
-        "roles": ["admin", "user", "vc"]
-    },
-    {
-        "name": "Settings",
-        "url": "/settings",
-        "icon": "settings",
-        "roles": ["admin", "user", "vc"]
+        "name": "TrendRadar",
+        "url": "/trendradar",
+        "icon": "radar",
+        "roles": ["admin", "user", "vc"],
+        "description": "Real-time Trend Monitoring"
     },
     {
         "name": "Strategy",
         "url": "/strategy",
-        "icon": "strategy",
-        "roles": ["user", "admin"]
+        "icon": "chess",
+        "roles": ["admin", "user", "vc"],
+        "description": "Strategic Planning Hub"
     },
     {
-        "name": "Real Estate",
-        "url": "/real-estate",
-        "icon": "home",
-        "roles": ["user", "admin"]
+        "name": "Data Management",
+        "url": "/data-management",
+        "icon": "database",
+        "roles": ["admin", "user"],
+        "description": "Data Storage & Retrieval"
+    },
+    {
+        "name": "Lookthrough",
+        "url": "/lookthrough",
+        "icon": "search",
+        "roles": ["admin", "user", "vc"],
+        "description": "Portfolio Analysis"
+    },
+    {
+        "name": "Graph Analytics",
+        "url": "/graph-analytics",
+        "icon": "project-diagram",
+        "roles": ["admin", "user", "vc"],
+        "description": "Network Analysis"
+    },
+    {
+        "name": "Lifecycle",
+        "url": "/lifecycle",
+        "icon": "recycle",
+        "roles": ["admin", "user", "vc"],
+        "description": "Investment Lifecycle"
+    },
+    {
+        "name": "Copilot",
+        "url": "/copilot",
+        "icon": "robot",
+        "roles": ["admin", "user", "vc"],
+        "description": "AI Assistant"
+    },
+    {
+        "name": "API",
+        "url": "/api",
+        "icon": "code",
+        "roles": ["admin"],
+        "description": "API Documentation"
     }
 ]
 

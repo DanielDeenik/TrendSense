@@ -1,5 +1,5 @@
 """
-TrendSense™ Intelligence Platform
+LensIQ™ Intelligence Platform
 
 A comprehensive platform for sustainability trend analysis and investment intelligence.
 """
@@ -66,10 +66,10 @@ except ImportError:
     vc_lens_bp = Blueprint('vc_lens', __name__)
 
 try:
-    from src.frontend.routes.trendsense import trendsense_bp
+    from src.frontend.routes.lensiq import lensiq_bp
 except ImportError:
     from flask import Blueprint
-    trendsense_bp = Blueprint('trendsense', __name__)
+    lensiq_bp = Blueprint('lensiq', __name__)
 
 try:
     from src.frontend.routes.trendradar import trendradar_bp
@@ -99,7 +99,7 @@ except ImportError:
             'navigation': [
                 {'name': 'Home', 'url': '/', 'icon': 'fas fa-home'},
                 {'name': 'VC Lens', 'url': '/vc-lens/', 'icon': 'fas fa-chart-line'},
-                {'name': 'TrendSense', 'url': '/trendsense/', 'icon': 'fas fa-brain'},
+                {'name': 'LensIQ', 'url': '/lensiq/', 'icon': 'fas fa-brain'},
                 {'name': 'TrendRadar', 'url': '/trendradar/', 'icon': 'fas fa-radar'},
                 {'name': 'Strategy', 'url': '/strategy/', 'icon': 'fas fa-chess'},
                 {'name': 'Data Management', 'url': '/data-management/', 'icon': 'fas fa-database'},
@@ -125,7 +125,7 @@ def create_app():
                 static_folder=static_dir)
 
     # Configure app
-    app.secret_key = os.getenv('SECRET_KEY', 'trendsense-secret-key')
+    app.secret_key = os.getenv('SECRET_KEY', 'lensiq-secret-key')
     app.config['DEBUG'] = os.getenv('DEBUG', 'True').lower() == 'true'
 
     return app
@@ -195,7 +195,7 @@ blueprints_to_register = [
     (lookthrough_bp, '/lookthrough', 'Lookthrough'),
     (graph_analytics_bp, '/graph-analytics', 'Graph Analytics'),
     (vc_lens_bp, '/vc-lens', 'VC Lens'),
-    (trendsense_bp, '/trendsense', 'TrendSense'),
+    (lensiq_bp, '/lensiq', 'LensIQ'),
     (trendradar_bp, '/trendradar', 'TrendRadar'),
     (lifecycle_bp, '/lifecycle', 'Lifecycle'),
     (copilot_bp, '/copilot', 'Copilot')
@@ -314,5 +314,5 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5050))  # Changed default port to 5050
     debug = os.getenv('DEBUG', 'True').lower() == 'true'
 
-    logger.info(f"Starting TrendSense on {host}:{port} (debug={debug})")
+    logger.info(f"Starting LensIQ on {host}:{port} (debug={debug})")
     app.run(host=host, port=port, debug=debug)

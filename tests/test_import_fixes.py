@@ -70,13 +70,13 @@ class TestImportFixes(unittest.TestCase):
         except ImportError as e:
             self.fail(f"Failed to import VC Lens routes: {e}")
 
-    def test_trendsense_routes_import(self):
-        """Test that TrendSense routes can be imported."""
+    def test_lensiq_routes_import(self):
+        """Test that LensIQ routes can be imported."""
         try:
-            from src.frontend.routes.trendsense import trendsense_bp
-            self.assertIsNotNone(trendsense_bp)
+            from src.frontend.routes.lensiq import lensiq_bp
+            self.assertIsNotNone(lensiq_bp)
         except ImportError as e:
-            self.fail(f"Failed to import TrendSense routes: {e}")
+            self.fail(f"Failed to import LensIQ routes: {e}")
 
     def test_trendradar_routes_import(self):
         """Test that TrendRadar routes can be imported."""
@@ -130,7 +130,7 @@ class TestImportFixes(unittest.TestCase):
             from src.data_management.rag_data_manager import get_rag_data_manager
             from src.data_management.data_storage import get_data_storage
             from src.data_management.data_retrieval import get_data_retrieval
-            
+
             # These should not raise exceptions
             ai_connector = get_ai_connector()
             self.assertIsNotNone(ai_connector)
@@ -142,20 +142,20 @@ class TestImportFixes(unittest.TestCase):
         try:
             from app import create_app
             app = create_app()
-            
+
             # Check that blueprints are registered
             blueprint_names = list(app.blueprints.keys())
-            
+
             expected_blueprints = [
                 'api', 'strategy', 'data_management', 'lookthrough',
-                'graph_analytics', 'vc_lens', 'trendsense', 'trendradar',
+                'graph_analytics', 'vc_lens', 'lensiq', 'trendradar',
                 'lifecycle', 'copilot'
             ]
-            
+
             for blueprint_name in expected_blueprints:
                 self.assertIn(blueprint_name, blueprint_names,
                             f"Blueprint '{blueprint_name}' not registered")
-                
+
         except Exception as e:
             self.fail(f"Failed to register blueprints: {e}")
 
@@ -165,20 +165,20 @@ class TestImportFixes(unittest.TestCase):
             from app import create_app
             app = create_app()
             app.config['TESTING'] = True
-            
+
             with app.test_client() as client:
                 # Test health check
                 response = client.get('/api/health')
                 self.assertEqual(response.status_code, 200)
-                
+
                 # Test home page
                 response = client.get('/')
                 self.assertIn(response.status_code, [200, 500])  # Allow 500 for template issues
-                
+
                 # Test debug navigation
                 response = client.get('/debug/navigation')
                 self.assertEqual(response.status_code, 200)
-                
+
         except Exception as e:
             self.fail(f"App routes functionality test failed: {e}")
 
@@ -192,17 +192,17 @@ class TestImportFixes(unittest.TestCase):
             import src.frontend.routes.lookthrough_routes
             import src.frontend.routes.graph_analytics
             import src.frontend.routes.vc_lens
-            import src.frontend.routes.trendsense
+            import src.frontend.routes.lensiq
             import src.frontend.routes.trendradar
             import src.frontend.routes.lifecycle
             import src.frontend.routes.copilot
             import src.frontend.utils.context_processors
             import src.database.adapters
             import src.data_management.ai_connector
-            
+
             # If we get here, no circular imports
             self.assertTrue(True)
-            
+
         except ImportError as e:
             if "circular import" in str(e).lower():
                 self.fail(f"Circular import detected: {e}")
@@ -216,5 +216,5 @@ if __name__ == '__main__':
         'DATABASE_ADAPTER': 'mock_firebase',
         'TESTING': 'True'
     })
-    
+
     unittest.main(verbosity=2)

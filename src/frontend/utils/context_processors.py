@@ -12,84 +12,80 @@ logger = logging.getLogger(__name__)
 def navigation_processor():
     """
     Provide navigation data to all templates.
-    
+
     Returns:
         dict: Dictionary containing navigation data
     """
     try:
-        navigation_items = [
+        # Import navigation items from navigation_config.py for consistency
+        from .navigation_config import NAVIGATION_ITEMS
+
+        # Format navigation items for templates
+        navigation_items = []
+        for item in NAVIGATION_ITEMS:
+            nav_item = {
+                'name': item['name'],
+                'url': item['url'],
+                'icon': f"fas fa-{item['icon']}",
+                'description': item.get('description', ''),
+                'roles': item.get('roles', [])
+            }
+            navigation_items.append(nav_item)
+
+        # Create categories for the sidebar
+        categories = [
             {
-                'name': 'Home',
-                'url': '/',
-                'icon': 'fas fa-home',
-                'description': 'TrendSense Dashboard'
+                'id': 'main',
+                'name': 'Main Navigation'
             },
             {
-                'name': 'VC Lens',
-                'url': '/vc-lens/',
-                'icon': 'fas fa-chart-line',
-                'description': 'Private Equity Analytics'
+                'id': 'analytics',
+                'name': 'Analytics'
             },
             {
-                'name': 'TrendSense',
-                'url': '/trendsense/',
-                'icon': 'fas fa-brain',
-                'description': 'AI-Powered Trend Analysis'
+                'id': 'management',
+                'name': 'Management'
             },
             {
-                'name': 'TrendRadar',
-                'url': '/trendradar/',
-                'icon': 'fas fa-radar',
-                'description': 'Real-time Trend Monitoring'
-            },
-            {
-                'name': 'Strategy',
-                'url': '/strategy/',
-                'icon': 'fas fa-chess',
-                'description': 'Strategic Planning Hub'
-            },
-            {
-                'name': 'Data Management',
-                'url': '/data-management/',
-                'icon': 'fas fa-database',
-                'description': 'Data Storage & Retrieval'
-            },
-            {
-                'name': 'Lookthrough',
-                'url': '/lookthrough/',
-                'icon': 'fas fa-search',
-                'description': 'Portfolio Analysis'
-            },
-            {
-                'name': 'Graph Analytics',
-                'url': '/graph-analytics/',
-                'icon': 'fas fa-project-diagram',
-                'description': 'Network Analysis'
-            },
-            {
-                'name': 'Lifecycle',
-                'url': '/lifecycle/',
-                'icon': 'fas fa-recycle',
-                'description': 'Investment Lifecycle'
-            },
-            {
-                'name': 'Copilot',
-                'url': '/copilot/',
-                'icon': 'fas fa-robot',
-                'description': 'AI Assistant'
+                'id': 'tools',
+                'name': 'Tools'
             }
         ]
-        
+
+        # Assign categories to items
+        for item in navigation_items:
+            if item['name'] in ['Home', 'VC Lens', 'TrendSense', 'TrendRadar']:
+                item['category'] = 'main'
+            elif item['name'] in ['Graph Analytics', 'Lookthrough', 'Lifecycle']:
+                item['category'] = 'analytics'
+            elif item['name'] in ['Data Management', 'Strategy']:
+                item['category'] = 'management'
+            else:
+                item['category'] = 'tools'
+
         return {
-            'navigation': navigation_items,
+            'navigation': {
+                'items': navigation_items,
+                'categories': categories,
+                'structure': {
+                    'main': {'items': [i for i in navigation_items if i.get('category') == 'main']},
+                    'analytics': {'items': [i for i in navigation_items if i.get('category') == 'analytics']},
+                    'management': {'items': [i for i in navigation_items if i.get('category') == 'management']},
+                    'tools': {'items': [i for i in navigation_items if i.get('category') == 'tools']}
+                }
+            },
             'app_name': 'TrendSense',
             'app_version': '1.0.0'
         }
-        
+
     except Exception as e:
         logger.error(f"Error in navigation processor: {str(e)}")
         return {
-            'navigation': [],
+            'navigation': {
+                'items': [],
+                'categories': [],
+                'structure': {}
+            },
             'app_name': 'TrendSense',
             'app_version': '1.0.0'
         }
@@ -97,7 +93,7 @@ def navigation_processor():
 def user_processor():
     """
     Provide user data to all templates.
-    
+
     Returns:
         dict: Dictionary containing user data
     """
@@ -123,7 +119,7 @@ def user_processor():
 def theme_processor():
     """
     Provide theme data to all templates.
-    
+
     Returns:
         dict: Dictionary containing theme data
     """
@@ -152,14 +148,14 @@ def theme_processor():
 def debug_processor():
     """
     Provide debug information to templates (only in debug mode).
-    
+
     Returns:
         dict: Dictionary containing debug data
     """
     try:
         import os
         debug_mode = os.environ.get('FLASK_ENV') == 'development'
-        
+
         if debug_mode:
             return {
                 'debug': {
@@ -170,7 +166,7 @@ def debug_processor():
             }
         else:
             return {'debug': {'enabled': False}}
-            
+
     except Exception as e:
         logger.error(f"Error in debug processor: {str(e)}")
         return {'debug': {'enabled': False}}
@@ -179,21 +175,21 @@ def debug_processor():
 def get_global_context():
     """
     Get all global context data for templates.
-    
+
     Returns:
         dict: Combined context data from all processors
     """
     try:
         context = {}
-        
+
         # Combine all context processors
         context.update(navigation_processor())
         context.update(user_processor())
         context.update(theme_processor())
         context.update(debug_processor())
-        
+
         return context
-        
+
     except Exception as e:
         logger.error(f"Error getting global context: {str(e)}")
         return {

@@ -13,6 +13,15 @@ import networkx as nx
 import pandas as pd
 from networkx.readwrite import json_graph
 
+# Import advanced analytics
+try:
+    from src.analytics.advanced_scoring import get_advanced_esg_scorer
+    from src.regulatory.compliance_engine import get_compliance_engine
+except ImportError:
+    # Fallback for development
+    get_advanced_esg_scorer = None
+    get_compliance_engine = None
+
 # Set up logging
 logger = logging.getLogger(__name__)
 
@@ -20,7 +29,7 @@ class VentureSignalGraph:
     """
     A service for analyzing venture signals, social trends, and life cycle impacts.
     """
-    
+
     def __init__(self):
         """Initialize the Venture Signal Graph service."""
         self.graph = nx.DiGraph()
@@ -28,12 +37,28 @@ class VentureSignalGraph:
         self.trends = {}
         self.relationships = []
         self.lca_data = {}
-    
-    def load_data(self, companies: List[Dict], trends: List[Dict], 
+
+        # Initialize advanced analytics
+        self.esg_scorer = None
+        self.compliance_engine = None
+
+        if get_advanced_esg_scorer:
+            try:
+                self.esg_scorer = get_advanced_esg_scorer()
+            except Exception as e:
+                logger.warning(f"Failed to initialize ESG scorer: {str(e)}")
+
+        if get_compliance_engine:
+            try:
+                self.compliance_engine = get_compliance_engine()
+            except Exception as e:
+                logger.warning(f"Failed to initialize compliance engine: {str(e)}")
+
+    def load_data(self, companies: List[Dict], trends: List[Dict],
                  relationships: List[Dict], lca_data: Optional[Dict] = None) -> None:
         """
         Load data into the graph.
-        
+
         Args:
             companies: List of company dictionaries with metadata
             trends: List of social trend dictionaries
@@ -44,26 +69,26 @@ class VentureSignalGraph:
         self.trends = {trend['id']: trend for trend in trends}
         self.relationships = relationships
         self.lca_data = lca_data or {}
-        
+
         # Build the graph
         self._build_graph()
-        
+
         logger.info(f"Loaded {len(self.companies)} companies, {len(self.trends)} trends, "
                    f"and {len(self.relationships)} relationships into the graph.")
-    
+
     def _build_graph(self) -> None:
         """Build the NetworkX graph from the loaded data."""
         # Clear existing graph
         self.graph.clear()
-        
+
         # Add company nodes
         for company_id, company in self.companies.items():
-            self.graph.add_node(company_id, 
+            self.graph.add_node(company_id,
                                type='company',
                                name=company.get('name', ''),
                                sector=company.get('sector', ''),
                                **{k: v for k, v in company.items() if k not in ['id', 'name', 'sector']})
-        
+
         # Add trend nodes
         for trend_id, trend in self.trends.items():
             self.graph.add_node(trend_id,
@@ -71,137 +96,137 @@ class VentureSignalGraph:
                                name=trend.get('name', ''),
                                category=trend.get('category', ''),
                                **{k: v for k, v in trend.items() if k not in ['id', 'name', 'category']})
-        
+
         # Add relationship edges
         for rel in self.relationships:
             source_id = rel.get('source')
             target_id = rel.get('target')
             rel_type = rel.get('type')
-            
+
             if not (source_id and target_id and rel_type):
                 logger.warning(f"Skipping relationship with missing data: {rel}")
                 continue
-                
+
             if source_id not in self.graph or target_id not in self.graph:
                 logger.warning(f"Skipping relationship with unknown node: {rel}")
                 continue
-            
-            self.graph.add_edge(source_id, target_id, 
+
+            self.graph.add_edge(source_id, target_id,
                                type=rel_type,
                                **{k: v for k, v in rel.items() if k not in ['source', 'target', 'type']})
-    
+
     def get_graph_data(self) -> Dict:
         """
         Get the graph data in a format suitable for visualization.
-        
+
         Returns:
             Dictionary with nodes and links for visualization
         """
         return json_graph.node_link_data(self.graph)
-    
+
     def analyze_social_signals(self) -> Dict[str, Dict]:
         """
         Analyze social signal strengths for each company.
-        
+
         Returns:
             Dictionary mapping company IDs to their social signal analysis
         """
         results = {}
-        
+
         for company_id, company in self.companies.items():
             # Get incoming edges from trends
             trend_edges = [
                 (u, v, d) for u, v, d in self.graph.in_edges(company_id, data=True)
                 if self.graph.nodes[u]['type'] == 'trend'
             ]
-            
+
             # Calculate signal strength based on number and weight of trend connections
             signal_strength = "Low"
             if len(trend_edges) >= 5:
                 signal_strength = "High"
             elif len(trend_edges) >= 2:
                 signal_strength = "Medium"
-            
+
             # Extract influencers from company data
             influencers = company.get('influencers', [])
-            
+
             # Extract sentiment from company data or calculate from relationships
             sentiment = company.get('sentiment', 'Neutral')
-            
+
             results[company_id] = {
                 'signal_strength': signal_strength,
                 'key_influencers': influencers,
                 'trending_sentiment': sentiment,
                 'connected_trends': [self.trends[u]['name'] for u, _, _ in trend_edges]
             }
-        
+
         return results
-    
+
     def analyze_life_cycle_impacts(self) -> Dict[str, Dict]:
         """
         Analyze life cycle impacts for each company.
-        
+
         Returns:
             Dictionary mapping company IDs to their life cycle impact analysis
         """
         results = {}
-        
+
         for company_id, company in self.companies.items():
             # Get LCA data for this company
             lca = self.lca_data.get(company_id, {})
-            
+
             # Determine carbon footprint
             carbon_footprint = lca.get('carbon_footprint', 'Medium')
-            
+
             # Determine resource efficiency
             resource_efficiency = lca.get('resource_efficiency', 'Moderate')
-            
+
             # Determine circularity potential
             circularity_potential = lca.get('circularity_potential', 'Medium')
-            
+
             # Determine compliance readiness
             compliance_readiness = []
             if lca.get('csrd_ready', False):
                 compliance_readiness.append('CSRD')
             if lca.get('sfdr_ready', False):
                 compliance_readiness.append('SFDR')
-            
+
             compliance_str = ', '.join(compliance_readiness) if compliance_readiness else 'None'
-            
+
             results[company_id] = {
                 'carbon_footprint': carbon_footprint,
                 'resource_efficiency': resource_efficiency,
                 'circularity_potential': circularity_potential,
                 'compliance_readiness': compliance_str
             }
-        
+
         return results
-    
+
     def generate_investor_summaries(self) -> Dict[str, Dict]:
         """
         Generate investor summaries for each company.
-        
+
         Returns:
             Dictionary mapping company IDs to their investor summaries
         """
         social_signals = self.analyze_social_signals()
         life_cycle_impacts = self.analyze_life_cycle_impacts()
-        
+
         results = {}
-        
+
         for company_id, company in self.companies.items():
             signals = social_signals.get(company_id, {})
             impacts = life_cycle_impacts.get(company_id, {})
-            
+
             # Determine trend fit
             trend_fit = signals.get('connected_trends', [])
-            
+
             # Determine investor attractiveness based on signals and impacts
             attractiveness = self._calculate_attractiveness(signals, impacts)
-            
+
             # Determine recommended action
             recommended_action = self._determine_recommended_action(attractiveness)
-            
+
             results[company_id] = {
                 'name': company.get('name', ''),
                 'trend_fit': trend_fit,
@@ -212,17 +237,69 @@ class VentureSignalGraph:
                 'investor_attractiveness': attractiveness,
                 'recommended_action': recommended_action
             }
-        
+
         return results
-    
-    def _calculate_attractiveness(self, signals: Dict, impacts: Dict) -> str:
+
+    def _calculate_attractiveness(self, signals: Dict, impacts: Dict, company_data: Dict = None) -> str:
         """
-        Calculate investor attractiveness based on signals and impacts.
-        
+        Calculate investor attractiveness using advanced ESG scoring.
+
         Args:
             signals: Social signal analysis for a company
             impacts: Life cycle impact analysis for a company
-            
+            company_data: Full company data for advanced analysis
+
+        Returns:
+            String describing investor attractiveness
+        """
+        # Use advanced ESG scoring if available
+        if self.esg_scorer and company_data:
+            try:
+                esg_results = self.esg_scorer.calculate_esg_score(company_data)
+                composite_score = esg_results.get('composite', {}).get('score', 50)
+                confidence = esg_results.get('composite', {}).get('confidence', 50)
+
+                # Factor in social signals
+                signal_multiplier = {
+                    'High': 1.2,
+                    'Medium': 1.0,
+                    'Low': 0.8
+                }.get(signals.get('signal_strength', 'Low'), 1.0)
+
+                # Factor in sentiment
+                sentiment_multiplier = {
+                    'Positive': 1.1,
+                    'Neutral': 1.0,
+                    'Negative': 0.9
+                }.get(signals.get('trending_sentiment', 'Neutral'), 1.0)
+
+                # Calculate adjusted score
+                adjusted_score = composite_score * signal_multiplier * sentiment_multiplier
+
+                # Generate sophisticated attractiveness description
+                if adjusted_score >= 80 and confidence >= 80:
+                    return f"Exceptional ESG performance (score: {adjusted_score:.1f}) with strong market signals and high data confidence. Prime investment candidate."
+                elif adjusted_score >= 70 and confidence >= 70:
+                    return f"Strong ESG fundamentals (score: {adjusted_score:.1f}) with positive market momentum. Recommended for investment consideration."
+                elif adjusted_score >= 60:
+                    return f"Moderate ESG performance (score: {adjusted_score:.1f}) with mixed signals. Requires deeper due diligence."
+                else:
+                    return f"Below-average ESG performance (score: {adjusted_score:.1f}). Significant improvement needed for investment readiness."
+
+            except Exception as e:
+                logger.warning(f"Advanced ESG scoring failed: {str(e)}, falling back to basic scoring")
+
+        # Fallback to basic scoring
+        return self._calculate_basic_attractiveness(signals, impacts)
+
+    def _calculate_basic_attractiveness(self, signals: Dict, impacts: Dict) -> str:
+        """
+        Fallback basic attractiveness calculation.
+
+        Args:
+            signals: Social signal analysis for a company
+            impacts: Life cycle impact analysis for a company
+
         Returns:
             String describing investor attractiveness
         """
@@ -232,31 +309,31 @@ class VentureSignalGraph:
             'Medium': 2,
             'Low': 1
         }.get(signals.get('signal_strength', 'Low'), 1)
-        
+
         # Score sentiment
         sentiment_score = {
             'Positive': 3,
             'Neutral': 2,
             'Negative': 1
         }.get(signals.get('trending_sentiment', 'Neutral'), 2)
-        
+
         # Score carbon footprint (inverse - lower is better)
         carbon_score = {
             'Low': 3,
             'Medium': 2,
             'High': 1
         }.get(impacts.get('carbon_footprint', 'Medium'), 2)
-        
+
         # Score circularity potential
         circularity_score = {
             'High': 3,
             'Medium': 2,
             'Low': 1
         }.get(impacts.get('circularity_potential', 'Medium'), 2)
-        
+
         # Calculate total score
         total_score = signal_score + sentiment_score + carbon_score + circularity_score
-        
+
         # Determine attractiveness based on total score
         if total_score >= 10:
             return "Strong early-stage signal, aligned with sustainability trends, leading positive sentiment."
@@ -264,14 +341,14 @@ class VentureSignalGraph:
             return "Moderate potential, some alignment with sustainability trends, mixed signals."
         else:
             return "Limited current signals, may require further development or pivoting."
-    
+
     def _determine_recommended_action(self, attractiveness: str) -> str:
         """
         Determine recommended action based on attractiveness.
-        
+
         Args:
             attractiveness: Investor attractiveness description
-            
+
         Returns:
             Recommended action string
         """
@@ -281,11 +358,11 @@ class VentureSignalGraph:
             return "Monitor Closely"
         else:
             return "Low Priority"
-    
+
     def get_prompt_template(self) -> str:
         """
         Get the GPT-4.1 prompt template for Venture Signal Graph analysis.
-        
+
         Returns:
             String containing the prompt template
         """

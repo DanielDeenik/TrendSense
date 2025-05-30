@@ -16,7 +16,7 @@ TrendSense™ is a web-based platform that provides tools and insights for susta
 ## Project Structure
 
 ```
-TrendSense/
+DataVista/
 ├── app.py                  # Main application entry point
 ├── data/                   # Data files
 ├── firebase/               # Firebase configuration
