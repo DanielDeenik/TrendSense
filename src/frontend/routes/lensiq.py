@@ -14,16 +14,16 @@ logger = logging.getLogger(__name__)
 
 class LensIQRoute(BaseRoute):
     """LensIQ route handler for storytelling functionality."""
-    
+
     def __init__(self):
         """Initialize the LensIQ route."""
         super().__init__(name='lensiq')
         self.blueprint = Blueprint('lensiq', __name__)
         self.register_routes()
-        
+
     def register_routes(self):
         """Register all routes for the LensIQ blueprint."""
-        
+
         @self.blueprint.route('/')
         @self.handle_errors
         def index():
@@ -32,7 +32,7 @@ class LensIQRoute(BaseRoute):
             if not database_service.is_connected():
                 logger.info("Connecting to database...")
                 database_service.connect()
-            
+
             # Initialize collections if they don't exist
             database_service.initialize_collections([
                 'stories',
@@ -40,19 +40,19 @@ class LensIQRoute(BaseRoute):
                 'trends',
                 'narratives'
             ])
-            
+
             # Get data from database
             stories = self._get_stories()
             insights = self._get_insights()
             trends = self._get_trending_data()
-            
+
             # Check database connection
             database_available = database_service.is_connected()
-            
+
             logger.info(f"Retrieved {len(stories)} stories from database")
             logger.info(f"Retrieved {len(insights)} insights from database")
             logger.info(f"Retrieved {len(trends)} trends from database")
-            
+
             context = {
                 'active_nav': 'lensiq',
                 'page_title': "LensIQ - AI-Powered Sustainability Storytelling",
@@ -61,92 +61,125 @@ class LensIQRoute(BaseRoute):
                 'trends': trends,
                 'database_available': database_available
             }
-            
+
             return self.render_template('lensiq/storytelling.html', **context)
-        
+
         @self.blueprint.route('/storytelling')
         @self.handle_errors
         def storytelling():
             """LensIQ Storytelling - Main storytelling interface"""
             stories = self._get_stories()
-            
+
             context = {
                 'active_nav': 'lensiq',
                 'sub_nav': 'storytelling',
                 'page_title': "LensIQ - Sustainability Storytelling",
                 'stories': stories
             }
-            
+
             return self.render_template('lensiq/storytelling.html', **context)
-        
+
         @self.blueprint.route('/insights')
         @self.handle_errors
         def insights():
             """LensIQ Insights - AI-generated insights"""
             insights = self._get_insights()
-            
+
             context = {
                 'active_nav': 'lensiq',
                 'sub_nav': 'insights',
                 'page_title': "LensIQ - AI Insights",
                 'insights': insights
             }
-            
+
             return self.render_template('lensiq/insights.html', **context)
-        
+
         @self.blueprint.route('/narratives')
         @self.handle_errors
         def narratives():
             """LensIQ Narratives - Trend narratives"""
             narratives = self._get_narratives()
-            
+
             context = {
                 'active_nav': 'lensiq',
                 'sub_nav': 'narratives',
                 'page_title': "LensIQ - Trend Narratives",
                 'narratives': narratives
             }
-            
+
             return self.render_template('lensiq/narratives.html', **context)
-        
+
         @self.blueprint.route('/api/stories')
         @self.handle_errors
         def api_stories():
             """API endpoint for stories data"""
             stories = self._get_stories()
             return self.json_response(stories)
-        
+
         @self.blueprint.route('/api/insights')
         @self.handle_errors
         def api_insights():
             """API endpoint for insights data"""
             insights = self._get_insights()
             return self.json_response(insights)
-        
+
         @self.blueprint.route('/api/generate-story', methods=['POST'])
         @self.handle_errors
         def api_generate_story():
             """API endpoint to generate a new story"""
             data = request.json or {}
             topic = data.get('topic', 'sustainability trends')
-            
+
             # Generate story using AI (placeholder implementation)
             story = self._generate_story(topic)
-            
+
             # Save to database
             story_id = database_service.insert('stories', story)
             story['_id'] = story_id
-            
+
             return self.json_response(story)
-    
+
+        @self.blueprint.route('/narrative-builder')
+        @self.handle_errors
+        def narrative_builder():
+            """Redirect to Narrative Builder"""
+            return redirect(url_for('narrative_builder.index'))
+
+        @self.blueprint.route('/data-collection')
+        @self.handle_errors
+        def data_collection():
+            """Data collection interface for narrative building"""
+            context = {
+                'active_nav': 'lensiq',
+                'sub_nav': 'data_collection',
+                'page_title': 'LensIQ - Data Collection for Storytelling'
+            }
+
+            return self.render_template('lensiq/data_collection.html', **context)
+
+        @self.blueprint.route('/trend-analysis')
+        @self.handle_errors
+        def trend_analysis():
+            """Trend analysis interface"""
+            trends = self._get_trending_data()
+
+            context = {
+                'active_nav': 'lensiq',
+                'sub_nav': 'trend_analysis',
+                'page_title': 'LensIQ - Trend Analysis',
+                'trends': trends
+            }
+
+            return self.render_template('lensiq/trend_analysis.html', **context)
+
     def _get_stories(self) -> List[Dict]:
         """Get stories data from database."""
         stories = database_service.find(
-            'stories', 
+            'stories',
             sort=[('created_at', -1)],
             limit=10
         )
-        
+
         # If no data in database, insert sample data
         if not stories:
             logger.info("No stories found in database, inserting sample data...")
@@ -209,17 +242,17 @@ class LensIQRoute(BaseRoute):
             ]
             database_service.insert_many('stories', sample_stories)
             stories = sample_stories
-            
+
         return stories
-    
+
     def _get_insights(self) -> List[Dict]:
         """Get insights data from database."""
         insights = database_service.find(
-            'insights', 
+            'insights',
             sort=[('relevance_score', -1)],
             limit=10
         )
-        
+
         # If no data in database, insert sample data
         if not insights:
             logger.info("No insights found in database, inserting sample data...")
@@ -277,17 +310,17 @@ class LensIQRoute(BaseRoute):
             ]
             database_service.insert_many('insights', sample_insights)
             insights = sample_insights
-            
+
         return insights
-    
+
     def _get_narratives(self) -> List[Dict]:
         """Get narratives data from database."""
         narratives = database_service.find(
-            'narratives', 
+            'narratives',
             sort=[('impact_score', -1)],
             limit=10
         )
-        
+
         # If no data in database, insert sample data
         if not narratives:
             logger.info("No narratives found in database, inserting sample data...")
@@ -340,17 +373,17 @@ class LensIQRoute(BaseRoute):
             ]
             database_service.insert_many('narratives', sample_narratives)
             narratives = sample_narratives
-            
+
         return narratives
-    
+
     def _get_trending_data(self) -> List[Dict]:
         """Get trending data for storytelling context."""
         trends = database_service.find(
-            'trends', 
+            'trends',
             sort=[('score', -1)],
             limit=5
         )
-        
+
         # If no data, return sample trends
         if not trends:
             trends = [
@@ -360,9 +393,9 @@ class LensIQRoute(BaseRoute):
                 {"category": "Carbon Credits", "score": 83, "growth": 42},
                 {"category": "Biodegradable Packaging", "score": 80, "growth": 28}
             ]
-            
+
         return trends
-    
+
     def _generate_story(self, topic: str) -> Dict:
         """Generate a new story based on topic (placeholder implementation)."""
         return {

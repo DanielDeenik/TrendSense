@@ -57,6 +57,14 @@ except ImportError:
     trendradar_bp = Blueprint('trendradar', __name__)
     logger.warning("TrendRadar blueprint import failed, using fallback")
 
+# Narrative Builder (part of LensIQ storytelling)
+try:
+    from src.frontend.routes.narrative_builder_routes import narrative_builder_bp
+except ImportError:
+    from flask import Blueprint
+    narrative_builder_bp = Blueprint('narrative_builder', __name__)
+    logger.warning("Narrative Builder blueprint import failed, using fallback")
+
 # Import context processors with error handling
 try:
     from src.frontend.utils.context_processors import navigation_processor
@@ -171,7 +179,8 @@ blueprints_to_register = [
     (api_bp, '/api', 'API'),
     (lensiq_bp, '/storytelling', 'Storytelling (LensIQ)'),
     (strategy_bp, '/strategy', 'Strategy'),
-    (trendradar_bp, '/trends', 'Trends (TrendRadar)')
+    (trendradar_bp, '/trends', 'Trends (TrendRadar)'),
+    (narrative_builder_bp, '/narrative-builder', 'Narrative Builder')
 ]
 
 for blueprint, url_prefix, name in blueprints_to_register:
