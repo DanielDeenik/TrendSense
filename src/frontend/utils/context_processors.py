@@ -194,7 +194,7 @@ def get_global_context():
         logger.error(f"Error getting global context: {str(e)}")
         return {
             'navigation': [],
-            'app_name': 'TrendSense',
+            'app_name': 'LensIQ',
             'app_version': '1.0.0',
             'user': {'name': 'Guest', 'authenticated': False},
             'theme': {'name': 'light'},

@@ -1,17 +1,20 @@
 """
 LensIQ™ Intelligence Platform
 
-A comprehensive platform for sustainability trend analysis and investment intelligence.
+A streamlined platform for sustainability trend analysis with three main routes:
+- Storytelling (LensIQ)
+- Strategy
+- Trends (TrendRadar)
 """
 
 import os
 import sys
 import logging
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, url_for
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Changed to DEBUG for more detailed logs
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)
@@ -19,95 +22,56 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Set Flask's logger to DEBUG as well
-logging.getLogger('flask').setLevel(logging.DEBUG)
-logging.getLogger('werkzeug').setLevel(logging.DEBUG)
-
-# Import blueprints with error handling
+# Import main blueprints with error handling
 try:
     from src.frontend.routes.api import api_bp
 except ImportError:
-    # Create a minimal API blueprint if import fails
     from flask import Blueprint, jsonify
     api_bp = Blueprint('api', __name__)
 
     @api_bp.route('/health')
     def health_check():
-        return jsonify({'status': 'ok', 'message': 'Fallback API'})
+        return jsonify({'status': 'ok', 'message': 'LensIQ API'})
 
-try:
-    from src.frontend.routes.strategy_direct_flask import bp as strategy_bp
-except ImportError:
-    from flask import Blueprint
-    strategy_bp = Blueprint('strategy', __name__)
-
-try:
-    from src.frontend.routes.data_management_routes import data_management_bp
-except ImportError:
-    from flask import Blueprint
-    data_management_bp = Blueprint('data_management', __name__)
-
-try:
-    from src.frontend.routes.lookthrough_routes import lookthrough_bp
-except ImportError:
-    from flask import Blueprint
-    lookthrough_bp = Blueprint('lookthrough', __name__)
-
-try:
-    from src.frontend.routes.graph_analytics import graph_analytics_bp
-except ImportError:
-    from flask import Blueprint
-    graph_analytics_bp = Blueprint('graph_analytics', __name__)
-
-try:
-    from src.frontend.routes.vc_lens import vc_lens_bp
-except ImportError:
-    from flask import Blueprint
-    vc_lens_bp = Blueprint('vc_lens', __name__)
-
+# Main route: Storytelling (LensIQ)
 try:
     from src.frontend.routes.lensiq import lensiq_bp
 except ImportError:
     from flask import Blueprint
     lensiq_bp = Blueprint('lensiq', __name__)
+    logger.warning("LensIQ blueprint import failed, using fallback")
 
+# Main route: Strategy
+try:
+    from src.frontend.routes.strategy_direct_flask import bp as strategy_bp
+except ImportError:
+    from flask import Blueprint
+    strategy_bp = Blueprint('strategy', __name__)
+    logger.warning("Strategy blueprint import failed, using fallback")
+
+# Main route: Trends (TrendRadar)
 try:
     from src.frontend.routes.trendradar import trendradar_bp
 except ImportError:
     from flask import Blueprint
     trendradar_bp = Blueprint('trendradar', __name__)
-
-try:
-    from src.frontend.routes.lifecycle import lifecycle_bp
-except ImportError:
-    from flask import Blueprint
-    lifecycle_bp = Blueprint('lifecycle', __name__)
-
-try:
-    from src.frontend.routes.copilot import copilot_bp
-except ImportError:
-    from flask import Blueprint
-    copilot_bp = Blueprint('copilot', __name__)
+    logger.warning("TrendRadar blueprint import failed, using fallback")
 
 # Import context processors with error handling
 try:
     from src.frontend.utils.context_processors import navigation_processor
 except ImportError:
-    # Create a minimal navigation processor if import fails
+    # Create a streamlined navigation processor for the three main routes
     def navigation_processor():
         return {
             'navigation': [
-                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home'},
-                {'name': 'VC Lens', 'url': '/vc-lens/', 'icon': 'fas fa-chart-line'},
-                {'name': 'LensIQ', 'url': '/lensiq/', 'icon': 'fas fa-brain'},
-                {'name': 'TrendRadar', 'url': '/trendradar/', 'icon': 'fas fa-radar'},
-                {'name': 'Strategy', 'url': '/strategy/', 'icon': 'fas fa-chess'},
-                {'name': 'Data Management', 'url': '/data-management/', 'icon': 'fas fa-database'},
-                {'name': 'Lookthrough', 'url': '/lookthrough/', 'icon': 'fas fa-search'},
-                {'name': 'Graph Analytics', 'url': '/graph-analytics/', 'icon': 'fas fa-project-diagram'},
-                {'name': 'Lifecycle', 'url': '/lifecycle/', 'icon': 'fas fa-recycle'},
-                {'name': 'Copilot', 'url': '/copilot/', 'icon': 'fas fa-robot'}
-            ]
+                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home', 'category': 'main'},
+                {'name': 'Storytelling', 'url': '/storytelling/', 'icon': 'fas fa-book-open', 'category': 'main'},
+                {'name': 'Strategy', 'url': '/strategy/', 'icon': 'fas fa-chess', 'category': 'main'},
+                {'name': 'Trends', 'url': '/trends/', 'icon': 'fas fa-chart-line', 'category': 'main'}
+            ],
+            'app_name': 'LensIQ',
+            'app_version': '1.0.0'
         }
 
 def create_app():
@@ -187,18 +151,27 @@ def debug_navigation():
             'error': str(e)
         }), 500
 
-# Register blueprints with standardized URL prefixes (no trailing slashes)
+# Add main route mappings
+@app.route('/storytelling/')
+@app.route('/storytelling')
+def storytelling():
+    """Redirect to LensIQ storytelling."""
+    return redirect(url_for('lensiq.index'))
+
+
+@app.route('/trends/')
+@app.route('/trends')
+def trends():
+    """Redirect to TrendRadar."""
+    return redirect(url_for('trendradar.index'))
+
+
+# Register streamlined blueprints
 blueprints_to_register = [
     (api_bp, '/api', 'API'),
+    (lensiq_bp, '/storytelling', 'Storytelling (LensIQ)'),
     (strategy_bp, '/strategy', 'Strategy'),
-    (data_management_bp, '/data-management', 'Data Management'),
-    (lookthrough_bp, '/lookthrough', 'Lookthrough'),
-    (graph_analytics_bp, '/graph-analytics', 'Graph Analytics'),
-    (vc_lens_bp, '/vc-lens', 'VC Lens'),
-    (lensiq_bp, '/lensiq', 'LensIQ'),
-    (trendradar_bp, '/trendradar', 'TrendRadar'),
-    (lifecycle_bp, '/lifecycle', 'Lifecycle'),
-    (copilot_bp, '/copilot', 'Copilot')
+    (trendradar_bp, '/trends', 'Trends (TrendRadar)')
 ]
 
 for blueprint, url_prefix, name in blueprints_to_register:
@@ -280,16 +253,6 @@ def server_error(error):
             # Last resort fallback
             return f"<h1>Error 500</h1><p>Internal server error: {str(error)}</p>", 500
 
-def create_app(config=None):
-    """Create and configure the Flask application."""
-    if config:
-        app.config.update(config)
-
-    # Set testing mode if environment variable is set
-    if os.environ.get('TESTING') == 'True':
-        app.config['TESTING'] = True
-
-    return app
 
 if __name__ == '__main__':
     # Initialize database if needed
