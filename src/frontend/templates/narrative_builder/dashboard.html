@@ -1,0 +1,139 @@
+{% extends "finbase.html" %}
+
+{% block title %}LensIQ Narrative Builder - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">LensIQ Narrative Builder</h1>
+            <p class="text-gray-400">Create compelling stories from data for investors, clients, and staff</p>
+        </div>
+        <a href="{{ url_for('narrative_builder.create_narrative') }}" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>Create New Narrative
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gray-800 rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-500 bg-opacity-20">
+                    <i class="fas fa-book text-blue-400 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-400 text-sm">Total Narratives</p>
+                    <p class="text-2xl font-bold text-white">{{ stats.total_narratives or 0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
+                    <i class="fas fa-chart-line text-green-400 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-400 text-sm">Quality Score</p>
+                    <p class="text-2xl font-bold text-white">{{ "%.0f"|format((stats.average_quality_score or 0) * 100) }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-500 bg-opacity-20">
+                    <i class="fas fa-calendar text-purple-400 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-400 text-sm">This Month</p>
+                    <p class="text-2xl font-bold text-white">{{ stats.narratives_this_month or 0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-orange-500 bg-opacity-20">
+                    <i class="fas fa-database text-orange-400 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-400 text-sm">Data Sources</p>
+                    <p class="text-2xl font-bold text-white">{{ database_available and "Connected" or "Offline" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Narratives -->
+    <div class="bg-gray-800 rounded-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-white">Recent Narratives</h2>
+            <a href="{{ url_for('narrative_builder.list_narratives') }}" class="text-blue-400 hover:text-blue-300">
+                View All <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+
+        {% if recent_narratives %}
+        <div class="space-y-4">
+            {% for narrative in recent_narratives %}
+            <div class="border border-gray-700 rounded-lg p-4 hover:border-gray-600 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-white font-medium mb-1">{{ narrative.narrative_id }}</h3>
+                        <p class="text-gray-400 text-sm mb-2">
+                            {{ narrative.executive_summary.overview if narrative.executive_summary else "Narrative generated successfully" }}
+                        </p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span><i class="fas fa-calendar mr-1"></i>{{ narrative.generation_timestamp[:10] if narrative.generation_timestamp else "Unknown" }}</span>
+                            <span><i class="fas fa-star mr-1"></i>{{ "%.0f"|format((narrative.metadata.story_quality_score or 0) * 100) }}% Quality</span>
+                            <span><i class="fas fa-lightbulb mr-1"></i>{{ narrative.metadata.total_insights or 0 }} Insights</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ url_for('narrative_builder.view_narrative', narrative_id=narrative.narrative_id) }}" 
+                           class="btn-secondary btn-sm">
+                            <i class="fas fa-eye mr-1"></i>View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="fas fa-book text-gray-600 text-4xl mb-4"></i>
+            <p class="text-gray-400 mb-4">No narratives created yet</p>
+            <a href="{{ url_for('narrative_builder.create_narrative') }}" class="btn-primary">
+                Create Your First Narrative
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Top Themes -->
+    {% if stats.top_themes %}
+    <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold text-white mb-6">Top Narrative Themes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% for theme in stats.top_themes %}
+            <div class="bg-gray-700 rounded-lg p-4 text-center">
+                <i class="fas fa-tag text-blue-400 text-2xl mb-2"></i>
+                <p class="text-white font-medium">{{ theme.replace('_', ' ').title() }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any dashboard-specific JavaScript here
+    console.log('LensIQ Narrative Builder Dashboard loaded');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "finbase.html" %}
+
+{% block title %}Create Narrative - LensIQ Narrative Builder{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('narrative_builder.index') }}" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Create New Narrative</h1>
+            <p class="text-gray-400">Generate compelling stories from your data</p>
+        </div>
+    </div>
+
+    <!-- Create Form -->
+    <div class="bg-gray-800 rounded-lg p-6">
+        <form id="narrative-form" class="space-y-6">
+            <!-- Company Information -->
+            <div>
+                <label for="company-id" class="block text-sm font-medium text-gray-300 mb-2">
+                    Company ID (Optional)
+                </label>
+                <input type="text" 
+                       id="company-id" 
+                       name="company_id" 
+                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Enter company identifier for targeted analysis">
+            </div>
+
+            <!-- Audience Focus -->
+            <div>
+                <label for="audience-focus" class="block text-sm font-medium text-gray-300 mb-2">
+                    Primary Audience
+                </label>
+                <select id="audience-focus" 
+                        name="audience_focus" 
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all">All Audiences</option>
+                    <option value="investors">Investors</option>
+                    <option value="clients">Clients</option>
+                    <option value="staff">Staff</option>
+                </select>
+                <p class="text-gray-500 text-sm mt-1">Choose the primary audience for this narrative</p>
+            </div>
+
+            <!-- Custom Context -->
+            <div>
+                <label for="custom-context" class="block text-sm font-medium text-gray-300 mb-2">
+                    Additional Context (Optional)
+                </label>
+                <textarea id="custom-context" 
+                          name="custom_context" 
+                          rows="4"
+                          class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Provide any additional context, specific themes, or requirements for the narrative..."></textarea>
+            </div>
+
+            <!-- Data Collection Options -->
+            <div class="border border-gray-700 rounded-lg p-4">
+                <h3 class="text-lg font-medium text-white mb-4">Data Collection Settings</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_financial" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Financial Data</span>
+                        </label>
+                        <p class="text-gray-500 text-sm ml-6">Revenue, profitability, sustainability ROI</p>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_market" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Market Intelligence</span>
+                        </label>
+                        <p class="text-gray-500 text-sm ml-6">Industry trends, competitive positioning</p>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_sustainability" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Sustainability Metrics</span>
+                        </label>
+                        <p class="text-gray-500 text-sm ml-6">ESG scores, environmental impact</p>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_sentiment" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Sentiment Analysis</span>
+                        </label>
+                        <p class="text-gray-500 text-sm ml-6">News, social media, industry reports</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generation Options -->
+            <div class="border border-gray-700 rounded-lg p-4">
+                <h3 class="text-lg font-medium text-white mb-4">Narrative Options</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_metrics" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Include Key Metrics</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_recommendations" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Generate Recommendations</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="include_next_steps" 
+                                   checked 
+                                   class="mr-2 text-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-300">Suggest Next Steps</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <a href="{{ url_for('narrative_builder.index') }}" class="btn-secondary">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </a>
+                <button type="submit" id="generate-btn" class="btn-primary">
+                    <i class="fas fa-magic mr-2"></i>Generate Narrative
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progress-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <h3 class="text-lg font-medium text-white mb-2">Generating Narrative</h3>
+                <p class="text-gray-400 mb-4">Collecting data and analyzing trends...</p>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div id="progress-bar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" class="text-sm text-gray-500 mt-2">Starting...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('narrative-form');
+    const generateBtn = document.getElementById('generate-btn');
+    const progressModal = document.getElementById('progress-modal');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Show progress modal
+        progressModal.classList.remove('hidden');
+        progressModal.classList.add('flex');
+        
+        // Simulate progress
+        const progressSteps = [
+            { percent: 20, text: 'Collecting structured data...' },
+            { percent: 40, text: 'Analyzing unstructured data...' },
+            { percent: 60, text: 'Identifying trends and patterns...' },
+            { percent: 80, text: 'Generating audience-specific stories...' },
+            { percent: 100, text: 'Finalizing narrative...' }
+        ];
+
+        for (let i = 0; i < progressSteps.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            progressBar.style.width = progressSteps[i].percent + '%';
+            progressText.textContent = progressSteps[i].text;
+        }
+
+        // Collect form data
+        const formData = new FormData(form);
+        const data = {
+            company_id: formData.get('company_id'),
+            audience_focus: formData.get('audience_focus'),
+            custom_context: formData.get('custom_context') ? JSON.parse('{"context": "' + formData.get('custom_context') + '"}') : {}
+        };
+
+        try {
+            const response = await fetch('{{ url_for("narrative_builder.generate_narrative") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Redirect to view narrative
+                window.location.href = '{{ url_for("narrative_builder.view_narrative", narrative_id="") }}' + result.narrative_id;
+            } else {
+                throw new Error(result.error || 'Failed to generate narrative');
+            }
+        } catch (error) {
+            console.error('Error generating narrative:', error);
+            alert('Error generating narrative: ' + error.message);
+            progressModal.classList.add('hidden');
+            progressModal.classList.remove('flex');
+        }
+    });
+});
+</script>
+{% endblock %}

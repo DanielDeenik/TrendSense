@@ -41,23 +41,7 @@ except ImportError:
     lensiq_bp = Blueprint('lensiq', __name__)
     logger.warning("LensIQ blueprint import failed, using fallback")
 
-# Main route: Strategy
-try:
-    from src.frontend.routes.strategy_direct_flask import bp as strategy_bp
-except ImportError:
-    from flask import Blueprint
-    strategy_bp = Blueprint('strategy', __name__)
-    logger.warning("Strategy blueprint import failed, using fallback")
-
-# Main route: Trends (TrendRadar)
-try:
-    from src.frontend.routes.trendradar import trendradar_bp
-except ImportError:
-    from flask import Blueprint
-    trendradar_bp = Blueprint('trendradar', __name__)
-    logger.warning("TrendRadar blueprint import failed, using fallback")
-
-# Narrative Builder (part of LensIQ storytelling)
+# Narrative Builder (core functionality)
 try:
     from src.frontend.routes.narrative_builder_routes import narrative_builder_bp
 except ImportError:
@@ -73,10 +57,9 @@ except ImportError:
     def navigation_processor():
         return {
             'navigation': [
-                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home', 'category': 'main'},
-                {'name': 'Storytelling', 'url': '/storytelling/', 'icon': 'fas fa-book-open', 'category': 'main'},
-                {'name': 'Strategy', 'url': '/strategy/', 'icon': 'fas fa-chess', 'category': 'main'},
-                {'name': 'Trends', 'url': '/trends/', 'icon': 'fas fa-chart-line', 'category': 'main'}
+                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home'},
+                {'name': 'Storytelling', 'url': '/storytelling/', 'icon': 'fas fa-book-open'},
+                {'name': 'Narrative Builder', 'url': '/narrative-builder/', 'icon': 'fas fa-magic'}
             ],
             'app_name': 'LensIQ',
             'app_version': '1.0.0'
@@ -167,19 +150,10 @@ def storytelling():
     return redirect(url_for('lensiq.index'))
 
 
-@app.route('/trends/')
-@app.route('/trends')
-def trends():
-    """Redirect to TrendRadar."""
-    return redirect(url_for('trendradar.index'))
-
-
-# Register streamlined blueprints
+# Register core blueprints for narrative builder
 blueprints_to_register = [
     (api_bp, '/api', 'API'),
     (lensiq_bp, '/storytelling', 'Storytelling (LensIQ)'),
-    (strategy_bp, '/strategy', 'Strategy'),
-    (trendradar_bp, '/trends', 'Trends (TrendRadar)'),
     (narrative_builder_bp, '/narrative-builder', 'Narrative Builder')
 ]
 

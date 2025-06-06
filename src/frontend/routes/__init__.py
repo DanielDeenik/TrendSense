@@ -1,34 +1,28 @@
 """
-Routes package for LensIQ application.
+Routes package for LensIQ Narrative Builder.
 
-This package contains all route definitions for the streamlined application.
+This package contains core route definitions for the narrative builder functionality.
 """
 
-# Import main route modules
+# Import core route modules
 try:
     from .lensiq import lensiq_bp
 except ImportError:
     lensiq_bp = None
 
 try:
-    from .strategy_direct_flask import bp as strategy_bp
+    from .narrative_builder_routes import narrative_builder_bp
 except ImportError:
-    strategy_bp = None
-
-try:
-    from .trendradar import trendradar_bp
-except ImportError:
-    trendradar_bp = None
+    narrative_builder_bp = None
 
 try:
     from .api import api_bp
 except ImportError:
     api_bp = None
 
-# Export main blueprints
+# Export core blueprints
 __all__ = [
     'lensiq_bp',
-    'strategy_bp',
-    'trendradar_bp',
+    'narrative_builder_bp',
     'api_bp'
 ]

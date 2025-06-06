@@ -145,33 +145,6 @@ class LensIQRoute(BaseRoute):
             """Redirect to Narrative Builder"""
             return redirect(url_for('narrative_builder.index'))
 
-        @self.blueprint.route('/data-collection')
-        @self.handle_errors
-        def data_collection():
-            """Data collection interface for narrative building"""
-            context = {
-                'active_nav': 'lensiq',
-                'sub_nav': 'data_collection',
-                'page_title': 'LensIQ - Data Collection for Storytelling'
-            }
-
-            return self.render_template('lensiq/data_collection.html', **context)
-
-        @self.blueprint.route('/trend-analysis')
-        @self.handle_errors
-        def trend_analysis():
-            """Trend analysis interface"""
-            trends = self._get_trending_data()
-
-            context = {
-                'active_nav': 'lensiq',
-                'sub_nav': 'trend_analysis',
-                'page_title': 'LensIQ - Trend Analysis',
-                'trends': trends
-            }
-
-            return self.render_template('lensiq/trend_analysis.html', **context)
-
     def _get_stories(self) -> List[Dict]:
         """Get stories data from database."""
         stories = database_service.find(
