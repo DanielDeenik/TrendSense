@@ -14,8 +14,8 @@
                 <a href="/" class="btn-primary px-6 py-2 rounded-lg">
                     Go Home
                 </a>
-                <a href="/vc-lens" class="btn-secondary px-6 py-2 rounded-lg">
-                    VC Lens Dashboard
+                <a href="{{ url_for('lensiq.index') }}" class="btn-secondary px-6 py-2 rounded-lg">
+                    Storytelling
                 </a>
             </div>
         </div>
@@ -38,21 +38,21 @@
             <div class="mt-6">
                 <h3 class="text-md font-medium mb-3">Popular Pages</h3>
                 <div class="grid grid-cols-2 gap-2">
-                    <a href="/vc-lens" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
-                        <i class="fas fa-search-dollar text-blue-500 mb-1"></i>
-                        <div class="text-sm">VC Lens</div>
+                    <a href="{{ url_for('lensiq.index') }}" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-book-open text-blue-500 mb-1"></i>
+                        <div class="text-sm">Storytelling</div>
                     </a>
-                    <a href="/vc-lens/trendsense" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
-                        <i class="fas fa-chart-line text-green-500 mb-1"></i>
-                        <div class="text-sm">TrendSense</div>
+                    <a href="{{ url_for('strategy_fallback') }}" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-chess text-green-500 mb-1"></i>
+                        <div class="text-sm">Strategy</div>
                     </a>
-                    <a href="/dashboard" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
-                        <i class="fas fa-tachometer-alt text-purple-500 mb-1"></i>
-                        <div class="text-sm">Dashboard</div>
+                    <a href="{{ url_for('data_management_fallback') }}" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-database text-purple-500 mb-1"></i>
+                        <div class="text-sm">Data Management</div>
                     </a>
-                    <a href="/copilot" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
-                        <i class="fas fa-robot text-yellow-500 mb-1"></i>
-                        <div class="text-sm">AI Copilot</div>
+                    <a href="{{ url_for('api.health_check') }}" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg text-center transition-colors">
+                        <i class="fas fa-code text-yellow-500 mb-1"></i>
+                        <div class="text-sm">API</div>
                     </a>
                 </div>
             </div>

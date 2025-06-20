@@ -23,18 +23,18 @@ _pinecone_index = None
 def connect_to_ai_services() -> Dict[str, bool]:
     """
     Connect to AI services.
-    
+
     Returns:
         Dict with connection status for each service
     """
     global _openai_client, _gemini_client, _pinecone_client, _pinecone_index
-    
+
     services_status = {
         "openai": False,
         "gemini": False,
         "pinecone": False
     }
-    
+
     # Initialize OpenAI
     try:
         api_key = os.getenv('OPENAI_API_KEY')
@@ -46,7 +46,7 @@ def connect_to_ai_services() -> Dict[str, bool]:
             logger.warning("OpenAI API key not found in environment variables")
     except Exception as e:
         logger.error(f"Error initializing OpenAI: {str(e)}")
-    
+
     # Initialize Gemini
     try:
         api_key = os.getenv('GEMINI_API_KEY')
@@ -59,13 +59,13 @@ def connect_to_ai_services() -> Dict[str, bool]:
             logger.warning("Gemini API key not found in environment variables")
     except Exception as e:
         logger.error(f"Error initializing Gemini: {str(e)}")
-    
+
     # Initialize Pinecone
     try:
         api_key = os.getenv('PINECONE_API_KEY')
         if api_key:
             _pinecone_client = Pinecone(api_key=api_key)
-            index_name = os.getenv('PINECONE_INDEX', 'sustainatrend')
+            index_name = os.getenv('PINECONE_INDEX_NAME', 'lensiq-vectors')
             _pinecone_index = _pinecone_client.Index(index_name)
             services_status["pinecone"] = True
             logger.info("Pinecone client initialized successfully")
@@ -73,13 +73,13 @@ def connect_to_ai_services() -> Dict[str, bool]:
             logger.warning("Pinecone API key not found in environment variables")
     except Exception as e:
         logger.error(f"Error initializing Pinecone: {str(e)}")
-    
+
     return services_status
 
 def get_openai_client() -> Optional[OpenAI]:
     """
     Get OpenAI client.
-    
+
     Returns:
         OpenAI client or None if not initialized
     """
@@ -99,7 +99,7 @@ def get_openai_client() -> Optional[OpenAI]:
 def get_generative_ai() -> Optional[Any]:
     """
     Get Gemini client.
-    
+
     Returns:
         Gemini client or None if not initialized
     """
@@ -120,7 +120,7 @@ def get_generative_ai() -> Optional[Any]:
 def get_rag_system() -> Optional[Index]:
     """
     Get Pinecone RAG system.
-    
+
     Returns:
         Pinecone index or None if not initialized
     """
@@ -130,7 +130,7 @@ def get_rag_system() -> Optional[Index]:
             api_key = os.getenv('PINECONE_API_KEY')
             if api_key:
                 _pinecone_client = Pinecone(api_key=api_key)
-                index_name = os.getenv('PINECONE_INDEX', 'sustainatrend')
+                index_name = os.getenv('PINECONE_INDEX_NAME', 'lensiq-vectors')
                 _pinecone_index = _pinecone_client.Index(index_name)
                 logger.info("Pinecone index initialized successfully")
             else:
@@ -142,7 +142,7 @@ def get_rag_system() -> Optional[Index]:
 def is_pinecone_available() -> bool:
     """
     Check if Pinecone is available.
-    
+
     Returns:
         True if Pinecone is available, False otherwise
     """
@@ -151,17 +151,17 @@ def is_pinecone_available() -> bool:
 def generate_embedding(text: str) -> List[float]:
     """
     Generate embeddings for text using OpenAI.
-    
+
     Args:
         text: Text to generate embeddings for
-        
+
     Returns:
         List of embedding values or empty list if error
     """
     client = get_openai_client()
     if not client:
         return []
-    
+
     try:
         response = client.embeddings.create(
             model="text-embedding-ada-002",

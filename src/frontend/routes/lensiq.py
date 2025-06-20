@@ -64,20 +64,7 @@ class LensIQRoute(BaseRoute):
 
             return self.render_template('lensiq/storytelling.html', **context)
 
-        @self.blueprint.route('/storytelling')
-        @self.handle_errors
-        def storytelling():
-            """LensIQ Storytelling - Main storytelling interface"""
-            stories = self._get_stories()
 
-            context = {
-                'active_nav': 'lensiq',
-                'sub_nav': 'storytelling',
-                'page_title': "LensIQ - Sustainability Storytelling",
-                'stories': stories
-            }
-
-            return self.render_template('lensiq/storytelling.html', **context)
 
         @self.blueprint.route('/insights')
         @self.handle_errors

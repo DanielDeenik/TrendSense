@@ -41,9 +41,27 @@ except ImportError:
     lensiq_bp = Blueprint('lensiq', __name__)
     logger.warning("LensIQ blueprint import failed, using fallback")
 
-# Narrative Builder (core functionality)
+# Main route: Strategy
 try:
-    from src.frontend.routes.narrative_builder_routes import narrative_builder_bp
+    from src.frontend.routes.strategy_direct_flask import bp as strategy_bp
+except ImportError:
+    from flask import Blueprint
+    strategy_bp = Blueprint('strategy', __name__)
+    logger.warning("Strategy blueprint import failed, using fallback")
+
+# Main route: Trends (TrendRadar)
+try:
+    from src.frontend.routes.trendradar import trendradar_bp
+except ImportError:
+    from flask import Blueprint
+    trendradar_bp = Blueprint('trendradar', __name__)
+    logger.warning("TrendRadar blueprint import failed, using fallback")
+
+# Narrative Builder
+try:
+    from src.frontend.routes.narrative_builder_routes import NarrativeBuilderRoute
+    narrative_builder_route = NarrativeBuilderRoute()
+    narrative_builder_bp = narrative_builder_route.blueprint
 except ImportError:
     from flask import Blueprint
     narrative_builder_bp = Blueprint('narrative_builder', __name__)
@@ -57,9 +75,10 @@ except ImportError:
     def navigation_processor():
         return {
             'navigation': [
-                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home'},
-                {'name': 'Storytelling', 'url': '/storytelling/', 'icon': 'fas fa-book-open'},
-                {'name': 'Narrative Builder', 'url': '/narrative-builder/', 'icon': 'fas fa-magic'}
+                {'name': 'Home', 'url': '/', 'icon': 'fas fa-home', 'category': 'main'},
+                {'name': 'Storytelling', 'url': '/storytelling/', 'icon': 'fas fa-book-open', 'category': 'main'},
+                {'name': 'Strategy', 'url': '/strategy/', 'icon': 'fas fa-chess', 'category': 'main'},
+                {'name': 'Trends', 'url': '/trends/', 'icon': 'fas fa-chart-line', 'category': 'main'}
             ],
             'app_name': 'LensIQ',
             'app_version': '1.0.0'
@@ -99,7 +118,7 @@ def index():
         logger.info("Rendering home page")
         # The navigation_processor is already registered as a context processor,
         # so we don't need to pass it explicitly to the template
-        return render_template('fin_home.html', active_nav='home')
+        return render_template('index.html', active_nav='home')
     except Exception as e:
         logger.error(f"Error rendering home page: {str(e)}")
         try:
@@ -142,19 +161,42 @@ def debug_navigation():
             'error': str(e)
         }), 500
 
-# Add main route mappings
-@app.route('/storytelling/')
-@app.route('/storytelling')
-def storytelling():
-    """Redirect to LensIQ storytelling."""
-    return redirect(url_for('lensiq.index'))
+
+# Fallback routes for missing blueprints
+@app.route('/strategy')
+@app.route('/strategy/')
+def strategy_fallback():
+    """Fallback route for strategy when blueprint fails to load."""
+    return render_template('index.html',
+                         page_title="Strategy - Coming Soon",
+                         active_nav='strategy')
 
 
-# Register core blueprints for narrative builder
+@app.route('/trends')
+@app.route('/trends/')
+def trends_fallback():
+    """Fallback route for trends when blueprint fails to load."""
+    return render_template('index.html',
+                         page_title="Trends - Coming Soon",
+                         active_nav='trends')
+
+
+@app.route('/data-management')
+@app.route('/data-management/')
+def data_management_fallback():
+    """Fallback route for data management."""
+    return render_template('index.html',
+                         page_title="Data Management - Coming Soon",
+                         active_nav='data_management')
+
+
+# Register streamlined blueprints
 blueprints_to_register = [
     (api_bp, '/api', 'API'),
     (lensiq_bp, '/storytelling', 'Storytelling (LensIQ)'),
-    (narrative_builder_bp, '/narrative-builder', 'Narrative Builder')
+    (narrative_builder_bp, '/narrative-builder', 'Narrative Builder'),
+    (strategy_bp, '/strategy', 'Strategy'),
+    (trendradar_bp, '/trends', 'Trends (TrendRadar)')
 ]
 
 for blueprint, url_prefix, name in blueprints_to_register:

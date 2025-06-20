@@ -27,70 +27,28 @@ NAVIGATION_ITEMS = [
         "url": "/",
         "icon": "home",
         "roles": ["admin", "user", "vc"],
-        "description": "TrendSense Dashboard"
+        "description": "LensIQ Dashboard"
     },
     {
-        "name": "VC Lens",
-        "url": "/vc-lens",
-        "icon": "chart-line",
+        "name": "Storytelling",
+        "url": "/storytelling",
+        "icon": "book-open",
         "roles": ["admin", "user", "vc"],
-        "description": "Private Equity Analytics"
-    },
-    {
-        "name": "TrendSense",
-        "url": "/trendsense",
-        "icon": "brain",
-        "roles": ["admin", "user", "vc"],
-        "description": "AI-Powered Trend Analysis"
-    },
-    {
-        "name": "TrendRadar",
-        "url": "/trendradar",
-        "icon": "radar",
-        "roles": ["admin", "user", "vc"],
-        "description": "Real-time Trend Monitoring"
+        "description": "AI-Powered Storytelling"
     },
     {
         "name": "Strategy",
         "url": "/strategy",
         "icon": "chess",
         "roles": ["admin", "user", "vc"],
-        "description": "Strategic Planning Hub"
+        "description": "Strategic Planning & Analysis"
     },
     {
         "name": "Data Management",
         "url": "/data-management",
         "icon": "database",
         "roles": ["admin", "user"],
-        "description": "Data Storage & Retrieval"
-    },
-    {
-        "name": "Lookthrough",
-        "url": "/lookthrough",
-        "icon": "search",
-        "roles": ["admin", "user", "vc"],
-        "description": "Portfolio Analysis"
-    },
-    {
-        "name": "Graph Analytics",
-        "url": "/graph-analytics",
-        "icon": "project-diagram",
-        "roles": ["admin", "user", "vc"],
-        "description": "Network Analysis"
-    },
-    {
-        "name": "Lifecycle",
-        "url": "/lifecycle",
-        "icon": "recycle",
-        "roles": ["admin", "user", "vc"],
-        "description": "Investment Lifecycle"
-    },
-    {
-        "name": "Copilot",
-        "url": "/copilot",
-        "icon": "robot",
-        "roles": ["admin", "user", "vc"],
-        "description": "AI Assistant"
+        "description": "Data Collection & Management"
     },
     {
         "name": "API",

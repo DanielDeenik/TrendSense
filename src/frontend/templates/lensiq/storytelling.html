@@ -10,14 +10,14 @@
             <h1 class="text-3xl font-bold text-white mb-2">LensIQ Storytelling</h1>
             <p class="text-gray-400">Transform data into compelling narratives that resonate with your audience</p>
         </div>
-        <a href="{{ url_for('narrative_builder.create_narrative') }}" class="btn-primary">
+        <a href="/narrative-builder" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>Create Narrative
         </a>
     </div>
 
     <!-- Quick Actions -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <a href="{{ url_for('narrative_builder.create_narrative') }}" 
+        <a href="{{ url_for('narrative_builder.create_narrative') }}"
            class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 hover:from-blue-700 hover:to-blue-800 transition-all">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-white bg-opacity-20">
@@ -30,7 +30,7 @@
             </div>
         </a>
 
-        <a href="{{ url_for('lensiq.data_collection') }}" 
+        <a href="/data-management"
            class="bg-gradient-to-r from-green-600 to-green-700 rounded-lg p-6 hover:from-green-700 hover:to-green-800 transition-all">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-white bg-opacity-20">
@@ -43,7 +43,7 @@
             </div>
         </a>
 
-        <a href="{{ url_for('lensiq.trend_analysis') }}" 
+        <a href="/trends"
            class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 hover:from-purple-700 hover:to-purple-800 transition-all">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-white bg-opacity-20">
@@ -76,10 +76,10 @@
                     </span>
                     <span class="text-gray-500 text-xs">{{ story.created_at }}</span>
                 </div>
-                
+
                 <h3 class="text-white font-medium mb-2 line-clamp-2">{{ story.title }}</h3>
                 <p class="text-gray-400 text-sm mb-3 line-clamp-3">{{ story.summary }}</p>
-                
+
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3 text-xs text-gray-500">
                         <span><i class="fas fa-heart mr-1"></i>{{ story.engagement_score }}%</span>
@@ -96,7 +96,7 @@
         <div class="text-center py-8">
             <i class="fas fa-book-open text-gray-600 text-4xl mb-4"></i>
             <p class="text-gray-400 mb-4">No stories created yet</p>
-            <a href="{{ url_for('narrative_builder.create_narrative') }}" class="btn-primary">
+            <a href="/narrative-builder" class="btn-primary">
                 Create Your First Story
             </a>
         </div>
@@ -108,7 +108,7 @@
         <!-- Key Insights -->
         <div class="bg-gray-800 rounded-lg p-6">
             <h2 class="text-xl font-bold text-white mb-6">Key Insights</h2>
-            
+
             {% if insights %}
             <div class="space-y-4">
                 {% for insight in insights[:5] %}
@@ -136,7 +136,7 @@
         <!-- Trending Topics -->
         <div class="bg-gray-800 rounded-lg p-6">
             <h2 class="text-xl font-bold text-white mb-6">Trending Topics</h2>
-            
+
             {% if trends %}
             <div class="space-y-4">
                 {% for trend in trends %}
@@ -172,7 +172,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Add any storytelling-specific JavaScript here
     console.log('LensIQ Storytelling interface loaded');
-    
+
     // Auto-refresh insights every 5 minutes
     setInterval(function() {
         // Could implement auto-refresh of insights here

@@ -13,11 +13,11 @@
             Your comprehensive AI-powered sustainability intelligence platform for data-driven insights and strategy
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-            <a href="{{ url_for('main.index') }}" class="btn-primary">
-                <i class="fas fa-tachometer-alt mr-2"></i> Go to Dashboard
+            <a href="{{ url_for('lensiq.index') }}" class="btn-primary">
+                <i class="fas fa-book-open mr-2"></i> Start Storytelling
             </a>
-            <a href="{{ url_for('trend.index') }}" class="btn-secondary">
-                <i class="fas fa-chart-line mr-2"></i> View Trends
+            <a href="{{ url_for('narrative_builder.index') }}" class="btn-secondary">
+                <i class="fas fa-magic mr-2"></i> Build Narratives
             </a>
         </div>
     </div>
@@ -25,20 +25,18 @@
     <!-- Quick Access Grid -->
     <div class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Quick Access</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {% for item in [
-                {'name': 'Dashboard', 'icon': 'tachometer-alt', 'url': url_for('main.index'), 'color': 'bg-blue-500'},
-                {'name': 'Trends', 'icon': 'chart-line', 'url': url_for('trend.index'), 'color': 'bg-green-500'},
-                {'name': 'Strategy', 'icon': 'chess', 'url': url_for('strategy.index'), 'color': 'bg-purple-500'},
-                {'name': 'Graph', 'icon': 'project-diagram', 'url': url_for('graph.index'), 'color': 'bg-red-500'},
-                {'name': 'Storytelling', 'icon': 'book-open', 'url': url_for('storytelling.index'), 'color': 'bg-yellow-500'},
-                {'name': 'Real Estate', 'icon': 'building', 'url': '#', 'color': 'bg-indigo-500'},
-                {'name': 'Copilot', 'icon': 'robot', 'url': url_for('main.copilot'), 'color': 'bg-pink-500'},
-                {'name': 'Resources', 'icon': 'file-alt', 'url': '#', 'color': 'bg-teal-500'}
+                {'name': 'Storytelling', 'icon': 'book-open', 'url': url_for('lensiq.index'), 'color': 'bg-blue-500', 'desc': 'Create compelling narratives from your data'},
+                {'name': 'Narrative Builder', 'icon': 'magic', 'url': url_for('narrative_builder.index'), 'color': 'bg-purple-500', 'desc': 'Build data-driven stories for stakeholders'},
+                {'name': 'API Access', 'icon': 'code', 'url': url_for('api.health_check'), 'color': 'bg-green-500', 'desc': 'Programmatic access to narrative generation'}
             ] %}
-            <a href="{{ item.url }}" class="flex flex-col items-center justify-center p-6 rounded-lg {{ item.color }} text-white hover:opacity-90 transition-opacity">
-                <i class="fas fa-{{ item.icon }} text-3xl mb-2"></i>
-                <span class="font-medium">{{ item.name }}</span>
+            <a href="{{ item.url }}" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <div class="{{ item.color }} text-white w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-{{ item.icon }} text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ item.name }}</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">{{ item.desc }}</p>
             </a>
             {% endfor %}
         </div>
@@ -50,26 +48,26 @@
         <div class="grid md:grid-cols-3 gap-6">
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 <div class="text-blue-500 dark:text-blue-400 mb-4">
-                    <i class="fas fa-chart-pie text-3xl"></i>
+                    <i class="fas fa-database text-3xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Advanced Analytics</h3>
-                <p class="text-gray-600 dark:text-gray-300">Comprehensive sustainability metrics and performance tracking with AI-powered insights.</p>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Data Collection</h3>
+                <p class="text-gray-600 dark:text-gray-300">Collect structured and unstructured data from multiple sources for comprehensive analysis.</p>
             </div>
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 <div class="text-green-500 dark:text-green-400 mb-4">
-                    <i class="fas fa-project-diagram text-3xl"></i>
+                    <i class="fas fa-chart-line text-3xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Graph Intelligence</h3>
-                <p class="text-gray-600 dark:text-gray-300">Visualize complex relationships and dependencies with our MongoDB Graph integration.</p>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Trend Analysis</h3>
+                <p class="text-gray-600 dark:text-gray-300">Identify patterns and insights from your data to inform strategic storytelling.</p>
             </div>
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 <div class="text-purple-500 dark:text-purple-400 mb-4">
-                    <i class="fas fa-robot text-3xl"></i>
+                    <i class="fas fa-users text-3xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">AI Copilot</h3>
-                <p class="text-gray-600 dark:text-gray-300">Get intelligent recommendations and assistance with our AI-powered sustainability copilot.</p>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Audience-Specific Stories</h3>
+                <p class="text-gray-600 dark:text-gray-300">Generate compelling narratives tailored for investors, clients, and staff.</p>
             </div>
         </div>
     </div>
@@ -81,10 +79,10 @@
             <div class="p-6">
                 <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                     {% for activity in [
-                        {'title': 'New sustainability trend detected', 'time': '2 hours ago', 'icon': 'lightbulb', 'color': 'text-yellow-500'},
-                        {'title': 'Performance report updated', 'time': '5 hours ago', 'icon': 'chart-line', 'color': 'text-blue-500'},
-                        {'title': 'New case study published', 'time': '1 day ago', 'icon': 'file-alt', 'color': 'text-green-500'},
-                        {'title': 'System maintenance completed', 'time': '2 days ago', 'icon': 'wrench', 'color': 'text-gray-500'}
+                        {'title': 'New narrative generated for investor presentation', 'time': '2 hours ago', 'icon': 'magic', 'color': 'text-purple-500'},
+                        {'title': 'Data collection completed for Q4 analysis', 'time': '5 hours ago', 'icon': 'database', 'color': 'text-blue-500'},
+                        {'title': 'Client story published with 95% quality score', 'time': '1 day ago', 'icon': 'book-open', 'color': 'text-green-500'},
+                        {'title': 'Trend analysis identified 3 new opportunities', 'time': '2 days ago', 'icon': 'chart-line', 'color': 'text-yellow-500'}
                     ] %}
                     <li class="py-4 first:pt-0 last:pb-0">
                         <div class="flex items-center">

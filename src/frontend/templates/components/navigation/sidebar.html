@@ -2,9 +2,9 @@
 <div class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg">
     <!-- Logo -->
     <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700">
-        <a href="{{ url_for('main.index') }}" class="flex items-center space-x-2">
-            <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="TrendSense™" class="h-8 w-auto">
-            <span class="text-xl font-semibold text-gray-900 dark:text-white">TrendSense™</span>
+        <a href="/" class="flex items-center space-x-2">
+            <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="LensIQ" class="h-8 w-auto">
+            <span class="text-xl font-semibold text-gray-900 dark:text-white">LensIQ</span>
         </a>
         <button
             @click="sidebarOpen = false"
@@ -53,7 +53,7 @@
                     </p>
                 </div>
             </div>
-            <a href="{{ url_for('auth.logout') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+            <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
         </div>

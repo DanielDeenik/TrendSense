@@ -54,14 +54,14 @@ def navigation_processor():
 
         # Assign categories to items
         for item in navigation_items:
-            if item['name'] in ['Home', 'VC Lens', 'TrendSense', 'TrendRadar']:
+            if item['name'] in ['Home', 'Storytelling']:
                 item['category'] = 'main'
-            elif item['name'] in ['Graph Analytics', 'Lookthrough', 'Lifecycle']:
-                item['category'] = 'analytics'
-            elif item['name'] in ['Data Management', 'Strategy']:
+            elif item['name'] in ['Strategy', 'Data Management']:
                 item['category'] = 'management'
-            else:
+            elif item['name'] in ['API']:
                 item['category'] = 'tools'
+            else:
+                item['category'] = 'main'
 
         return {
             'navigation': {
