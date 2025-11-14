@@ -6,6 +6,7 @@ This module provides navigation configuration for the application.
 
 from typing import Dict, List, Any
 from datetime import datetime
+from flask import session
 from .data_providers import (
     get_metrics,
     get_trends,
@@ -132,8 +133,9 @@ def get_context_for_template(template_name: str = None) -> Dict[str, Any]:
         'year': datetime.now().year,
         'theme': 'light',  # Default theme
         'user': {
-            'name': 'Demo User',
-            'role': 'admin'
+            'is_authenticated': session.get('user_id') is not None,
+            'name': session.get('user_name', 'Guest'),
+            'role': session.get('user_role', 'guest')
         }
     }
 

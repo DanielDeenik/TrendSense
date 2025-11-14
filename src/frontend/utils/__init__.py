@@ -6,7 +6,7 @@ This module provides utility functions for the application.
 
 from typing import Dict, Any
 from datetime import datetime
-from flask import request, current_app, Blueprint
+from flask import request, current_app, Blueprint, session
 from .navigation_config import get_context_for_template, get_navigation_items
 
 def get_context_for_template() -> Dict[str, Any]:
@@ -25,9 +25,9 @@ def get_context_for_template() -> Dict[str, Any]:
         'environment': current_app.config.get('ENVIRONMENT', 'development'),
         'debug': current_app.debug,
         'user': {
-            'is_authenticated': True,  # TODO: Replace with actual auth check
-            'name': 'Demo User',  # TODO: Replace with actual user data
-            'role': 'admin'  # TODO: Replace with actual user role
+            'is_authenticated': session.get('user_id') is not None,
+            'name': session.get('user_name', 'Guest'),
+            'role': session.get('user_role', 'guest')
         },
         'navigation': {
             'current_section': request.endpoint.split('.')[0] if request.endpoint else None,
