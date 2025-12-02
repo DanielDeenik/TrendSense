@@ -64,6 +64,22 @@ Run tests using pytest:
 pytest tests/
 ```
 
+## Related Projects
+
+### LensIQ Data Ingestion & TrendRadar
+
+A focused implementation of LensIQ that specializes in multi-source data ingestion and ML/AI-powered trend detection.
+
+**Repository:** https://github.com/DanielDeenik/LensIQ-DataIngestion-TrendRadar
+
+**Features:**
+- Multi-source data ingestion (Reddit, Discord, LinkedIn, SQL, MongoDB)
+- ML/AI-powered trend analysis
+- Interactive TrendRadar visualization
+- Real-time data processing
+
+**Branch Origin:** This project was split from the `LensIQ_DataIngestion_TrendRadar` branch to become a standalone repository focused on data ingestion and trend analysis capabilities.
+
 ## License
 
 Proprietary - All rights reserved.
